@@ -1,0 +1,3925 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: workflow
+  name: workflow_基站节能
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: antv/visualization:0.2.0@798a255e7bf02e93b8a5717be235b833482be58daab1c64c79c954281da14b9c
+    version: null
+- current_identifier: null
+  type: package
+  value:
+    plugin_unique_identifier: bowenliang123/md_exporter:3.6.9@3f027d63e80b44d5d5a9f706871afaef37905b8f8a89a2d152dc530211a8acb1
+    version: null
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/deepseek:0.0.26@bdf47cb41e9062bba00d26625d2a795c1874011d8ce64bff738c44b5a31787ea
+    version: null
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 10
+        file_size_limit: 30
+        file_upload_limit: 20
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 15
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1793621370892-source-1793621422684-target
+      source: '1793621370892'
+      sourceHandle: source
+      target: '1793621422684'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1793621370892-source-1793621446258-target
+      source: '1793621370892'
+      sourceHandle: source
+      target: '1793621446258'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1793621370892-source-1793621454143-target
+      source: '1793621370892'
+      sourceHandle: source
+      target: '1793621454143'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1793621370892-source-1793621456002-target
+      source: '1793621370892'
+      sourceHandle: source
+      target: '1793621456002'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1793621370892-source-1793621457809-target
+      source: '1793621370892'
+      sourceHandle: source
+      target: '1793621457809'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1793621370892-source-1793621459418-target
+      source: '1793621370892'
+      sourceHandle: source
+      target: '1793621459418'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1793621370892-source-1793621461662-target
+      source: '1793621370892'
+      sourceHandle: source
+      target: '1793621461662'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1793621370892-source-1793621463247-target
+      source: '1793621370892'
+      sourceHandle: source
+      target: '1793621463247'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: code
+      id: 1793621422684-source-1793621663010-target
+      source: '1793621422684'
+      sourceHandle: source
+      target: '1793621663010'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: code
+      id: 1793621446258-source-1793621663010-target
+      source: '1793621446258'
+      sourceHandle: source
+      target: '1793621663010'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: code
+      id: 1793621454143-source-1793621663010-target
+      source: '1793621454143'
+      sourceHandle: source
+      target: '1793621663010'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: code
+      id: 1793621456002-source-1793621663010-target
+      source: '1793621456002'
+      sourceHandle: source
+      target: '1793621663010'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: code
+      id: 1793621457809-source-1793621663010-target
+      source: '1793621457809'
+      sourceHandle: source
+      target: '1793621663010'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: code
+      id: 1793621459418-source-1793621663010-target
+      source: '1793621459418'
+      sourceHandle: source
+      target: '1793621663010'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: code
+      id: 1793621461662-source-1793621663010-target
+      source: '1793621461662'
+      sourceHandle: source
+      target: '1793621663010'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: code
+      id: 1793621463247-source-1793621663010-target
+      source: '1793621463247'
+      sourceHandle: source
+      target: '1793621663010'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: code
+      id: 1793634116612-true-1793634133152-target
+      source: '1793634116612'
+      sourceHandle: 'true'
+      target: '1793634133152'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: template-transform
+      id: 1793634116612-false-1793634139626-target
+      source: '1793634116612'
+      sourceHandle: 'false'
+      target: '1793634139626'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: template-transform
+        targetType: end
+      id: 1793634139626-source-1793634153808-target
+      source: '1793634139626'
+      sourceHandle: source
+      target: '1793634153808'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1793687205700'
+        sourceType: loop-start
+        targetType: code
+      id: 1793687205700start-source-1793687211641-target
+      source: 1793687205700start
+      sourceHandle: source
+      target: '1793687211641'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1793687205700'
+        sourceType: code
+        targetType: assigner
+      id: 1793687211641-source-1793687214903-target
+      source: '1793687211641'
+      sourceHandle: source
+      target: '1793687214903'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: if-else
+      id: 1793621663010-source-1793634116612-target
+      source: '1793621663010'
+      sourceHandle: source
+      target: '1793634116612'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: code
+        targetType: loop
+      id: 1793634133152-source-1793687205700-target
+      source: '1793634133152'
+      sourceHandle: source
+      target: '1793687205700'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: loop
+        targetType: code
+      id: 1793687205700-source-1793696179356-target
+      source: '1793687205700'
+      sourceHandle: source
+      target: '1793696179356'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: if-else
+      id: 1793696179356-source-1793797090767-target
+      source: '1793696179356'
+      sourceHandle: source
+      target: '1793797090767'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: template-transform
+      id: 1793797090767-false-1793797102849-target
+      source: '1793797090767'
+      sourceHandle: 'false'
+      target: '1793797102849'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: code
+      id: 1793797090767-true-1793797195035-target
+      source: '1793797090767'
+      sourceHandle: 'true'
+      target: '1793797195035'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: template-transform
+        targetType: end
+      id: 1793797102849-source-1793797205183-target
+      source: '1793797102849'
+      sourceHandle: source
+      target: '1793797205183'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: llm
+      id: 1793797195035-source-1793798197267-target
+      source: '1793797195035'
+      sourceHandle: source
+      target: '1793798197267'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: 1793798197267-source-1793798900914-target
+      source: '1793798197267'
+      sourceHandle: source
+      target: '1793798900914'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: tool
+      id: 1793798900914-source-1793799082257-target
+      source: '1793798900914'
+      sourceHandle: source
+      target: '1793799082257'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: tool
+      id: 1793798900914-source-1793799094082-target
+      source: '1793798900914'
+      sourceHandle: source
+      target: '1793799094082'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: tool
+      id: 1793798900914-source-1793799102257-target
+      source: '1793798900914'
+      sourceHandle: source
+      target: '1793799102257'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: tool
+        targetType: template-transform
+      id: 1793799082257-source-1793799312246-target
+      source: '1793799082257'
+      sourceHandle: source
+      target: '1793799312246'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: template-transform
+      id: 1793799094082-source-1793799312246-target
+      source: '1793799094082'
+      sourceHandle: source
+      target: '1793799312246'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: tool
+        targetType: template-transform
+      id: 1793799102257-source-1793799312246-target
+      source: '1793799102257'
+      sourceHandle: source
+      target: '1793799312246'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: template-transform
+        targetType: tool
+      id: 1793799312246-source-1793800686355-target
+      source: '1793799312246'
+      sourceHandle: source
+      target: '1793800686355'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: tool
+        targetType: end
+      id: 1793800686355-source-1793634482901-target
+      source: '1793800686355'
+      sourceHandle: source
+      target: '1793634482901'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables:
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          default: ''
+          hide: false
+          hint: ''
+          label: case
+          options: []
+          placeholder: ''
+          required: true
+          type: file
+          variable: case
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          default: ''
+          hide: false
+          hint: ''
+          label: cell
+          options: []
+          placeholder: ''
+          required: true
+          type: file
+          variable: cell
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          default: ''
+          hide: false
+          hint: ''
+          label: slot
+          options: []
+          placeholder: ''
+          required: true
+          type: file
+          variable: slot
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          default: ''
+          hide: false
+          hint: ''
+          label: group
+          options: []
+          placeholder: ''
+          required: true
+          type: file
+          variable: group
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          default: ''
+          hide: false
+          hint: ''
+          label: source_cell
+          options: []
+          placeholder: ''
+          required: true
+          type: file
+          variable: source_cell
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          default: ''
+          hide: false
+          hint: ''
+          label: model
+          options: []
+          placeholder: ''
+          required: true
+          type: file
+          variable: model
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          default: ''
+          hide: false
+          hint: ''
+          label: restriction
+          options: []
+          placeholder: ''
+          required: true
+          type: file
+          variable: restriction
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          default: ''
+          hide: false
+          hint: ''
+          label: rule
+          options: []
+          placeholder: ''
+          required: true
+          type: file
+          variable: rule
+      height: 291
+      id: '1793621370892'
+      position:
+        x: 50
+        y: 505
+      positionAbsolute:
+        x: 50
+        y: 505
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_array_file: false
+        selected: false
+        title: 01_任务时段表
+        type: document-extractor
+        variable_selector:
+        - '1793621370892'
+        - case
+      height: 104
+      id: '1793621422684'
+      position:
+        x: 379
+        y: 85
+      positionAbsolute:
+        x: 379
+        y: 85
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_array_file: false
+        selected: false
+        title: 02_小区基础信息表
+        type: document-extractor
+        variable_selector:
+        - '1793621370892'
+        - cell
+      height: 104
+      id: '1793621446258'
+      position:
+        x: 379
+        y: 236
+      positionAbsolute:
+        x: 379
+        y: 236
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_array_file: false
+        selected: false
+        title: 03_分时业务需求表
+        type: document-extractor
+        variable_selector:
+        - '1793621370892'
+        - slot
+      height: 104
+      id: '1793621454143'
+      position:
+        x: 379
+        y: 364
+      positionAbsolute:
+        x: 379
+        y: 364
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_array_file: false
+        selected: false
+        title: 04_覆盖保障约束表
+        type: document-extractor
+        variable_selector:
+        - '1793621370892'
+        - group
+      height: 104
+      id: '1793621456002'
+      position:
+        x: 379
+        y: 486
+      positionAbsolute:
+        x: 379
+        y: 486
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_array_file: false
+        selected: false
+        title: 05_小区业务承接关系表
+        type: document-extractor
+        variable_selector:
+        - '1793621370892'
+        - source_cell
+      height: 104
+      id: '1793621457809'
+      position:
+        x: 379
+        y: 606
+      positionAbsolute:
+        x: 379
+        y: 606
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_array_file: false
+        selected: false
+        title: 06_运行状态容量与功耗参数表
+        type: document-extractor
+        variable_selector:
+        - '1793621370892'
+        - model
+      height: 104
+      id: '1793621459418'
+      position:
+        x: 379
+        y: 735
+      positionAbsolute:
+        x: 379
+        y: 735
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_array_file: false
+        selected: false
+        title: 07_临时保障限制表.
+        type: document-extractor
+        variable_selector:
+        - '1793621370892'
+        - restriction
+      height: 104
+      id: '1793621461662'
+      position:
+        x: 379
+        y: 872
+      positionAbsolute:
+        x: 379
+        y: 872
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_array_file: false
+        selected: false
+        title: 08_节能策略编排规则表
+        type: document-extractor
+        variable_selector:
+        - '1793621370892'
+        - rule
+      height: 104
+      id: '1793621463247'
+      position:
+        x: 379
+        y: 993.1635539399169
+      positionAbsolute:
+        x: 379
+        y: 993.1635539399169
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "import json\nimport csv\nimport io\nimport re\nfrom datetime import\
+          \ datetime, timezone, timedelta\n\n\n# ============================================================\n\
+          # 1. 工具函数\n# ============================================================\n\
+          \ndef clean_text(text):\n    if text is None:\n        return \"\"\n   \
+          \ s = str(text)\n    s = s.replace(\"\\ufeff\", \"\").replace(\"\\r\\n\"\
+          , \"\\n\").replace(\"\\r\", \"\\n\").strip()\n    lines = s.split(\"\\n\"\
+          )\n    if lines and lines[0].strip().startswith(\"```\"):\n        lines\
+          \ = lines[1:]\n    if lines and lines[-1].strip().startswith(\"```\"):\n\
+          \        lines = lines[:-1]\n    return \"\\n\".join(lines).strip()\n\n\n\
+          def is_md_sep_row(line):\n    s = line.strip()\n    if \"|\" not in s:\n\
+          \        return False\n    cells = [c.strip() for c in s.strip(\"|\").split(\"\
+          |\")]\n    non_blank = [c for c in cells if c]\n    if len(non_blank) <\
+          \ 2:\n        return False\n    for c in non_blank:\n        if not re.fullmatch(r\"\
+          :?-+:?\", c):\n            return False\n    return True\n\n\ndef split_md_row(line):\n\
+          \    s = line.strip()\n    if s.startswith(\"|\"):\n        s = s[1:]\n\
+          \    if s.endswith(\"|\"):\n        s = s[:-1]\n    return [c.strip() for\
+          \ c in s.split(\"|\")]\n\n\ndef normalize_header(h):\n    return (str(h).strip()\n\
+          \            .replace(\"\\ufeff\", \"\")\n            .replace(\" \", \"\
+          \")\n            .replace(\"_\", \"\")\n            .replace(\"-\", \"\"\
+          )\n            .replace(\".\", \"\")\n            .lower())\n\n\n# 表头别名\n\
+          HEADER_ALIASES = {\n    \"slot\": \"slot_id\", \"slotid\": \"slot_id\",\
+          \ \"slotno\": \"slot_id\",\n    \"slotseq\": \"slot_id\", \"slotindex\"\
+          : \"slot_id\",\n    \"period\": \"slot_id\", \"periodid\": \"slot_id\",\
+          \ \"periodno\": \"slot_id\",\n    \"timeslot\": \"slot_id\", \"timeslotid\"\
+          : \"slot_id\", \"timeslotno\": \"slot_id\",\n    \"seq\": \"slot_id\", \"\
+          index\": \"slot_id\", \"id\": \"slot_id\",\n    \"时段\": \"slot_id\", \"\
+          时段id\": \"slot_id\", \"时段序号\": \"slot_id\",\n    \"时段编号\": \"slot_id\",\
+          \ \"时间片\": \"slot_id\", \"时间片序号\": \"slot_id\",\n    \"序号\": \"slot_id\"\
+          , \"编号\": \"slot_id\",\n    \"cell\": \"cell_id\", \"cellid\": \"cell_id\"\
+          , \"cellno\": \"cell_id\",\n    \"小区\": \"cell_id\", \"小区id\": \"cell_id\"\
+          , \"小区编号\": \"cell_id\",\n    \"基站小区id\": \"cell_id\",\n    \"case\": \"\
+          case_id\", \"caseid\": \"case_id\",\n    \"任务id\": \"case_id\", \"任务编号\"\
+          : \"case_id\",\n    \"start\": \"start_time\", \"starttime\": \"start_time\"\
+          ,\n    \"开始时间\": \"start_time\", \"起始时间\": \"start_time\",\n    \"end\"\
+          : \"end_time\", \"endtime\": \"end_time\",\n    \"结束时间\": \"end_time\",\
+          \ \"终止时间\": \"end_time\",\n    \"duration\": \"duration_hours\", \"durationhours\"\
+          : \"duration_hours\",\n    \"hours\": \"duration_hours\", \"时长\": \"duration_hours\"\
+          , \"时长小时\": \"duration_hours\",\n    \"demand\": \"demand_units\", \"demandunits\"\
+          : \"demand_units\", \"units\": \"demand_units\",\n    \"需求量\": \"demand_units\"\
+          , \"业务量\": \"demand_units\", \"业务需求量\": \"demand_units\",\n    \"coveragegroup\"\
+          : \"coverage_group\", \"覆盖组\": \"coverage_group\",\n    \"groupid\": \"\
+          group_id\", \"组id\": \"group_id\",\n    \"minactivecells\": \"min_active_cells\"\
+          , \"minactive\": \"min_active_cells\",\n    \"最小活跃数\": \"min_active_cells\"\
+          , \"最小活跃小区数\": \"min_active_cells\",\n    \"anchorcellid\": \"anchor_cell_id\"\
+          , \"锚点小区id\": \"anchor_cell_id\",\n    \"sourcecellid\": \"source_cell_id\"\
+          , \"源小区id\": \"source_cell_id\",\n    \"targetcellid\": \"target_cell_id\"\
+          , \"目标小区id\": \"target_cell_id\",\n    \"优先级\": \"priority\",\n    \"maxtransferunits\"\
+          : \"max_transfer_units\",\n    \"最大转移量\": \"max_transfer_units\", \"转移上限\"\
+          : \"max_transfer_units\",\n    \"modelid\": \"model_id\", \"模型id\": \"model_id\"\
+          ,\n    \"状态\": \"state\",\n    \"capacityunits\": \"capacity_units\", \"\
+          容量\": \"capacity_units\",\n    \"basepowerw\": \"base_power_w\", \"基础功率\"\
+          : \"base_power_w\",\n    \"slopewperunit\": \"slope_w_per_unit\", \"单位功率\"\
+          : \"slope_w_per_unit\",\n    \"restrictionid\": \"restriction_id\", \"限制id\"\
+          : \"restriction_id\",\n    \"restrictiontype\": \"restriction_type\", \"\
+          限制类型\": \"restriction_type\",\n    \"原因\": \"reason\",\n    \"rulekey\"\
+          : \"rule_key\", \"规则键\": \"rule_key\",\n    \"值\": \"value\",\n    \"description\"\
+          : \"description\", \"desc\": \"description\", \"描述\": \"description\",\n\
+          \    \"initialstate\": \"initial_state\", \"初始状态\": \"initial_state\",\n\
+          \    \"initialdeepslots\": \"initial_deep_slots\",\n    \"初始连续深休眠次数\": \"\
+          initial_deep_slots\",\n    \"角色\": \"role\", \"场景\": \"scene\",\n    \"\
+          siteid\": \"site_id\", \"站点id\": \"site_id\",\n    \"cellname\": \"cell_name\"\
+          , \"小区名称\": \"cell_name\", \"名称\": \"cell_name\",\n}\n\n\ndef _is_blank_row(cells):\n\
+          \    if not cells:\n        return True\n    for c in cells:\n        if\
+          \ c and not re.fullmatch(r\"[\\s\\-:|]+\", c):\n            return False\n\
+          \    return True\n\n\ndef _build_field_map(actual_headers, expected_headers):\n\
+          \    field_map = {}\n    used = set()\n    for ah in actual_headers:\n \
+          \       n = normalize_header(ah)\n        for eh in expected_headers:\n\
+          \            if eh in used:\n                continue\n            if normalize_header(eh)\
+          \ == n:\n                field_map[ah] = eh\n                used.add(eh)\n\
+          \                break\n    for ah in actual_headers:\n        if ah in\
+          \ field_map:\n            continue\n        std = HEADER_ALIASES.get(normalize_header(ah))\n\
+          \        if std and std in expected_headers and std not in used:\n     \
+          \       field_map[ah] = std\n            used.add(std)\n    return field_map\n\
+          \n\ndef _rows_from_pipe(pipe_rows, actual_headers, field_map,\n        \
+          \            expected_headers, data_start_pos):\n    rows = []\n    for\
+          \ pos in range(data_start_pos, len(pipe_rows)):\n        l = pipe_rows[pos][1]\n\
+          \        if is_md_sep_row(l):\n            continue\n        cells = split_md_row(l)\n\
+          \        if _is_blank_row(cells):\n            continue\n        if len(cells)\
+          \ < len(actual_headers):\n            cells = cells + [\"\"] * (len(actual_headers)\
+          \ - len(cells))\n        else:\n            cells = cells[:len(actual_headers)]\n\
+          \        row_dict = {eh: \"\" for eh in expected_headers}\n        for i,\
+          \ ah in enumerate(actual_headers):\n            std = field_map.get(ah)\n\
+          \            if std:\n                row_dict[std] = cells[i]\n       \
+          \ rows.append(row_dict)\n    return rows\n\n\ndef parse_table(text, expected_headers,\
+          \ table_name, diag_collector=None):\n    text = clean_text(text)\n    if\
+          \ not text:\n        raise ValueError(f\"{table_name} 输入为空\")\n\n    lines\
+          \ = text.split(\"\\n\")\n    pipe_rows = [(i, l) for i, l in enumerate(lines)\
+          \ if l.strip().count(\"|\") >= 2]\n\n    if pipe_rows:\n        first_sep_pos\
+          \ = None\n        for pos, (_, l) in enumerate(pipe_rows):\n           \
+          \ if is_md_sep_row(l):\n                first_sep_pos = pos\n          \
+          \      break\n\n        if first_sep_pos is not None and first_sep_pos >\
+          \ 0:\n            header_pos = first_sep_pos - 1\n            data_start\
+          \ = first_sep_pos + 1\n        else:\n            header_pos = 0\n     \
+          \       data_start = 1\n\n        actual_headers = split_md_row(pipe_rows[header_pos][1])\n\
+          \        field_map = _build_field_map(actual_headers, expected_headers)\n\
+          \n        need = min(2, len(expected_headers))\n        if len(field_map)\
+          \ >= need:\n            rows = _rows_from_pipe(pipe_rows, actual_headers,\
+          \ field_map,\n                                   expected_headers, data_start)\n\
+          \            if diag_collector is not None:\n                diag_collector[table_name]\
+          \ = {\n                    \"source\": \"md\",\n                    \"actual_headers\"\
+          : actual_headers,\n                    \"matched\": len(field_map),\n  \
+          \                  \"unmatched_expected\": [e for e in expected_headers\n\
+          \                                           if e not in field_map.values()],\n\
+          \                    \"parsed_rows\": len(rows),\n                    \"\
+          preview\": [l.strip()[:120] for _, l in pipe_rows[:3]],\n              \
+          \  }\n            return rows\n\n    reader = csv.reader(io.StringIO(text))\n\
+          \    cleaned = []\n    for r in reader:\n        cells = [str(c).replace(\"\
+          \\ufeff\", \"\").strip() for c in r]\n        if any(cells):\n         \
+          \   cleaned.append(cells)\n\n    if cleaned:\n        need = min(2, len(expected_headers))\n\
+          \        for i, row in enumerate(cleaned):\n            fm = _build_field_map(row,\
+          \ expected_headers)\n            if len(fm) >= need:\n                actual_headers\
+          \ = row\n                field_map = fm\n                rows = []\n   \
+          \             for r2 in cleaned[i + 1:]:\n                    if _is_blank_row(r2):\n\
+          \                        continue\n                    if len(r2) < len(actual_headers):\n\
+          \                        r2 = r2 + [\"\"] * (len(actual_headers) - len(r2))\n\
+          \                    else:\n                        r2 = r2[:len(actual_headers)]\n\
+          \                    row_dict = {eh: \"\" for eh in expected_headers}\n\
+          \                    for j, ah in enumerate(actual_headers):\n         \
+          \               std = field_map.get(ah)\n                        if std:\n\
+          \                            row_dict[std] = r2[j]\n                   \
+          \ rows.append(row_dict)\n                if diag_collector is not None:\n\
+          \                    diag_collector[table_name] = {\n                  \
+          \      \"source\": \"csv\",\n                        \"actual_headers\"\
+          : actual_headers,\n                        \"matched\": len(field_map),\n\
+          \                        \"unmatched_expected\": [e for e in expected_headers\n\
+          \                                               if e not in field_map.values()],\n\
+          \                        \"parsed_rows\": len(rows),\n                 \
+          \       \"preview\": [\",\".join(r)[:120] for r in cleaned[:3]],\n     \
+          \               }\n                return rows\n\n    preview = \" ⏎ \"\
+          .join([l.strip()[:150] for l in lines[:5] if l.strip()])\n    raise ValueError(\n\
+          \        f\"{table_name} 表头匹配失败\\n\"\n        f\"  [期望] {expected_headers}\\\
+          n\"\n        f\"  [前几行] {preview}\"\n    )\n\n\n# ============================================================\n\
+          # 2. 类型转换\n# ============================================================\n\
+          \ndef to_int(v):\n    if v is None or v == \"\":\n        return None\n\
+          \    if isinstance(v, bool):\n        return int(v)\n    if isinstance(v,\
+          \ int):\n        return v\n    if isinstance(v, float):\n        return\
+          \ int(v)\n    s = str(v).strip()\n    if s == \"\":\n        return None\n\
+          \    try:\n        return int(float(s))\n    except Exception:\n       \
+          \ return None\n\n\ndef to_float(v):\n    if v is None or v == \"\":\n  \
+          \      return None\n    if isinstance(v, (int, float)):\n        return\
+          \ float(v)\n    s = str(v).strip()\n    if s == \"\":\n        return None\n\
+          \    try:\n        return float(s)\n    except Exception:\n        return\
+          \ None\n\n\ndef to_number_strict(v):\n    if v is None or v == \"\":\n \
+          \       return None\n    if isinstance(v, (int, float)):\n        return\
+          \ v\n    s = str(v).strip()\n    if s == \"\":\n        return None\n  \
+          \  if re.fullmatch(r\"[+-]?\\d+\", s):\n        try:\n            return\
+          \ int(s)\n        except Exception:\n            return None\n    try:\n\
+          \        return float(s)\n    except Exception:\n        return None\n\n\
+          \ndef to_rule_value(v):\n    if v is None or v == \"\":\n        return\
+          \ v\n    s = str(v).strip()\n    if re.fullmatch(r\"[+-]?\\d+\", s):\n \
+          \       try:\n            return int(s)\n        except Exception:\n   \
+          \         return s\n    try:\n        return float(s)\n    except Exception:\n\
+          \        return s\n\n\ndef normalize_time(value):\n    if value is None:\n\
+          \        return None, None\n    s = str(value).strip()\n    if not s:\n\
+          \        return None, None\n    s2 = s[:-1] + \"+00:00\" if s.endswith(\"\
+          Z\") else s\n    dt = None\n    try:\n        dt = datetime.fromisoformat(s2)\n\
+          \    except Exception:\n        for fmt in (\"%Y-%m-%d %H:%M:%S%z\", \"\
+          %Y-%m-%dT%H:%M:%S%z\",\n                    \"%Y-%m-%d %H:%M:%S\", \"%Y-%m-%dT%H:%M:%S\"\
+          ):\n            try:\n                dt = datetime.strptime(s2, fmt)\n\
+          \                break\n            except Exception:\n                continue\n\
+          \    if dt is None:\n        raise ValueError(f\"无法解析时间: {value}\")\n  \
+          \  tz8 = timezone(timedelta(hours=8))\n    if dt.tzinfo is None:\n     \
+          \   dt = dt.replace(tzinfo=tz8)\n    dt8 = dt.astimezone(tz8)\n    return\
+          \ dt8.isoformat(timespec=\"seconds\"), int(dt8.timestamp())\n\n\ndef convert_value(val,\
+          \ typ):\n    if typ == \"str\":\n        return None if val is None else\
+          \ str(val).strip()\n    if typ == \"int\":\n        return to_int(val)\n\
+          \    if typ == \"number\":\n        return to_number_strict(val)\n    if\
+          \ typ == \"float\":\n        return to_float(val)\n    if typ == \"rule_value\"\
+          :\n        return to_rule_value(val)\n    return val\n\n\ndef convert_records(rows,\
+          \ schema):\n    out = []\n    for r in rows:\n        rec = {}\n       \
+          \ for field, typ in schema.items():\n            rec[field] = convert_value(r.get(field),\
+          \ typ)\n        out.append(rec)\n    return out\n\n\n# ============================================================\n\
+          # 3. Schema  ★ 关键：slot_id 改为 str\n# ============================================================\n\
+          \nEXPECTED_TASK = [\"case_id\", \"slot_id\", \"start_time\", \"end_time\"\
+          , \"duration_hours\"]\nEXPECTED_CELL = [\"cell_id\", \"cell_name\", \"site_id\"\
+          , \"scene\", \"coverage_group\",\n                 \"role\", \"model_id\"\
+          , \"x\", \"y\", \"initial_state\", \"initial_deep_slots\"]\nEXPECTED_TRAFFIC\
+          \ = [\"slot_id\", \"cell_id\", \"demand_units\"]\nEXPECTED_COVERAGE = [\"\
+          group_id\", \"anchor_cell_id\", \"min_active_cells\"]\nEXPECTED_TRANSFER\
+          \ = [\"source_cell_id\", \"target_cell_id\", \"priority\", \"max_transfer_units\"\
+          ]\nEXPECTED_POWER = [\"model_id\", \"state\", \"capacity_units\", \"base_power_w\"\
+          , \"slope_w_per_unit\"]\nEXPECTED_RESTRICTION = [\"restriction_id\", \"\
+          cell_id\", \"restriction_type\",\n                        \"start_time\"\
+          , \"end_time\", \"reason\"]\nEXPECTED_RULE = [\"rule_key\", \"value\", \"\
+          description\"]\n\nSCHEMA_TASK = {\"case_id\": \"str\", \"slot_id\": \"str\"\
+          , \"start_time\": \"str\",\n               \"end_time\": \"str\", \"duration_hours\"\
+          : \"number\"}\nSCHEMA_CELL = {\"cell_id\": \"str\", \"cell_name\": \"str\"\
+          , \"site_id\": \"str\", \"scene\": \"str\",\n               \"coverage_group\"\
+          : \"str\", \"role\": \"str\", \"model_id\": \"str\",\n               \"\
+          x\": \"float\", \"y\": \"float\", \"initial_state\": \"str\",\n        \
+          \       \"initial_deep_slots\": \"int\"}\nSCHEMA_TRAFFIC = {\"slot_id\"\
+          : \"str\", \"cell_id\": \"str\", \"demand_units\": \"number\"}\nSCHEMA_COVERAGE\
+          \ = {\"group_id\": \"str\", \"anchor_cell_id\": \"str\", \"min_active_cells\"\
+          : \"int\"}\nSCHEMA_TRANSFER = {\"source_cell_id\": \"str\", \"target_cell_id\"\
+          : \"str\",\n                   \"priority\": \"int\", \"max_transfer_units\"\
+          : \"number\"}\nSCHEMA_POWER = {\"model_id\": \"str\", \"state\": \"str\"\
+          , \"capacity_units\": \"number\",\n                \"base_power_w\": \"\
+          float\", \"slope_w_per_unit\": \"float\"}\nSCHEMA_RESTRICTION = {\"restriction_id\"\
+          : \"str\", \"cell_id\": \"str\", \"restriction_type\": \"str\",\n      \
+          \                \"start_time\": \"str\", \"end_time\": \"str\", \"reason\"\
+          : \"str\"}\nSCHEMA_RULE = {\"rule_key\": \"str\", \"value\": \"rule_value\"\
+          , \"description\": \"str\"}\n\n\n# ============================================================\n\
+          # 4. 主函数\n# ============================================================\n\
+          \ndef main(\n    task_file: str,\n    cell_file: str,\n    traffic_file:\
+          \ str,\n    coverage_file: str,\n    transfer_file: str,\n    power_file:\
+          \ str,\n    restriction_file: str,\n    rule_file: str,\n) -> dict:\n  \
+          \  try:\n        diag = {}\n\n        task_rows = parse_table(task_file,\
+          \ EXPECTED_TASK, \"01_任务时段表\", diag)\n        cell_rows = parse_table(cell_file,\
+          \ EXPECTED_CELL, \"02_小区基础信息表\", diag)\n        traffic_rows = parse_table(traffic_file,\
+          \ EXPECTED_TRAFFIC, \"03_分时业务需求表\", diag)\n        coverage_rows = parse_table(coverage_file,\
+          \ EXPECTED_COVERAGE, \"04_覆盖保障约束表\", diag)\n        transfer_rows = parse_table(transfer_file,\
+          \ EXPECTED_TRANSFER, \"05_小区业务承接关系表\", diag)\n        power_rows = parse_table(power_file,\
+          \ EXPECTED_POWER, \"06_运行状态容量与功耗参数表\", diag)\n        restriction_rows =\
+          \ parse_table(restriction_file, EXPECTED_RESTRICTION, \"07_临时保障限制表\", diag)\n\
+          \        rule_rows = parse_table(rule_file, EXPECTED_RULE, \"08_节能策略编排规则表\"\
+          , diag)\n\n        tasks = convert_records(task_rows, SCHEMA_TASK)\n   \
+          \     cells = convert_records(cell_rows, SCHEMA_CELL)\n        traffic =\
+          \ convert_records(traffic_rows, SCHEMA_TRAFFIC)\n        coverage = convert_records(coverage_rows,\
+          \ SCHEMA_COVERAGE)\n        transfer = convert_records(transfer_rows, SCHEMA_TRANSFER)\n\
+          \        power = convert_records(power_rows, SCHEMA_POWER)\n        restrictions\
+          \ = convert_records(restriction_rows, SCHEMA_RESTRICTION)\n        rules\
+          \ = convert_records(rule_rows, SCHEMA_RULE)\n\n        # 时间规范化\n       \
+          \ for rec in tasks:\n            iso, ts = normalize_time(rec.get(\"start_time\"\
+          ))\n            rec[\"start_time\"] = iso; rec[\"start_ts\"] = ts\n    \
+          \        iso, ts = normalize_time(rec.get(\"end_time\"))\n            rec[\"\
+          end_time\"] = iso; rec[\"end_ts\"] = ts\n        for rec in restrictions:\n\
+          \            iso, ts = normalize_time(rec.get(\"start_time\"))\n       \
+          \     rec[\"start_time\"] = iso; rec[\"start_ts\"] = ts\n            iso,\
+          \ ts = normalize_time(rec.get(\"end_time\"))\n            rec[\"end_time\"\
+          ] = iso; rec[\"end_ts\"] = ts\n\n        # 排序\n        tasks.sort(key=lambda\
+          \ x: x.get(\"start_ts\") or 0)\n        cells.sort(key=lambda x: x.get(\"\
+          cell_id\") or \"\")\n        coverage.sort(key=lambda x: x.get(\"group_id\"\
+          ) or \"\")\n        transfer.sort(key=lambda x: (x.get(\"source_cell_id\"\
+          ) or \"\",\n                                      x.get(\"priority\") if\
+          \ x.get(\"priority\") is not None else 999999,\n                       \
+          \               x.get(\"target_cell_id\") or \"\"))\n        power.sort(key=lambda\
+          \ x: (x.get(\"model_id\") or \"\", x.get(\"state\") or \"\"))\n        restrictions.sort(key=lambda\
+          \ x: (x.get(\"cell_id\") or \"\", x.get(\"start_ts\") or 0))\n        rules.sort(key=lambda\
+          \ x: x.get(\"rule_key\") or \"\")\n\n        # ============================================================\n\
+          \        # slot_id 兜底（仅当表头确实没有该列时触发）\n        # ============================================================\n\
+          \        fix_info = {}\n\n        task_missing = sum(1 for t in tasks\n\
+          \                           if t.get(\"slot_id\") is None or t.get(\"slot_id\"\
+          ) == \"\")\n        if task_missing > 0:\n            for i, t in enumerate(tasks,\
+          \ start=1):\n                if t.get(\"slot_id\") is None or t.get(\"slot_id\"\
+          ) == \"\":\n                    t[\"slot_id\"] = f\"T{i:02d}\"\n       \
+          \     fix_info[\"task\"] = f\"表头无 slot_id 列，按 start_ts 升序补全 {task_missing}\
+          \ 条\"\n\n        slot_set = set(t.get(\"slot_id\") for t in tasks if t.get(\"\
+          slot_id\") is not None)\n        slot_count = len(slot_set) if slot_set\
+          \ else len(tasks)\n\n        # traffic 补全：按 cell_id 分组、组内按出现顺序对应 task 的\
+          \ slot_id 序列\n        traffic_missing = sum(1 for tr in traffic\n      \
+          \                        if tr.get(\"slot_id\") is None or tr.get(\"slot_id\"\
+          ) == \"\")\n        if traffic_missing > 0 and slot_count > 0:\n       \
+          \     ordered_slot_ids = [t.get(\"slot_id\") for t in tasks]\n         \
+          \   by_cell = {}\n            for tr in traffic:\n                by_cell.setdefault(str(tr.get(\"\
+          cell_id\")), []).append(tr)\n            fixed = 0\n            warn = []\n\
+          \            for cid, rows in by_cell.items():\n                if len(rows)\
+          \ == slot_count:\n                    for i, tr in enumerate(rows):\n  \
+          \                      if tr.get(\"slot_id\") is None or tr.get(\"slot_id\"\
+          ) == \"\":\n                            tr[\"slot_id\"] = ordered_slot_ids[i]\n\
+          \                            fixed += 1\n                else:\n       \
+          \             warn.append(f\"{cid}({len(rows)}行≠{slot_count})\")\n     \
+          \               for i, tr in enumerate(rows):\n                        if\
+          \ tr.get(\"slot_id\") is None or tr.get(\"slot_id\") == \"\":\n        \
+          \                    tr[\"slot_id\"] = ordered_slot_ids[i % slot_count]\n\
+          \                            fixed += 1\n            fix_info[\"traffic\"\
+          ] = (\n                f\"表头无 slot_id 列，按 cell_id 分组按出现顺序补全 {fixed} 条\"\n\
+          \                + (f\"；⚠行数不匹配={warn}\" if warn else \"\")\n           \
+          \ )\n\n        traffic.sort(key=lambda x: (\n            x.get(\"slot_id\"\
+          ) or \"\",\n            x.get(\"cell_id\") or \"\"\n        ))\n\n     \
+          \   # ============================================================\n   \
+          \     # 索引\n        # ============================================================\n\
+          \        tasks_by_case_id = {}\n        task_by_case_id = {}\n        task_by_slot_id\
+          \ = {}\n        for t in tasks:\n            cid = t.get(\"case_id\")\n\
+          \            sid = t.get(\"slot_id\")\n            if cid is not None:\n\
+          \                tasks_by_case_id.setdefault(str(cid), []).append(t)\n \
+          \               if str(cid) not in task_by_case_id:\n                  \
+          \  task_by_case_id[str(cid)] = t\n            if sid is not None:\n    \
+          \            task_by_slot_id[str(sid)] = t\n\n        cell_by_cell_id =\
+          \ {}\n        cell_by_coverage_group = {}\n        cell_by_role = {}\n \
+          \       anchor_cell_ids = []\n        booster_cell_ids = []\n        for\
+          \ c in cells:\n            cid = c.get(\"cell_id\")\n            if cid\
+          \ is not None:\n                cell_by_cell_id[str(cid)] = c\n        \
+          \    cg = c.get(\"coverage_group\")\n            if cg is not None:\n  \
+          \              cell_by_coverage_group.setdefault(str(cg), []).append(c)\n\
+          \            role = c.get(\"role\")\n            if role is not None:\n\
+          \                cell_by_role.setdefault(str(role), []).append(c)\n    \
+          \            if str(role).upper() == \"ANCHOR\" and cid is not None:\n \
+          \                   anchor_cell_ids.append(str(cid))\n                if\
+          \ str(role).upper() == \"BOOSTER\" and cid is not None:\n              \
+          \      booster_cell_ids.append(str(cid))\n\n        for k in cell_by_coverage_group:\n\
+          \            cell_by_coverage_group[k].sort(key=lambda x: x.get(\"cell_id\"\
+          ) or \"\")\n        for k in cell_by_role:\n            cell_by_role[k].sort(key=lambda\
+          \ x: x.get(\"cell_id\") or \"\")\n        anchor_cell_ids.sort()\n     \
+          \   booster_cell_ids.sort()\n\n        traffic_by_slot_cell = {}\n     \
+          \   traffic_by_cell = {}\n        for t in traffic:\n            sid = t.get(\"\
+          slot_id\"); cid = t.get(\"cell_id\")\n            if sid is not None and\
+          \ cid is not None:\n                traffic_by_slot_cell[f\"{sid}|{cid}\"\
+          ] = t\n            if cid is not None:\n                traffic_by_cell.setdefault(str(cid),\
+          \ []).append(t)\n        for k in traffic_by_cell:\n            traffic_by_cell[k].sort(key=lambda\
+          \ x: x.get(\"slot_id\") or \"\")\n\n        coverage_by_group = {}\n   \
+          \     for c in coverage:\n            gid = c.get(\"group_id\")\n      \
+          \      if gid is not None:\n                coverage_by_group[str(gid)]\
+          \ = c\n\n        transfer_by_source = {}\n        for tr in transfer:\n\
+          \            src = tr.get(\"source_cell_id\")\n            if src is not\
+          \ None:\n                transfer_by_source.setdefault(str(src), []).append(tr)\n\
+          \        for src in transfer_by_source:\n            transfer_by_source[src].sort(key=lambda\
+          \ x: (\n                x.get(\"priority\") if x.get(\"priority\") is not\
+          \ None else 999999,\n                x.get(\"target_cell_id\") or \"\"\n\
+          \            ))\n\n        power_by_model_state = {}\n        for p in power:\n\
+          \            mid = p.get(\"model_id\"); st = p.get(\"state\")\n        \
+          \    if mid is not None and st is not None:\n                power_by_model_state[f\"\
+          {mid}|{st}\"] = p\n\n        restriction_by_cell = {}\n        for r in\
+          \ restrictions:\n            cid = r.get(\"cell_id\")\n            if cid\
+          \ is not None:\n                restriction_by_cell.setdefault(str(cid),\
+          \ []).append(r)\n        for cid in restriction_by_cell:\n            restriction_by_cell[cid].sort(key=lambda\
+          \ x: x.get(\"start_ts\") or 0)\n\n        rule_by_key = {}\n        for\
+          \ r in rules:\n            key = r.get(\"rule_key\")\n            if key\
+          \ is not None:\n                rule_by_key[str(key)] = r\n\n        traffic_total\
+          \ = sum(t[\"demand_units\"] for t in traffic\n                         \
+          \   if isinstance(t.get(\"demand_units\"), (int, float)))\n        transfer_total\
+          \ = sum(t[\"max_transfer_units\"] for t in transfer\n                  \
+          \           if isinstance(t.get(\"max_transfer_units\"), (int, float)))\n\
+          \n        meta = {\n            \"counts\": {\n                \"task\"\
+          : len(tasks), \"cell\": len(cells), \"traffic\": len(traffic),\n       \
+          \         \"coverage\": len(coverage), \"transfer\": len(transfer),\n  \
+          \              \"power\": len(power), \"restriction\": len(restrictions),\
+          \ \"rule\": len(rules),\n            },\n            \"slot_count\": slot_count,\n\
+          \            \"cell_count\": len(cells),\n            \"traffic_total_demand\"\
+          : traffic_total,\n            \"transfer_total_max_units\": transfer_total,\n\
+          \            \"anchor_cell_count\": len(anchor_cell_ids),\n            \"\
+          booster_cell_count\": len(booster_cell_ids),\n            \"slot_id_fix\"\
+          : fix_info,\n        }\n\n        data = {\n            \"normalized\":\
+          \ {\n                \"task\": tasks, \"cell\": cells, \"traffic\": traffic,\n\
+          \                \"coverage\": coverage, \"transfer\": transfer, \"power\"\
+          : power,\n                \"restriction\": restrictions, \"rule\": rules,\n\
+          \            },\n            \"index\": {\n                \"task_by_case_id\"\
+          : task_by_case_id,\n                \"tasks_by_case_id\": tasks_by_case_id,\n\
+          \                \"task_by_slot_id\": task_by_slot_id,\n               \
+          \ \"cell_by_cell_id\": cell_by_cell_id,\n                \"cell_by_coverage_group\"\
+          : cell_by_coverage_group,\n                \"cell_by_role\": cell_by_role,\n\
+          \                \"anchor_cell_ids\": anchor_cell_ids,\n               \
+          \ \"booster_cell_ids\": booster_cell_ids,\n                \"traffic_by_slot_cell\"\
+          : traffic_by_slot_cell,\n                \"traffic_by_cell\": traffic_by_cell,\n\
+          \                \"coverage_by_group\": coverage_by_group,\n           \
+          \     \"transfer_by_source\": transfer_by_source,\n                \"power_by_model_state\"\
+          : power_by_model_state,\n                \"restriction_by_cell\": restriction_by_cell,\n\
+          \                \"rule_by_key\": rule_by_key,\n            },\n       \
+          \     \"meta\": meta,\n        }\n\n        parse_message = (\n        \
+          \    f\"解析成功：task={len(tasks)}, cell={len(cells)}, traffic={len(traffic)},\
+          \ \"\n            f\"coverage={len(coverage)}, transfer={len(transfer)},\
+          \ power={len(power)}, \"\n            f\"restriction={len(restrictions)},\
+          \ rule={len(rules)}, slot_count={slot_count}\\n\"\n            f\"表头诊断：{json.dumps(diag,\
+          \ ensure_ascii=False)}\\n\"\n            f\"slot_id修复：{json.dumps(fix_info,\
+          \ ensure_ascii=False)}\"\n        )\n\n        return {\n            \"\
+          data_json\": json.dumps(data, ensure_ascii=False),\n            \"parse\"\
+          : True,\n            \"parse_message\": parse_message,\n        }\n\n  \
+          \  except Exception as e:\n        return {\n            \"data_json\":\
+          \ json.dumps({}, ensure_ascii=False),\n            \"parse\": False,\n \
+          \           \"parse_message\": f\"解析失败：{type(e).__name__}: {str(e)}\",\n\
+          \        }"
+        code_language: python3
+        outputs:
+          data_json:
+            children: null
+            type: string
+          parse:
+            children: null
+            type: boolean
+          parse_message:
+            children: null
+            type: string
+        selected: false
+        title: 数据整合
+        type: code
+        variables:
+        - value_selector:
+          - '1793621422684'
+          - text
+          value_type: string
+          variable: task_file
+        - value_selector:
+          - '1793621446258'
+          - text
+          value_type: string
+          variable: cell_file
+        - value_selector:
+          - '1793621454143'
+          - text
+          value_type: string
+          variable: traffic_file
+        - value_selector:
+          - '1793621456002'
+          - text
+          value_type: string
+          variable: coverage_file
+        - value_selector:
+          - '1793621457809'
+          - text
+          value_type: string
+          variable: transfer_file
+        - value_selector:
+          - '1793621459418'
+          - text
+          value_type: string
+          variable: power_file
+        - value_selector:
+          - '1793621461662'
+          - text
+          value_type: string
+          variable: restriction_file
+        - value_selector:
+          - '1793621463247'
+          - text
+          value_type: string
+          variable: rule_file
+      height: 52
+      id: '1793621663010'
+      position:
+        x: 778.4473740083869
+        y: 536.8677871583126
+      positionAbsolute:
+        x: 778.4473740083869
+        y: 536.8677871583126
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: 1bda7856-810a-4a70-a9e2-42657c658971
+            value: true
+            varType: boolean
+            variable_selector:
+            - '1793621663010'
+            - parse
+          id: 'true'
+          logical_operator: and
+        selected: false
+        title: 条件分支
+        type: if-else
+      height: 124
+      id: '1793634116612'
+      position:
+        x: 1226.8073023454454
+        y: 526
+      positionAbsolute:
+        x: 1226.8073023454454
+        y: 526
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "import json\n\n\n# ============================================================\n\
+          # 初始化代码节点\n# 输入: data_json（上一节点解析结果）\n# 输出: loop_index / slot_count / state_json\
+          \ / result_rows_json / slot_summaries_text\n# ============================================================\n\
+          \ndef main(data_json: str) -> dict:\n    try:\n        if not data_json:\n\
+          \            raise ValueError(\"data_json 为空\")\n\n        data = json.loads(data_json)\n\
+          \        normalized = data.get(\"normalized\", {})\n        tasks = normalized.get(\"\
+          task\", [])\n        cells = normalized.get(\"cell\", [])\n\n        if\
+          \ not tasks:\n            raise ValueError(\"normalized.task 为空，无法计算 slot_count\"\
+          )\n        if not cells:\n            raise ValueError(\"normalized.cell\
+          \ 为空，无法初始化小区状态\")\n\n        # ---------- 1. 动态计算 slot_count（不写死） ----------\n\
+          \        # 优先用 slot_id 去重；slot_id 缺失时回退 start_ts；再兜底用行号\n        slot_keys\
+          \ = set()\n        for idx, t in enumerate(tasks):\n            sid = t.get(\"\
+          slot_id\")\n            sts = t.get(\"start_ts\")\n            if sid is\
+          \ not None:\n                slot_keys.add((\"sid\", str(sid)))\n      \
+          \      elif sts is not None:\n                slot_keys.add((\"ts\", int(sts)))\n\
+          \            else:\n                slot_keys.add((\"idx\", idx))\n    \
+          \    slot_count = len(slot_keys)\n\n        # ---------- 2. 初始化每个小区的状态 ----------\n\
+          \        state = {}\n        for c in cells:\n            cid = c.get(\"\
+          cell_id\")\n            if cid is None or str(cid).strip() == \"\":\n  \
+          \              continue\n\n            init_state = c.get(\"initial_state\"\
+          )\n            if not init_state:\n                init_state = \"KEEP_ACTIVE\"\
+          \n            init_state = str(init_state).strip().upper()\n\n         \
+          \   init_deep = c.get(\"initial_deep_slots\")\n            try:\n      \
+          \          init_deep = int(init_deep) if init_deep is not None else 0\n\
+          \            except Exception:\n                init_deep = 0\n        \
+          \    if init_deep < 0:\n                init_deep = 0\n\n            state[str(cid)]\
+          \ = {\n                \"cell_id\": str(cid),\n                \"state\"\
+          : init_state,\n                \"last_state\": init_state,\n           \
+          \     \"consecutive_deep_slots\": init_deep,\n            }\n\n        #\
+          \ ---------- 3. 初始化循环与结果集合 ----------\n        loop_index = 0\n        result_rows\
+          \ = []          # 结果集合，初始为空\n        slot_summaries_text = \"\"  # 摘要集合（文本），初始为空\n\
+          \n        return {\n            \"loop_index\": loop_index,\n          \
+          \  \"slot_count\": slot_count,\n            \"state_json\": json.dumps(state,\
+          \ ensure_ascii=False),\n            \"result_rows_json\": json.dumps(result_rows,\
+          \ ensure_ascii=False),\n            \"slot_summaries_text\": slot_summaries_text,\n\
+          \        }\n\n    except Exception as e:\n        return {\n           \
+          \ \"loop_index\": 0,\n            \"slot_count\": 0,\n            \"state_json\"\
+          : json.dumps({}, ensure_ascii=False),\n            \"result_rows_json\"\
+          : json.dumps([], ensure_ascii=False),\n            \"slot_summaries_text\"\
+          : f\"初始化失败：{type(e).__name__}: {str(e)}\",\n        }"
+        code_language: python3
+        outputs:
+          loop_index:
+            children: null
+            type: number
+          result_rows_json:
+            children: null
+            type: string
+          slot_count:
+            children: null
+            type: number
+          slot_summaries_text:
+            children: null
+            type: string
+          state_json:
+            children: null
+            type: string
+        selected: false
+        title: 计算状态初始化
+        type: code
+        variables:
+        - value_selector:
+          - '1793621663010'
+          - data_json
+          value_type: string
+          variable: data_json
+      height: 52
+      id: '1793634133152'
+      position:
+        x: 1753.2067850660537
+        y: 221.38068964976617
+      positionAbsolute:
+        x: 1753.2067850660537
+        y: 221.38068964976617
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        selected: false
+        template: '{{ parse_message }}'
+        title: 模板转换
+        type: template-transform
+        variables:
+        - value_selector:
+          - '1793621663010'
+          - parse_message
+          value_type: string
+          variable: parse_message
+      height: 52
+      id: '1793634139626'
+      position:
+        x: 2001.440548069791
+        y: 619.9507396936752
+      positionAbsolute:
+        x: 2001.440548069791
+        y: 619.9507396936752
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        outputs:
+        - value_selector:
+          - '1793634139626'
+          - output
+          value_type: string
+          variable: output
+        selected: false
+        title: 输出 2
+        type: end
+      height: 88
+      id: '1793634153808'
+      position:
+        x: 2422.887841537865
+        y: 628.5016237715629
+      positionAbsolute:
+        x: 2422.887841537865
+        y: 628.5016237715629
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        outputs:
+        - value_selector:
+          - '1793799312246'
+          - output
+          value_type: string
+          variable: output
+        - value_selector:
+          - '1793800686355'
+          - files
+          value_type: array[file]
+          variable: files
+        selected: false
+        title: 输出 3
+        type: end
+      height: 114
+      id: '1793634482901'
+      position:
+        x: 7291.5130113338555
+        y: 436.9251096474577
+      positionAbsolute:
+        x: 7291.5130113338555
+        y: 436.9251096474577
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        break_conditions:
+        - comparison_operator: ≥
+          id: d24c4d09-28ad-437a-bb08-fa1b9bf65c2f
+          numberVarType: variable
+          value: '{{#1793634133152.slot_count#}}'
+          varType: number
+          variable_selector:
+          - '1793687205700'
+          - loop_index
+        error_handle_mode: terminated
+        height: 250
+        logical_operator: and
+        loop_count: 10
+        loop_variables:
+        - id: d6efa8e5-6ee4-40d9-9ea5-243268edcd43
+          label: loop_index
+          value:
+          - '1793634133152'
+          - loop_index
+          value_type: variable
+          var_type: number
+        - id: af2d5ac7-02fc-4c60-a24f-441810faeaf2
+          label: state_json
+          value:
+          - '1793634133152'
+          - state_json
+          value_type: variable
+          var_type: string
+        - id: 719bf402-87fb-40a4-9e2b-fdbea8f63b89
+          label: slot_count
+          value:
+          - '1793634133152'
+          - slot_count
+          value_type: variable
+          var_type: number
+        - id: 495fc5b2-bcb5-4a5e-b313-3e3fde279925
+          label: result_rows_json
+          value:
+          - '1793634133152'
+          - result_rows_json
+          value_type: variable
+          var_type: string
+        - id: 7ee57f8c-fdb1-403c-9ca0-1cbc6d750216
+          label: slot_summaries_text
+          value:
+          - '1793634133152'
+          - slot_summaries_text
+          value_type: variable
+          var_type: string
+        selected: false
+        start_node_id: 1793687205700start
+        title: 循环
+        type: loop
+        width: 688
+      height: 250
+      id: '1793687205700'
+      position:
+        x: 2134.6550192412615
+        y: 209.7447320089659
+      positionAbsolute:
+        x: 2134.6550192412615
+        y: 209.7447320089659
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 688
+      zIndex: 1
+    - data:
+        desc: ''
+        isInLoop: true
+        selected: false
+        title: ''
+        type: loop-start
+      draggable: false
+      height: 48
+      id: 1793687205700start
+      parentId: '1793687205700'
+      position:
+        x: 24
+        y: 68
+      positionAbsolute:
+        x: 2158.6550192412615
+        y: 277.7447320089659
+      selectable: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-loop-start
+      width: 44
+      zIndex: 1002
+    - data:
+        code: "import json\nfrom datetime import datetime, timezone, timedelta\n\n\
+          \n# ============================================================\n# 策略计算节点（循环体内，每次处理一个时段）\n\
+          # 输入: data_json, loop_index, state_json, result_rows_json, slot_summaries_text\n\
+          # 输出: next_loop_index, updated_state_json, updated_result_rows_json,\n#\
+          \       current_slot_summary, updated_slot_summaries_text\n# ============================================================\n\
+          \n\ndef _to_float(v, default=0.0):\n    try:\n        if v is None or v\
+          \ == \"\":\n            return default\n        return float(v)\n    except\
+          \ Exception:\n        return default\n\n\ndef _to_int(v, default=0):\n \
+          \   try:\n        if v is None or v == \"\":\n            return default\n\
+          \        return int(float(v))\n    except Exception:\n        return default\n\
+          \n\ndef _get_rule(rule_by_key, key, default=None):\n    r = rule_by_key.get(key)\n\
+          \    if r is None:\n        return default\n    return r.get(\"value\",\
+          \ default)\n\n\ndef _get_power(power_by_model_state, model_id, state):\n\
+          \    key = f\"{model_id}|{state}\"\n    p = power_by_model_state.get(key)\n\
+          \    if p is None:\n        return {\"capacity_units\": 0.0, \"base_power_w\"\
+          : 0.0, \"slope_w_per_unit\": 0.0}\n    return p\n\n\ndef _is_force_active_overlap(restrictions,\
+          \ slot_start_ts, slot_end_ts):\n    \"\"\"临时保障限制与当前时段是否重叠。\"\"\"\n    if\
+          \ slot_start_ts is None or slot_end_ts is None:\n        return False\n\
+          \    for r in restrictions:\n        if str(r.get(\"restriction_type\",\
+          \ \"\")).upper() != \"FORCE_ACTIVE\":\n            continue\n        rs\
+          \ = r.get(\"start_ts\")\n        re_ = r.get(\"end_ts\")\n        if rs\
+          \ is None or re_ is None:\n            continue\n        if rs < slot_end_ts\
+          \ and re_ > slot_start_ts:\n            return True\n    return False\n\n\
+          \ndef _can_receive(target_cid, cell_by_cell_id, processed, new_state):\n\
+          \    \"\"\"\n    承接方是否可接收业务：\n      - ANCHOR：始终可\n      - 未处理 BOOSTER：可\n\
+          \      - 已处理 KEEP_ACTIVE BOOSTER：可\n      - 已处理 LIGHT_SLEEP/DEEP_SLEEP：不可\n\
+          \    \"\"\"\n    t_cell = cell_by_cell_id.get(target_cid, {})\n    role\
+          \ = str(t_cell.get(\"role\", \"\")).upper()\n    if role == \"ANCHOR\":\n\
+          \        return True\n    if target_cid not in processed:\n        return\
+          \ True\n    return new_state.get(target_cid) == \"KEEP_ACTIVE\"\n\n\ndef\
+          \ main(\n    data_json: str,\n    loop_index: int,\n    state_json: str,\n\
+          \    result_rows_json: str,\n    slot_summaries_text: str,\n) -> dict:\n\
+          \    try:\n        data = json.loads(data_json) if data_json else {}\n \
+          \       state = json.loads(state_json) if state_json else {}\n        result_rows\
+          \ = json.loads(result_rows_json) if result_rows_json else []\n        summaries\
+          \ = slot_summaries_text or \"\"\n\n        normalized = data.get(\"normalized\"\
+          , {})\n        index = data.get(\"index\", {})\n\n        tasks = normalized.get(\"\
+          task\", [])\n        cells = normalized.get(\"cell\", [])\n        traffic\
+          \ = normalized.get(\"traffic\", [])\n\n        if not tasks:\n         \
+          \   raise ValueError(\"normalized.task 为空\")\n\n        loop_index = _to_int(loop_index,\
+          \ 0)\n        total_slots = len(tasks)\n\n        # ---------- 循环已结束 ----------\n\
+          \        if loop_index >= total_slots:\n            return {\n         \
+          \       \"next_loop_index\": loop_index,\n                \"updated_state_json\"\
+          : state_json,\n                \"updated_result_rows_json\": result_rows_json,\n\
+          \                \"current_slot_summary\": \"所有时段已处理完成\",\n            \
+          \    \"updated_slot_summaries_text\": summaries,\n            }\n\n    \
+          \    # ---------- 取当前时段 ----------\n        task = tasks[loop_index]\n \
+          \       slot_id = task.get(\"slot_id\")\n        start_time = task.get(\"\
+          start_time\")\n        end_time = task.get(\"end_time\")\n        start_ts\
+          \ = task.get(\"start_ts\")\n        end_ts = task.get(\"end_ts\")\n    \
+          \    duration_hours = _to_float(task.get(\"duration_hours\"), 0.0)\n\n \
+          \       # slot_id 为 null 时，从 traffic 提取唯一 slot_id 排序后按 loop_index 取\n  \
+          \      if slot_id is None:\n            all_slots = []\n            seen\
+          \ = set()\n            for tr in traffic:\n                sid = tr.get(\"\
+          slot_id\")\n                if sid is not None and sid not in seen:\n  \
+          \                  seen.add(sid)\n                    all_slots.append(sid)\n\
+          \            try:\n                all_slots.sort(key=lambda x: float(x))\n\
+          \            except Exception:\n                all_slots.sort(key=lambda\
+          \ x: str(x))\n            if loop_index < len(all_slots):\n            \
+          \    slot_id = all_slots[loop_index]\n\n        # ---------- 规则 ----------\n\
+          \        rule_by_key = index.get(\"rule_by_key\", {})\n        deep_load_ratio_max\
+          \ = _to_float(_get_rule(rule_by_key, \"deep_load_ratio_max\", 0.2), 0.2)\n\
+          \        light_load_ratio_max = _to_float(_get_rule(rule_by_key, \"light_load_ratio_max\"\
+          , 0.55), 0.55)\n        max_util = _to_float(_get_rule(rule_by_key, \"max_utilization_ratio\"\
+          , 0.85), 0.85)\n        max_consec_deep = _to_int(_get_rule(rule_by_key,\
+          \ \"max_consecutive_deep_slots\", 2), 2)\n        switch_wh = _to_float(_get_rule(rule_by_key,\
+          \ \"switch_energy_wh\", 8), 8.0)\n        min_saving = _to_float(_get_rule(rule_by_key,\
+          \ \"minimum_incremental_saving_wh\", 5), 5.0)\n\n        # ---------- 索引\
+          \ ----------\n        cell_by_cell_id = index.get(\"cell_by_cell_id\", {})\n\
+          \        traffic_by_slot_cell = index.get(\"traffic_by_slot_cell\", {})\n\
+          \        transfer_by_source = index.get(\"transfer_by_source\", {})\n  \
+          \      power_by_model_state = index.get(\"power_by_model_state\", {})\n\
+          \        restriction_by_cell = index.get(\"restriction_by_cell\", {})\n\
+          \        coverage_by_group = index.get(\"coverage_by_group\", {})\n\n  \
+          \      cell_ids = sorted([str(c.get(\"cell_id\")) for c in cells if c.get(\"\
+          cell_id\")])\n\n        # ---------- 原始业务量 / 当前业务量 ----------\n        original\
+          \ = {}\n        for cid in cell_ids:\n            key = f\"{slot_id}|{cid}\"\
+          \ if slot_id is not None else \"\"\n            tr = traffic_by_slot_cell.get(key)\n\
+          \            original[cid] = _to_float(tr.get(\"demand_units\") if tr else\
+          \ 0, 0.0)\n\n        current = dict(original)\n        transfer_in = {cid:\
+          \ 0.0 for cid in cell_ids}\n        transfer_out = {cid: 0.0 for cid in\
+          \ cell_ids}\n\n        # ---------- 前一状态 & 进入时连续深休眠次数 ----------\n     \
+          \   prev_state = {}\n        consec_in = {}\n        for cid in cell_ids:\n\
+          \            st = state.get(cid, {})\n            prev_state[cid] = str(st.get(\"\
+          state\") or \"KEEP_ACTIVE\").upper()\n            consec_in[cid] = _to_int(st.get(\"\
+          consecutive_deep_slots\"), 0)\n\n        # ---------- 覆盖组结构 ----------\n\
+          \        group_of = {}\n        group_anchors = {}\n        group_boosters\
+          \ = {}\n        for cid in cell_ids:\n            c = cell_by_cell_id.get(cid,\
+          \ {})\n            g = str(c.get(\"coverage_group\") or \"\")\n        \
+          \    group_of[cid] = g\n            role = str(c.get(\"role\", \"\")).upper()\n\
+          \            if role == \"ANCHOR\":\n                group_anchors.setdefault(g,\
+          \ []).append(cid)\n            else:\n                group_boosters.setdefault(g,\
+          \ []).append(cid)\n        for g in group_boosters:\n            group_boosters[g].sort()\n\
+          \n        new_state = {}\n        reason = {}\n        processed = set()\n\
+          \n        # ============ 逐小区（cell_id 升序）处理 ============\n        for cid\
+          \ in cell_ids:\n            c = cell_by_cell_id.get(cid, {})\n         \
+          \   role = str(c.get(\"role\", \"\")).upper()\n\n            # --- 覆盖锚点：固定保持\
+          \ ---\n            if role == \"ANCHOR\":\n                new_state[cid]\
+          \ = \"KEEP_ACTIVE\"\n                reason[cid] = \"COVERAGE_ANCHOR\"\n\
+          \                processed.add(cid)\n                continue\n\n      \
+          \      # --- 临时保障限制 ---\n            if _is_force_active_overlap(\n    \
+          \            restriction_by_cell.get(cid, []), start_ts, end_ts\n      \
+          \      ):\n                new_state[cid] = \"KEEP_ACTIVE\"\n          \
+          \      reason[cid] = \"TEMP_GUARANTEE\"\n                processed.add(cid)\n\
+          \                continue\n\n            # --- 读取功耗参数 ---\n            model_id\
+          \ = c.get(\"model_id\")\n            keep_p = _get_power(power_by_model_state,\
+          \ model_id, \"KEEP_ACTIVE\")\n            light_p = _get_power(power_by_model_state,\
+          \ model_id, \"LIGHT_SLEEP\")\n            deep_p = _get_power(power_by_model_state,\
+          \ model_id, \"DEEP_SLEEP\")\n\n            keep_cap = _to_float(keep_p.get(\"\
+          capacity_units\"), 0.0)\n            keep_base = _to_float(keep_p.get(\"\
+          base_power_w\"), 0.0)\n            keep_slope = _to_float(keep_p.get(\"\
+          slope_w_per_unit\"), 0.0)\n\n            light_cap = _to_float(light_p.get(\"\
+          capacity_units\"), 0.0)\n            light_base = _to_float(light_p.get(\"\
+          base_power_w\"), 0.0)\n            light_slope = _to_float(light_p.get(\"\
+          slope_w_per_unit\"), 0.0)\n\n            deep_base = _to_float(deep_p.get(\"\
+          base_power_w\"), 0.0)\n\n            orig = original[cid]\n            cur\
+          \ = current[cid]\n            prev = prev_state[cid]\n            consec\
+          \ = consec_in[cid]\n\n            load_ratio = (orig / keep_cap) if keep_cap\
+          \ > 0 else 999.0\n\n            # ---------- 尝试 DEEP_SLEEP ----------\n\
+          \            deep_ok = True\n            deep_reason = None\n\n        \
+          \    # 1. 负荷率\n            if load_ratio > deep_load_ratio_max:\n      \
+          \          deep_ok = False\n                deep_reason = \"LOAD_ABOVE_DEEP\"\
+          \n\n            # 2. 连续深休眠\n            if deep_ok and consec >= max_consec_deep:\n\
+          \                deep_ok = False\n                deep_reason = \"DEEP_DURATION_LIMIT\"\
+          \n\n            # 3. 覆盖保障（严格下界：本 cid 休眠 + 后续 booster 保守假设休眠）\n         \
+          \   if deep_ok:\n                g = group_of[cid]\n                min_active\
+          \ = 0\n                cov = coverage_by_group.get(g)\n                if\
+          \ cov:\n                    min_active = _to_int(cov.get(\"min_active_cells\"\
+          ), 0)\n\n                anchors_cnt = len(group_anchors.get(g, []))\n \
+          \               boosters_alive = 0\n                for pc in processed:\n\
+          \                    if pc == cid:\n                        continue\n \
+          \                   if pc in group_boosters.get(g, []) and new_state.get(pc)\
+          \ != \"DEEP_SLEEP\":\n                        boosters_alive += 1\n\n  \
+          \              lower_bound = anchors_cnt + boosters_alive\n            \
+          \    if lower_bound < min_active:\n                    deep_ok = False\n\
+          \                    deep_reason = \"COVERAGE_PROTECT\"\n\n            #\
+          \ 4. 承接关系（按 priority 升序，找第一条能成功承接的）\n            target_cid = None\n   \
+          \         if deep_ok:\n                rels = transfer_by_source.get(cid,\
+          \ [])\n                if not rels:\n                    deep_ok = False\n\
+          \                    deep_reason = \"NO_TRANSFER_PATH\"\n              \
+          \  else:\n                    fail_reason = None\n                    for\
+          \ rel in rels:\n                        t = str(rel.get(\"target_cell_id\"\
+          ) or \"\")\n                        if not t:\n                        \
+          \    continue\n                        max_tr = _to_float(rel.get(\"max_transfer_units\"\
+          ), 0.0)\n\n                        # 转移上限\n                        if orig\
+          \ > max_tr:\n                            if fail_reason is None:\n     \
+          \                           fail_reason = \"TRANSFER_LIMIT\"\n         \
+          \                   continue\n\n                        # 承接方可接收\n     \
+          \                   if not _can_receive(t, cell_by_cell_id, processed, new_state):\n\
+          \                            continue\n\n                        # 承接方容量（按\
+          \ KEEP_ACTIVE 容量判定）\n                        t_cell = cell_by_cell_id.get(t,\
+          \ {})\n                        t_model = t_cell.get(\"model_id\")\n    \
+          \                    t_keep_p = _get_power(power_by_model_state, t_model,\
+          \ \"KEEP_ACTIVE\")\n                        t_keep_cap = _to_float(t_keep_p.get(\"\
+          capacity_units\"), 0.0)\n                        t_final = current.get(t,\
+          \ 0.0) + orig\n\n                        if t_keep_cap <= 0 or t_final >\
+          \ t_keep_cap * max_util:\n                            fail_reason = \"RECEIVER_CAPACITY\"\
+          \n                            continue\n\n                        # 增量节能量\n\
+          \                        base_energy_src = (keep_base + keep_slope * orig)\
+          \ * duration_hours\n                        sw = switch_wh if prev != \"\
+          DEEP_SLEEP\" else 0.0\n                        deep_energy_src = deep_base\
+          \ * duration_hours\n                        t_keep_slope = _to_float(t_keep_p.get(\"\
+          slope_w_per_unit\"), 0.0)\n                        recv_inc = t_keep_slope\
+          \ * orig * duration_hours\n                        inc_save = base_energy_src\
+          \ - (deep_energy_src + sw + recv_inc)\n\n                        if inc_save\
+          \ <= min_saving:\n                            fail_reason = \"NO_NET_SAVING\"\
+          \n                            continue\n\n                        target_cid\
+          \ = t\n                        break\n\n                    if target_cid\
+          \ is None:\n                        deep_ok = False\n                  \
+          \      deep_reason = fail_reason or \"NO_TRANSFER_PATH\"\n\n           \
+          \ # DEEP_SLEEP 成功\n            if deep_ok:\n                new_state[cid]\
+          \ = \"DEEP_SLEEP\"\n                reason[cid] = \"DEEP_SLEEP\"\n     \
+          \           transfer_out[cid] += orig\n                current[cid] = 0.0\n\
+          \                transfer_in[target_cid] += orig\n                current[target_cid]\
+          \ = current.get(target_cid, 0.0) + orig\n                processed.add(cid)\n\
+          \                continue\n\n            # ---------- 尝试 LIGHT_SLEEP ----------\n\
+          \            light_ok = True\n\n            # 1. 负荷率\n            if load_ratio\
+          \ > light_load_ratio_max:\n                light_ok = False\n\n        \
+          \    # 2. 轻载容量（用实际承载 cur，防止被转入后超容）\n            if light_ok and (light_cap\
+          \ <= 0 or cur > light_cap * max_util):\n                light_ok = False\n\
+          \n            # 3. 增量节能量\n            if light_ok:\n                base_energy_src\
+          \ = (keep_base + keep_slope * orig) * duration_hours\n                light_energy\
+          \ = (light_base + light_slope * cur) * duration_hours\n                sw\
+          \ = switch_wh if prev != \"LIGHT_SLEEP\" else 0.0\n                inc_save\
+          \ = base_energy_src - light_energy - sw\n                if inc_save <=\
+          \ min_saving:\n                    light_ok = False\n\n            if light_ok:\n\
+          \                new_state[cid] = \"LIGHT_SLEEP\"\n                # 原因沿用深度休眠未通过的原因\n\
+          \                reason[cid] = deep_reason or \"LIGHT_SLEEP\"\n        \
+          \    else:\n                new_state[cid] = \"KEEP_ACTIVE\"\n         \
+          \       reason[cid] = \"LIGHT_NOT_FEASIBLE\"\n\n            processed.add(cid)\n\
+          \n        # ============ 计算各小区最终指标 ============\n        new_rows = []\n\
+          \        for cid in cell_ids:\n            c = cell_by_cell_id.get(cid,\
+          \ {})\n            model_id = c.get(\"model_id\")\n            st = new_state.get(cid,\
+          \ \"KEEP_ACTIVE\")\n            prev = prev_state.get(cid, \"KEEP_ACTIVE\"\
+          )\n\n            keep_p = _get_power(power_by_model_state, model_id, \"\
+          KEEP_ACTIVE\")\n            cur_p = _get_power(power_by_model_state, model_id,\
+          \ st)\n\n            keep_cap = _to_float(keep_p.get(\"capacity_units\"\
+          ), 0.0)\n            keep_base = _to_float(keep_p.get(\"base_power_w\"),\
+          \ 0.0)\n            keep_slope = _to_float(keep_p.get(\"slope_w_per_unit\"\
+          ), 0.0)\n\n            cur_cap = _to_float(cur_p.get(\"capacity_units\"\
+          ), 0.0)\n            cur_base = _to_float(cur_p.get(\"base_power_w\"), 0.0)\n\
+          \            cur_slope = _to_float(cur_p.get(\"slope_w_per_unit\"), 0.0)\n\
+          \n            orig = original.get(cid, 0.0)\n            t_in = transfer_in.get(cid,\
+          \ 0.0)\n            t_out = transfer_out.get(cid, 0.0)\n            final_t\
+          \ = orig + t_in - t_out\n            if final_t < 0:\n                final_t\
+          \ = 0.0\n\n            load_ratio = (orig / keep_cap) if keep_cap > 0 else\
+          \ 0.0\n            util = (final_t / cur_cap) if cur_cap > 0 else 0.0\n\n\
+          \            sw = switch_wh if prev != st else 0.0\n            base_e =\
+          \ (keep_base + keep_slope * orig) * duration_hours\n            strat_e\
+          \ = (cur_base + cur_slope * final_t) * duration_hours + sw\n           \
+          \ save_e = base_e - strat_e\n\n            consec_out = (consec_in.get(cid,\
+          \ 0) + 1) if st == \"DEEP_SLEEP\" else 0\n\n            state[cid] = {\n\
+          \                \"cell_id\": cid,\n                \"state\": st,\n   \
+          \             \"last_state\": st,\n                \"consecutive_deep_slots\"\
+          : consec_out,\n            }\n\n            new_rows.append({\n        \
+          \        \"slot_id\": slot_id,\n                \"start_time\": start_time,\n\
+          \                \"end_time\": end_time,\n                \"duration_hours\"\
+          : duration_hours,\n                \"cell_id\": cid,\n                \"\
+          cell_name\": c.get(\"cell_name\"),\n                \"site_id\": c.get(\"\
+          site_id\"),\n                \"scene\": c.get(\"scene\"),\n            \
+          \    \"coverage_group\": c.get(\"coverage_group\"),\n                \"\
+          role\": c.get(\"role\"),\n                \"model_id\": model_id,\n    \
+          \            \"prev_state\": prev,\n                \"state\": st,\n   \
+          \             \"reason\": reason.get(cid, \"\"),\n                \"original_traffic\"\
+          : round(orig, 4),\n                \"transfer_in\": round(t_in, 4),\n  \
+          \              \"transfer_out\": round(t_out, 4),\n                \"final_traffic\"\
+          : round(final_t, 4),\n                \"capacity_units\": round(cur_cap,\
+          \ 4),\n                \"load_ratio\": round(load_ratio, 6),\n         \
+          \       \"utilization_ratio\": round(util, 6),\n                \"base_energy_wh\"\
+          : round(base_e, 2),\n                \"strategy_energy_wh\": round(strat_e,\
+          \ 2),\n                \"switch_energy_wh\": round(sw, 2),\n           \
+          \     \"saving_energy_wh\": round(save_e, 2),\n                \"consecutive_deep_slots\"\
+          : consec_out,\n            })\n\n        # ============ 时段摘要 ============\n\
+          \        keep_n = sum(1 for r in new_rows if r[\"state\"] == \"KEEP_ACTIVE\"\
+          )\n        light_n = sum(1 for r in new_rows if r[\"state\"] == \"LIGHT_SLEEP\"\
+          )\n        deep_n = sum(1 for r in new_rows if r[\"state\"] == \"DEEP_SLEEP\"\
+          )\n        trans_n = sum(1 for r in new_rows if r[\"transfer_out\"] > 0)\n\
+          \        total_saving = sum(r[\"saving_energy_wh\"] for r in new_rows)\n\
+          \n        current_slot_summary = (\n            f\"时段 {slot_id}（{start_time}\
+          \ ~ {end_time}）：\"\n            f\"保持运行 {keep_n} 个，轻载节能 {light_n} 个，\"\n\
+          \            f\"深度休眠 {deep_n} 个，业务转移 {trans_n} 次；\"\n            f\"总节能量\
+          \ {total_saving:.2f} Wh。\"\n        )\n\n        updated_result_rows = result_rows\
+          \ + new_rows\n        updated_summaries = summaries\n        if updated_summaries:\n\
+          \            updated_summaries += \"\\n\" + current_slot_summary\n     \
+          \   else:\n            updated_summaries = current_slot_summary\n\n    \
+          \    return {\n            \"next_loop_index\": loop_index + 1,\n      \
+          \      \"updated_state_json\": json.dumps(state, ensure_ascii=False),\n\
+          \            \"updated_result_rows_json\": json.dumps(updated_result_rows,\
+          \ ensure_ascii=False),\n            \"current_slot_summary\": current_slot_summary,\n\
+          \            \"updated_slot_summaries_text\": updated_summaries,\n     \
+          \   }\n\n    except Exception as e:\n        return {\n            \"next_loop_index\"\
+          : _to_int(loop_index, 0),\n            \"updated_state_json\": state_json,\n\
+          \            \"updated_result_rows_json\": result_rows_json,\n         \
+          \   \"current_slot_summary\": f\"策略计算失败：{type(e).__name__}: {str(e)}\",\n\
+          \            \"updated_slot_summaries_text\": slot_summaries_text,\n   \
+          \     }"
+        code_language: python3
+        isInIteration: false
+        isInLoop: true
+        loop_id: '1793687205700'
+        outputs:
+          current_slot_summary:
+            children: null
+            type: string
+          next_loop_index:
+            children: null
+            type: number
+          updated_result_rows_json:
+            children: null
+            type: string
+          updated_slot_summaries_text:
+            children: null
+            type: string
+          updated_state_json:
+            children: null
+            type: string
+        selected: false
+        title: 当前时段策略计算
+        type: code
+        variables:
+        - value_selector:
+          - '1793687205700'
+          - loop_index
+          value_type: number
+          variable: loop_index
+        - value_selector:
+          - '1793687205700'
+          - state_json
+          value_type: string
+          variable: state_json
+        - value_selector:
+          - '1793621663010'
+          - data_json
+          value_type: string
+          variable: data_json
+        - value_selector:
+          - '1793687205700'
+          - result_rows_json
+          value_type: string
+          variable: result_rows_json
+        - value_selector:
+          - '1793687205700'
+          - slot_summaries_text
+          value_type: string
+          variable: slot_summaries_text
+      height: 52
+      id: '1793687211641'
+      parentId: '1793687205700'
+      position:
+        x: 124.40885363043162
+        y: 75.18229273913727
+      positionAbsolute:
+        x: 2259.063872871693
+        y: 284.9270247481032
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: true
+        items:
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1793687211641'
+          - next_loop_index
+          variable_selector:
+          - '1793687205700'
+          - loop_index
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1793687211641'
+          - updated_state_json
+          variable_selector:
+          - '1793687205700'
+          - state_json
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1793687211641'
+          - updated_result_rows_json
+          variable_selector:
+          - '1793687205700'
+          - result_rows_json
+        - input_type: variable
+          operation: over-write
+          value:
+          - '1793687211641'
+          - updated_slot_summaries_text
+          variable_selector:
+          - '1793687205700'
+          - slot_summaries_text
+        loop_id: '1793687205700'
+        selected: false
+        title: 变量赋值
+        type: assigner
+        version: '2'
+      height: 162
+      id: '1793687214903'
+      parentId: '1793687205700'
+      position:
+        x: 430
+        y: 68
+      positionAbsolute:
+        x: 2564.6550192412615
+        y: 277.7447320089659
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 1002
+    - data:
+        code: "import json\nfrom collections import defaultdict\n\n\n# ============================================================\n\
+          # 风险校验节点（独立复核）\n# 输入: data_json, result_rows_json\n# 输出: risk_ok, validata_result_rows_json,\
+          \ risk_detail, risk_summary\n# ============================================================\n\
+          \n\ndef _f(v, d=0.0):\n    try:\n        if v is None or v == \"\":\n  \
+          \          return d\n        return float(v)\n    except Exception:\n  \
+          \      return d\n\n\ndef _i(v, d=0):\n    try:\n        if v is None or\
+          \ v == \"\":\n            return d\n        return int(float(v))\n    except\
+          \ Exception:\n        return d\n\n\ndef _rule_val(rule_by_key, key, default):\n\
+          \    r = rule_by_key.get(key)\n    if not r:\n        return default\n \
+          \   v = r.get(\"value\")\n    return default if v is None else v\n\n\ndef\
+          \ _within(a, b, tol=0.02):\n    return abs(a - b) <= tol\n\n\ndef _get_power(power_by_model_state,\
+          \ model_id, state):\n    p = power_by_model_state.get(f\"{model_id}|{state}\"\
+          )\n    if p is None:\n        return {\"capacity_units\": 0.0, \"base_power_w\"\
+          : 0.0, \"slope_w_per_unit\": 0.0, \"_missing\": True}\n    return p\n\n\n\
+          def main(data_json: str, result_rows_json: str) -> dict:\n    try:\n   \
+          \     data = json.loads(data_json) if data_json else {}\n        rows =\
+          \ json.loads(result_rows_json) if result_rows_json else []\n\n        normalized\
+          \ = data.get(\"normalized\", {})\n        index = data.get(\"index\", {})\n\
+          \n        tasks = normalized.get(\"task\", [])\n        cells = normalized.get(\"\
+          cell\", [])\n        coverage = normalized.get(\"coverage\", [])\n     \
+          \   restrictions = normalized.get(\"restriction\", [])\n\n        transfer_by_source\
+          \ = index.get(\"transfer_by_source\", {})\n        power_by_model_state\
+          \ = index.get(\"power_by_model_state\", {})\n        restriction_by_cell\
+          \ = index.get(\"restriction_by_cell\", {})\n        rule_by_key = index.get(\"\
+          rule_by_key\", {})\n\n        deep_load_ratio_max = _f(_rule_val(rule_by_key,\
+          \ \"deep_load_ratio_max\", 0.2), 0.2)\n        light_load_ratio_max = _f(_rule_val(rule_by_key,\
+          \ \"light_load_ratio_max\", 0.55), 0.55)\n        max_util = _f(_rule_val(rule_by_key,\
+          \ \"max_utilization_ratio\", 0.85), 0.85)\n        max_consec = _i(_rule_val(rule_by_key,\
+          \ \"max_consecutive_deep_slots\", 2), 2)\n        switch_wh = _f(_rule_val(rule_by_key,\
+          \ \"switch_energy_wh\", 8), 8.0)\n        min_saving = _f(_rule_val(rule_by_key,\
+          \ \"minimum_incremental_saving_wh\", 5), 5.0)\n\n        # ---------- 时段顺序与时刻映射\
+          \ ----------\n        sorted_tasks = sorted(tasks, key=lambda x: x.get(\"\
+          start_ts\") or 0)\n        slot_order = [str(t.get(\"slot_id\")) for t in\
+          \ sorted_tasks]\n        slot_start_ts = {str(t.get(\"slot_id\")): (t.get(\"\
+          start_ts\") or 0) for t in tasks}\n        slot_end_ts = {str(t.get(\"slot_id\"\
+          )): (t.get(\"end_ts\") or 0) for t in tasks}\n        cell_ids_sorted =\
+          \ sorted([str(c.get(\"cell_id\")) for c in cells])\n\n        # ----------\
+          \ 1. 覆盖完整性 ----------\n        expected_keys = set()\n        for sid in\
+          \ slot_order:\n            for cid in cell_ids_sorted:\n               \
+          \ expected_keys.add((sid, cid))\n\n        row_by_key = {}\n        actual_keys\
+          \ = []\n        dup_keys = []\n        for r in rows:\n            sid =\
+          \ str(r.get(\"slot_id\"))\n            cid = str(r.get(\"cell_id\"))\n \
+          \           actual_keys.append((sid, cid))\n            if (sid, cid) in\
+          \ row_by_key:\n                dup_keys.append((sid, cid))\n           \
+          \ else:\n                row_by_key[(sid, cid)] = r\n\n        actual_key_set\
+          \ = set(actual_keys)\n        missing_keys = expected_keys - actual_key_set\n\
+          \        extra_keys = actual_key_set - expected_keys\n\n        # ----------\
+          \ 2. 排序 ----------\n        order_ok = True\n        prev_k = None\n   \
+          \     for r in rows:\n            k = (slot_start_ts.get(str(r.get(\"slot_id\"\
+          )), 0), str(r.get(\"cell_id\")))\n            if prev_k is not None and\
+          \ k < prev_k:\n                order_ok = False\n                break\n\
+          \            prev_k = k\n\n        structure_issues = []\n        if dup_keys:\n\
+          \            structure_issues.append(\n                f\"存在重复记录 {len(dup_keys)}\
+          \ 条，示例：{sorted(set(dup_keys))[:5]}\"\n            )\n        if missing_keys:\n\
+          \            structure_issues.append(\n                f\"缺失时段×小区组合 {len(missing_keys)}\
+          \ 条，示例：{sorted(missing_keys)[:5]}\"\n            )\n        if extra_keys:\n\
+          \            structure_issues.append(\n                f\"存在未知/多余组合 {len(extra_keys)}\
+          \ 条，示例：{sorted(extra_keys)[:5]}\"\n            )\n        if not order_ok:\n\
+          \            structure_issues.append(\"结果未按时段开始时间、cell_id 升序排列\")\n\n  \
+          \      # ---------- 行级失败原因收集 ----------\n        row_reasons = defaultdict(list)\n\
+          \n        # ---------- 3~4, 6~8, 10：逐行校验 ----------\n        for r in rows:\n\
+          \            sid = str(r.get(\"slot_id\"))\n            cid = str(r.get(\"\
+          cell_id\"))\n            key = (sid, cid)\n            state = str(r.get(\"\
+          state\", \"\")).upper()\n            reason = str(r.get(\"reason\", \"\"\
+          )).upper()\n            role = str(r.get(\"role\", \"\")).upper()\n    \
+          \        model_id = r.get(\"model_id\")\n            prev_state = str(r.get(\"\
+          prev_state\", \"\")).upper()\n\n            orig = _f(r.get(\"original_traffic\"\
+          ), 0)\n            t_in = _f(r.get(\"transfer_in\"), 0)\n            t_out\
+          \ = _f(r.get(\"transfer_out\"), 0)\n            final_t = _f(r.get(\"final_traffic\"\
+          ), 0)\n\n            reasons = []\n\n            # ---- 3. 业务量守恒 & 非负 ----\n\
+          \            if not _within(orig + t_in - t_out, final_t, tol=0.01):\n \
+          \               reasons.append(\n                    f\"业务量不守恒(orig={orig:.2f},\
+          \ in={t_in:.2f}, out={t_out:.2f}, final={final_t:.2f})\"\n             \
+          \   )\n            if final_t < -0.01:\n                reasons.append(f\"\
+          最终业务量为负({final_t:.2f})\")\n\n            # ---- 4. 承接关系 / 上限 / 承接方容量 ----\n\
+          \            if t_out > 0.0001 and state != \"DEEP_SLEEP\":\n          \
+          \      reasons.append(f\"非深度休眠却转出业务(state={state}, out={t_out:.2f})\")\n\
+          \n            if t_out > 0.0001 and state == \"DEEP_SLEEP\":\n         \
+          \       rels = transfer_by_source.get(cid, [])\n                if not rels:\n\
+          \                    reasons.append(\"深度休眠但无承接关系\")\n                else:\n\
+          \                    matched = False\n                    fail_reason =\
+          \ None\n                    for rel in rels:\n                        target\
+          \ = str(rel.get(\"target_cell_id\"))\n                        target_row\
+          \ = row_by_key.get((sid, target))\n                        if target_row\
+          \ is None:\n                            continue\n                     \
+          \   t_in_target = _f(target_row.get(\"transfer_in\"), 0)\n             \
+          \           if t_in_target < t_out - 0.01:\n                           \
+          \ continue\n                        t_state = str(target_row.get(\"state\"\
+          , \"\")).upper()\n                        if t_state != \"KEEP_ACTIVE\"\
+          :\n                            fail_reason = f\"承接方非活跃(target={target},\
+          \ state={t_state})\"\n                            continue\n           \
+          \             max_tr = _f(rel.get(\"max_transfer_units\"), 0)\n        \
+          \                if t_out > max_tr + 0.01:\n                           \
+          \ fail_reason = f\"超单条转移上限(out={t_out:.2f}, max={max_tr:.2f}, target={target})\"\
+          \n                            continue\n                        t_keep =\
+          \ _get_power(power_by_model_state, target_row.get(\"model_id\"), \"KEEP_ACTIVE\"\
+          )\n                        t_cap = _f(t_keep.get(\"capacity_units\"), 0)\n\
+          \                        t_final = _f(target_row.get(\"final_traffic\"),\
+          \ 0)\n                        if t_cap <= 0:\n                         \
+          \   fail_reason = f\"承接方正常运行容量为0(target={target})\"\n                  \
+          \          continue\n                        if t_final > t_cap * max_util\
+          \ + 0.01:\n                            fail_reason = (\n               \
+          \                 f\"承接方容量超限(target={target}, final={t_final:.2f}, \"\n\
+          \                                f\"limit={t_cap * max_util:.2f})\"\n  \
+          \                          )\n                            continue\n   \
+          \                     matched = True\n                        break\n  \
+          \                  if not matched:\n                        reasons.append(fail_reason\
+          \ or \"深度休眠未找到可承接方\")\n\n            # ---- 状态容量利用率（KEEP/LIGHT）----\n  \
+          \          cur_p = _get_power(power_by_model_state, model_id, state)\n \
+          \           cur_cap = _f(cur_p.get(\"capacity_units\"), 0)\n           \
+          \ if state != \"DEEP_SLEEP\":\n                if cur_cap <= 0:\n      \
+          \              reasons.append(f\"当前状态容量为0(state={state})\")\n          \
+          \      elif final_t > cur_cap * max_util + 0.01:\n                    reasons.append(\n\
+          \                        f\"容量利用率超限(final={final_t:.2f}, limit={cur_cap\
+          \ * max_util:.2f})\"\n                    )\n            else:\n       \
+          \         if final_t > 0.01:\n                    reasons.append(f\"深度休眠最终业务量非0({final_t:.2f})\"\
+          )\n\n            # ---- 6. 临时保障期间 ----\n            slot_start = slot_start_ts.get(sid,\
+          \ 0)\n            slot_end = slot_end_ts.get(sid, 0)\n            in_force\
+          \ = False\n            for rr in restriction_by_cell.get(cid, []):\n   \
+          \             if str(rr.get(\"restriction_type\", \"\")).upper() != \"FORCE_ACTIVE\"\
+          :\n                    continue\n                rs = rr.get(\"start_ts\"\
+          )\n                re_ = rr.get(\"end_ts\")\n                if rs is not\
+          \ None and re_ is not None and rs < slot_end and re_ > slot_start:\n   \
+          \                 in_force = True\n                    break\n         \
+          \   if in_force and state != \"KEEP_ACTIVE\":\n                reasons.append(f\"\
+          临时保障期间未保持运行(state={state})\")\n\n            # ---- 7. 深度休眠全部转出 ----\n \
+          \           if state == \"DEEP_SLEEP\":\n                if not _within(t_out,\
+          \ orig, tol=0.01):\n                    reasons.append(f\"深度休眠未全部转出(out={t_out:.2f},\
+          \ orig={orig:.2f})\")\n\n            # ---- 10. 策略与原因代码匹配 ----\n       \
+          \     if role == \"ANCHOR\":\n                if state != \"KEEP_ACTIVE\"\
+          :\n                    reasons.append(f\"锚点非KEEP(state={state})\")\n   \
+          \             if reason != \"COVERAGE_ANCHOR\":\n                    reasons.append(f\"\
+          锚点原因非法(reason={reason})\")\n            elif in_force:\n               \
+          \ if state != \"KEEP_ACTIVE\":\n                    reasons.append(f\"保障期间非KEEP(state={state})\"\
+          )\n                if reason != \"TEMP_GUARANTEE\":\n                  \
+          \  reasons.append(f\"保障原因非法(reason={reason})\")\n            else:\n   \
+          \             if state == \"DEEP_SLEEP\":\n                    if reason\
+          \ != \"DEEP_SLEEP\":\n                        reasons.append(f\"深休眠原因非法(reason={reason})\"\
+          )\n                elif state == \"LIGHT_SLEEP\":\n                    if\
+          \ reason in (\"COVERAGE_ANCHOR\", \"TEMP_GUARANTEE\", \"DEEP_SLEEP\", \"\
+          LIGHT_NOT_FEASIBLE\"):\n                        reasons.append(f\"轻载原因非法(reason={reason})\"\
+          )\n                elif state == \"KEEP_ACTIVE\":\n                    if\
+          \ reason != \"LIGHT_NOT_FEASIBLE\":\n                        reasons.append(f\"\
+          保持运行原因非法(reason={reason})\")\n                else:\n                  \
+          \  reasons.append(f\"未知状态(state={state})\")\n\n            if reasons:\n\
+          \                row_reasons[key].extend(reasons)\n\n        # ----------\
+          \ 时段内转移总量守恒 ----------\n        for sid in slot_order:\n            sum_in\
+          \ = 0.0\n            sum_out = 0.0\n            for r in rows:\n       \
+          \         if str(r.get(\"slot_id\")) != sid:\n                    continue\n\
+          \                sum_in += _f(r.get(\"transfer_in\"), 0)\n             \
+          \   sum_out += _f(r.get(\"transfer_out\"), 0)\n            if not _within(sum_in,\
+          \ sum_out, tol=0.01):\n                for r in rows:\n                \
+          \    if str(r.get(\"slot_id\")) == sid:\n                        row_reasons[(sid,\
+          \ str(r.get(\"cell_id\")))].append(\n                            f\"时段内转移不平衡(in={sum_in:.2f},\
+          \ out={sum_out:.2f})\"\n                        )\n\n        # ----------\
+          \ 5. 覆盖组活跃 & 锚点 ----------\n        for sid in slot_order:\n           \
+          \ for grp in coverage:\n                gid = str(grp.get(\"group_id\"))\n\
+          \                min_active = _i(grp.get(\"min_active_cells\"), 0)\n   \
+          \             group_rows = [\n                    r for r in rows\n    \
+          \                if str(r.get(\"slot_id\")) == sid and str(r.get(\"coverage_group\"\
+          )) == gid\n                ]\n                if not group_rows:\n     \
+          \               continue\n                active_cnt = sum(\n          \
+          \          1 for r in group_rows if str(r.get(\"state\", \"\")).upper()\
+          \ != \"DEEP_SLEEP\"\n                )\n                if active_cnt <\
+          \ min_active:\n                    for r in group_rows:\n              \
+          \          row_reasons[(sid, str(r.get(\"cell_id\")))].append(\n       \
+          \                     f\"覆盖组活跃不足(group={gid}, active={active_cnt}, min={min_active})\"\
+          \n                        )\n                anchor = str(grp.get(\"anchor_cell_id\"\
+          ))\n                ar = row_by_key.get((sid, anchor))\n               \
+          \ if ar is not None and str(ar.get(\"state\", \"\")).upper() == \"DEEP_SLEEP\"\
+          :\n                    row_reasons[(sid, anchor)].append(\"锚点进入深度休眠\")\n\
+          \n        # ---------- 8. 连续深度休眠 ----------\n        consec_state = {str(c.get(\"\
+          cell_id\")): _i(c.get(\"initial_deep_slots\"), 0) for c in cells}\n    \
+          \    for sid in slot_order:\n            for cid in cell_ids_sorted:\n \
+          \               r = row_by_key.get((sid, cid))\n                if r is\
+          \ None:\n                    continue\n                state = str(r.get(\"\
+          state\", \"\")).upper()\n                if state == \"DEEP_SLEEP\":\n \
+          \                   consec_state[cid] += 1\n                    if consec_state[cid]\
+          \ > max_consec:\n                        row_reasons[(sid, cid)].append(\n\
+          \                            f\"连续深休眠超上限(consec={consec_state[cid]}, max={max_consec})\"\
+          \n                        )\n                    row_consec = _i(r.get(\"\
+          consecutive_deep_slots\"), -1)\n                    if row_consec >= 0 and\
+          \ row_consec != consec_state[cid]:\n                        row_reasons[(sid,\
+          \ cid)].append(\n                            f\"连续深休眠计数不一致(row={row_consec},\
+          \ calc={consec_state[cid]})\"\n                        )\n             \
+          \   else:\n                    consec_state[cid] = 0\n\n        # ----------\
+          \ 9. 能耗复算 ----------\n        for r in rows:\n            sid = str(r.get(\"\
+          slot_id\"))\n            cid = str(r.get(\"cell_id\"))\n            key\
+          \ = (sid, cid)\n            state = str(r.get(\"state\", \"\")).upper()\n\
+          \            prev_state = str(r.get(\"prev_state\", \"\")).upper()\n   \
+          \         model_id = r.get(\"model_id\")\n            dur = _f(r.get(\"\
+          duration_hours\"), 0)\n            orig = _f(r.get(\"original_traffic\"\
+          ), 0)\n            final_t = _f(r.get(\"final_traffic\"), 0)\n\n       \
+          \     keep_p = _get_power(power_by_model_state, model_id, \"KEEP_ACTIVE\"\
+          )\n            cur_p = _get_power(power_by_model_state, model_id, state)\n\
+          \n            if keep_p.get(\"_missing\") or cur_p.get(\"_missing\"):\n\
+          \                row_reasons[key].append(f\"功耗参数缺失(model={model_id}, state={state})\"\
+          )\n                continue\n\n            keep_base = _f(keep_p.get(\"\
+          base_power_w\"), 0)\n            keep_slope = _f(keep_p.get(\"slope_w_per_unit\"\
+          ), 0)\n            cur_base = _f(cur_p.get(\"base_power_w\"), 0)\n     \
+          \       cur_slope = _f(cur_p.get(\"slope_w_per_unit\"), 0)\n\n         \
+          \   sw = switch_wh if prev_state != state else 0.0\n            base_e =\
+          \ (keep_base + keep_slope * orig) * dur\n            strat_e = (cur_base\
+          \ + cur_slope * final_t) * dur + sw\n            save_e = base_e - strat_e\n\
+          \n            if not _within(_f(r.get(\"base_energy_wh\"), 0), base_e):\n\
+          \                row_reasons[key].append(\n                    f\"基准能耗不一致(row={_f(r.get('base_energy_wh'),0):.2f},\
+          \ calc={base_e:.2f})\"\n                )\n            if not _within(_f(r.get(\"\
+          strategy_energy_wh\"), 0), strat_e):\n                row_reasons[key].append(\n\
+          \                    f\"策略能耗不一致(row={_f(r.get('strategy_energy_wh'),0):.2f},\
+          \ calc={strat_e:.2f})\"\n                )\n            if not _within(_f(r.get(\"\
+          switch_energy_wh\"), 0), sw):\n                row_reasons[key].append(\n\
+          \                    f\"切换能耗不一致(row={_f(r.get('switch_energy_wh'),0):.2f},\
+          \ calc={sw:.2f})\"\n                )\n            if not _within(_f(r.get(\"\
+          saving_energy_wh\"), 0), save_e):\n                row_reasons[key].append(\n\
+          \                    f\"节能量不一致(row={_f(r.get('saving_energy_wh'),0):.2f},\
+          \ calc={save_e:.2f})\"\n                )\n\n        # ============================================================\n\
+          \        # 汇总输出\n        # ============================================================\n\
+          \        fail_rows = len(row_reasons)\n        fail_items = sum(len(v) for\
+          \ v in row_reasons.values())\n\n        validated_rows = []\n        for\
+          \ r in rows:\n            sid = str(r.get(\"slot_id\"))\n            cid\
+          \ = str(r.get(\"cell_id\"))\n            reasons = list(dict.fromkeys(row_reasons.get((sid,\
+          \ cid), [])))\n            nr = dict(r)\n            nr[\"risk_state\"]\
+          \ = \"PASS\" if not reasons else \"FAIL\"\n            nr[\"risk_reasons\"\
+          ] = reasons\n            validated_rows.append(nr)\n\n        overall_ok\
+          \ = (\n            not structure_issues\n            and fail_items == 0\n\
+          \            and len(missing_keys) == 0\n            and len(dup_keys) ==\
+          \ 0\n            and len(extra_keys) == 0\n        )\n\n        # ----------\
+          \ risk_detail ----------\n        detail_lines = []\n        if structure_issues:\n\
+          \            detail_lines.append(\"【结构性问题】\")\n            for s in structure_issues:\n\
+          \                detail_lines.append(\"  - \" + s)\n        if fail_rows\
+          \ > 0:\n            detail_lines.append(f\"【行级异常】{fail_rows} 行存在问题：\")\n\
+          \            for (sid, cid) in sorted(row_reasons.keys()):\n           \
+          \     reasons = list(dict.fromkeys(row_reasons[(sid, cid)]))\n         \
+          \       detail_lines.append(f\"  - [{sid}/{cid}] \" + \" | \".join(reasons))\n\
+          \        if not detail_lines:\n            detail_lines.append(\"全部检查项通过，未发现风险。\"\
+          )\n        risk_detail = \"\\n\".join(detail_lines)\n\n        # ----------\
+          \ risk_summary ----------\n        checks = [\n            \"覆盖完整性\", \"\
+          结果排序\", \"业务量守恒\", \"承接关系与容量\",\n            \"覆盖组与锚点\", \"临时保障\", \"深度休眠转移\"\
+          ,\n            \"连续深休眠\", \"能耗复算\", \"原因代码匹配\",\n        ]\n        if overall_ok:\n\
+          \            risk_summary = (\n                f\"风险校验通过：{len(rows)} 条记录覆盖全部时段×小区，\"\
+          \n                f\"通过 {'、'.join(checks)} 共 {len(checks)} 项检查，可生成正式报告。\"\
+          \n            )\n        else:\n            parts = []\n            if structure_issues:\n\
+          \                parts.append(f\"结构性异常 {len(structure_issues)} 类\")\n  \
+          \          if fail_rows > 0:\n                parts.append(f\"行级异常 {fail_rows}\
+          \ 行\")\n            if missing_keys:\n                parts.append(f\"缺失\
+          \ {len(missing_keys)} 条\")\n            if dup_keys:\n                parts.append(f\"\
+          重复 {len(dup_keys)} 条\")\n            if extra_keys:\n                parts.append(f\"\
+          多余 {len(extra_keys)} 条\")\n            risk_summary = (\n              \
+          \  f\"风险校验未通过：{len(rows)} 条记录中，\"\n                + \"；\".join(parts)\n\
+          \                + \"。已停止生成正式报告与图表，请查阅 risk_detail 定位问题。\"\n           \
+          \ )\n\n        return {\n            \"risk_ok\": overall_ok,\n        \
+          \    \"validata_result_rows_json\": json.dumps(validated_rows, ensure_ascii=False),\n\
+          \            \"risk_detail\": risk_detail,\n            \"risk_summary\"\
+          : risk_summary,\n        }\n\n    except Exception as e:\n        return\
+          \ {\n            \"risk_ok\": False,\n            \"validata_result_rows_json\"\
+          : result_rows_json or \"[]\",\n            \"risk_detail\": f\"风险校验执行异常：{type(e).__name__}:\
+          \ {str(e)}\",\n            \"risk_summary\": \"风险校验未能完成，已停止后续流程。\",\n  \
+          \      }"
+        code_language: python3
+        outputs:
+          risk_detail:
+            children: null
+            type: string
+          risk_ok:
+            children: null
+            type: boolean
+          risk_summary:
+            children: null
+            type: string
+          validata_result_rows_json:
+            children: null
+            type: string
+        selected: false
+        title: 风险校验
+        type: code
+        variables:
+        - value_selector:
+          - '1793621663010'
+          - data_json
+          value_type: string
+          variable: data_json
+        - value_selector:
+          - '1793687205700'
+          - result_rows_json
+          value_type: string
+          variable: result_rows_json
+      height: 52
+      id: '1793696179356'
+      position:
+        x: 3023.2243991445785
+        y: 201.9874269150992
+      positionAbsolute:
+        x: 3023.2243991445785
+        y: 201.9874269150992
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: 3f4daed0-c93f-49a7-9dec-19272ca03265
+            value: true
+            varType: boolean
+            variable_selector:
+            - '1793696179356'
+            - risk_ok
+          id: 'true'
+          logical_operator: and
+        selected: false
+        title: 条件分支 2
+        type: if-else
+      height: 124
+      id: '1793797090767'
+      position:
+        x: 3507.5127324975315
+        y: 196.3459473226619
+      positionAbsolute:
+        x: 3507.5127324975315
+        y: 196.3459473226619
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        selected: false
+        template: "{{ risk_detail }}\r\n{{ risk_summary }}"
+        title: 模板转换 2
+        type: template-transform
+        variables:
+        - value_selector:
+          - '1793696179356'
+          - risk_detail
+          value_type: string
+          variable: risk_detail
+        - value_selector:
+          - '1793696179356'
+          - risk_summary
+          value_type: string
+          variable: risk_summary
+      height: 52
+      id: '1793797102849'
+      position:
+        x: 3817.034705287448
+        y: 428.38293713359536
+      positionAbsolute:
+        x: 3817.034705287448
+        y: 428.38293713359536
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "import json\n\n\n# ============================================================\n\
+          # 策略结果汇总与统计节点\n# 输入: data_json, validata_result_rows_json\n# 输出: strategy_summary_json,\
+          \ strategy_summary_text, strategy_detail_table,\n#       structured_summary_md\n\
+          # ============================================================\n\n\ndef\
+          \ _f(v, d=0.0):\n    try:\n        if v is None or v == \"\":\n        \
+          \    return d\n        return float(v)\n    except Exception:\n        return\
+          \ d\n\n\nREASON_MAP = {\n    \"COVERAGE_ANCHOR\": \"覆盖锚点保障\",\n    \"TEMP_GUARANTEE\"\
+          : \"临时保障限制\",\n    \"LOAD_ABOVE_DEEP\": \"负载高于深休眠阈值，采用轻载节能\",\n    \"DEEP_ALLOWED\"\
+          : \"负载满足深度休眠条件\",\n    \"DEEP_ELIGIBLE\": \"负载满足深度休眠条件\",\n    \"DEEP_SLEEP\"\
+          : \"负载满足深度休眠条件\",\n    \"DEEP_DURATION_LIMIT\": \"达到连续深度休眠上限\",\n    \"\
+          LOAD_ABOVE_LIGHT\": \"负载较高，保持运行\",\n    \"LIGHT_ELIGIBLE\": \"负载满足轻载节能条件\"\
+          ,\n    \"LIGHT_NOT_FEASIBLE\": \"轻载条件不满足，保持运行\",\n    \"NO_NET_SAVING\"\
+          : \"无正净收益\",\n    \"RECEIVER_CAPACITY\": \"承接方容量不足\",\n    \"NO_TRANSFER_PATH\"\
+          : \"无可承接小区，保持运行\",\n    \"COVERAGE_PROTECT\": \"覆盖保障不足，保持运行\",\n    \"TRANSFER_LIMIT\"\
+          : \"超出转移上限，保持运行\",\n    \"LIGHT_SLEEP\": \"负载满足轻载节能条件\",\n}\n\nSTATE_MAP\
+          \ = {\n    \"KEEP_ACTIVE\": \"保持运行\",\n    \"LIGHT_SLEEP\": \"轻载节能\",\n\
+          \    \"DEEP_SLEEP\": \"深度休眠\",\n}\n\n\ndef _reason_cn(code):\n    if code\
+          \ is None:\n        return \"-\"\n    s = str(code).strip().upper()\n  \
+          \  if not s:\n        return \"-\"\n    return REASON_MAP.get(s, s)\n\n\n\
+          def _state_cn(state):\n    if state is None:\n        return \"-\"\n   \
+          \ s = str(state).strip().upper()\n    return STATE_MAP.get(s, s)\n\n\ndef\
+          \ main(data_json: str, validata_result_rows_json: str) -> dict:\n    try:\n\
+          \        data = json.loads(data_json) if data_json else {}\n        rows\
+          \ = json.loads(validata_result_rows_json) if validata_result_rows_json else\
+          \ []\n\n        normalized = data.get(\"normalized\", {})\n        index\
+          \ = data.get(\"index\", {})\n\n        cells = normalized.get(\"cell\",\
+          \ [])\n        tasks = normalized.get(\"task\", [])\n        transfer_by_source\
+          \ = index.get(\"transfer_by_source\", {})\n\n        cell_by_cell_id = {str(c.get(\"\
+          cell_id\")): c for c in cells}\n        slot_start_ts = {str(t.get(\"slot_id\"\
+          )): (t.get(\"start_ts\") or 0) for t in tasks}\n\n        rows = sorted(rows,\
+          \ key=lambda r: (\n            slot_start_ts.get(str(r.get(\"slot_id\")),\
+          \ 0),\n            str(r.get(\"cell_id\")),\n        ))\n\n        # ----------\
+          \ 承接方匹配 ----------\n        slot_deep_sources = {}\n        slot_target_in\
+          \ = {}\n        for r in rows:\n            sid = str(r.get(\"slot_id\"\
+          ))\n            cid = str(r.get(\"cell_id\"))\n            t_in = _f(r.get(\"\
+          transfer_in\"), 0)\n            t_out = _f(r.get(\"transfer_out\"), 0)\n\
+          \            if t_out > 0:\n                slot_deep_sources.setdefault(sid,\
+          \ []).append((cid, t_out))\n            if t_in > 0:\n                slot_target_in.setdefault(sid,\
+          \ {})[cid] = (\n                    slot_target_in.get(sid, {}).get(cid,\
+          \ 0) + t_in\n                )\n\n        receiver_map = {}\n        for\
+          \ sid, sources in slot_deep_sources.items():\n            available = dict(slot_target_in.get(sid,\
+          \ {}))\n            for src_cid, out_amount in sources:\n              \
+          \  rels = transfer_by_source.get(src_cid, [])\n                matched =\
+          \ None\n                for rel in rels:\n                    target = str(rel.get(\"\
+          target_cell_id\"))\n                    if available.get(target, 0) >= out_amount\
+          \ - 0.01:\n                        matched = target\n                  \
+          \      available[target] -= out_amount\n                        break\n\
+          \                if matched is None:\n                    for target, avail\
+          \ in available.items():\n                        if target != src_cid and\
+          \ avail >= out_amount - 0.01:\n                            matched = target\n\
+          \                            available[target] -= out_amount\n         \
+          \                   break\n                receiver_map[(sid, src_cid)]\
+          \ = matched or \"-\"\n\n        # ============================================================\n\
+          \        # 明细表\n        # ============================================================\n\
+          \        header = (\n            \"| 时段 | 小区 | 场景 | 策略 | 原因说明 | 原始业务量 |\
+          \ 转入 | 转出 \"\n            \"| 最终业务量 | 容量 | 利用率 | 承接小区 | 切换能耗(Wh) \"\n  \
+          \          \"| 基准能耗(Wh) | 策略能耗(Wh) | 节能量(Wh) | 风险状态 |\"\n        )\n   \
+          \     sep = (\n            \"| --- | --- | --- | --- | --- | --- | --- |\
+          \ --- | --- | --- \"\n            \"| --- | --- | --- | --- | --- | ---\
+          \ | --- |\"\n        )\n\n        detail_lines = [header, sep]\n       \
+          \ for r in rows:\n            sid = str(r.get(\"slot_id\"))\n          \
+          \  cid = str(r.get(\"cell_id\"))\n            c = cell_by_cell_id.get(cid,\
+          \ {})\n            scene = c.get(\"scene\") or \"-\"\n\n            state_cn\
+          \ = _state_cn(r.get(\"state\"))\n            reason_cn = _reason_cn(r.get(\"\
+          reason\"))\n\n            orig = _f(r.get(\"original_traffic\"), 0)\n  \
+          \          t_in = _f(r.get(\"transfer_in\"), 0)\n            t_out = _f(r.get(\"\
+          transfer_out\"), 0)\n            final_t = _f(r.get(\"final_traffic\"),\
+          \ 0)\n            cap = _f(r.get(\"capacity_units\"), 0)\n\n           \
+          \ if state_cn == \"深度休眠\" or cap <= 0:\n                util_str = \"-\"\
+          \n            else:\n                util_str = f\"{final_t / cap * 100:.2f}%\"\
+          \n\n            receiver = receiver_map.get((sid, cid), \"-\") if state_cn\
+          \ == \"深度休眠\" else \"-\"\n\n            sw = _f(r.get(\"switch_energy_wh\"\
+          ), 0)\n            base_e = _f(r.get(\"base_energy_wh\"), 0)\n         \
+          \   strat_e = _f(r.get(\"strategy_energy_wh\"), 0)\n            save_e =\
+          \ _f(r.get(\"saving_energy_wh\"), 0)\n            risk = r.get(\"risk_state\"\
+          ) or \"PASS\"\n\n            detail_lines.append(\n                f\"|\
+          \ {sid} | {cid} | {scene} | {state_cn} | {reason_cn} \"\n              \
+          \  f\"| {orig:.2f} | {t_in:.2f} | {t_out:.2f} | {final_t:.2f} \"\n     \
+          \           f\"| {cap:.2f} | {util_str} | {receiver} \"\n              \
+          \  f\"| {sw:.2f} | {base_e:.2f} | {strat_e:.2f} | {save_e:.2f} | {risk}\
+          \ |\"\n            )\n\n        strategy_detail_table = \"\\n\".join(detail_lines)\n\
+          \n        # ============================================================\n\
+          \        # 统计汇总\n        # ============================================================\n\
+          \        cell_count = len(cell_by_cell_id)\n        slot_count = len(slot_start_ts)\n\
+          \        record_count = len(rows)\n\n        keep_total = sum(1 for r in\
+          \ rows if str(r.get(\"state\", \"\")).upper() == \"KEEP_ACTIVE\")\n    \
+          \    light_total = sum(1 for r in rows if str(r.get(\"state\", \"\")).upper()\
+          \ == \"LIGHT_SLEEP\")\n        deep_total = sum(1 for r in rows if str(r.get(\"\
+          state\", \"\")).upper() == \"DEEP_SLEEP\")\n        transfer_total = sum(1\
+          \ for r in rows if _f(r.get(\"transfer_out\"), 0) > 0)\n\n        base_sum\
+          \ = sum(_f(r.get(\"base_energy_wh\"), 0) for r in rows)\n        strat_sum\
+          \ = sum(_f(r.get(\"strategy_energy_wh\"), 0) for r in rows)\n        switch_sum\
+          \ = sum(_f(r.get(\"switch_energy_wh\"), 0) for r in rows)\n        saving_sum\
+          \ = sum(_f(r.get(\"saving_energy_wh\"), 0) for r in rows)\n        saving_rate\
+          \ = (saving_sum / base_sum * 100) if base_sum > 0 else 0.0\n\n        slot_ordered\
+          \ = sorted(slot_start_ts.keys(),\n                              key=lambda\
+          \ s: slot_start_ts.get(s, 0))\n\n        summary_lines = [\n           \
+          \ f\"策略汇总｜小区 {cell_count}｜时段 {slot_count}｜记录 {record_count}\"\n        \
+          \    f\"｜保持运行 {keep_total}｜轻载节能 {light_total}｜深度休眠 {deep_total}\"\n    \
+          \        f\"｜业务转移 {transfer_total} 次\",\n            f\"基准总能耗 {base_sum:.2f}\
+          \ Wh｜策略总能耗 {strat_sum:.2f} Wh\"\n            f\"｜切换总能耗 {switch_sum:.2f}\
+          \ Wh｜总节能量 {saving_sum:.2f} Wh\"\n            f\"｜整体节能率 {saving_rate:.2f}%\"\
+          ,\n        ]\n\n        for sid in slot_ordered:\n            slot_rows\
+          \ = [r for r in rows if str(r.get(\"slot_id\")) == sid]\n            k =\
+          \ sum(1 for r in slot_rows if str(r.get(\"state\", \"\")).upper() == \"\
+          KEEP_ACTIVE\")\n            l = sum(1 for r in slot_rows if str(r.get(\"\
+          state\", \"\")).upper() == \"LIGHT_SLEEP\")\n            d = sum(1 for r\
+          \ in slot_rows if str(r.get(\"state\", \"\")).upper() == \"DEEP_SLEEP\"\
+          )\n            tr = sum(1 for r in slot_rows if _f(r.get(\"transfer_out\"\
+          ), 0) > 0)\n            b = sum(_f(r.get(\"base_energy_wh\"), 0) for r in\
+          \ slot_rows)\n            st = sum(_f(r.get(\"strategy_energy_wh\"), 0)\
+          \ for r in slot_rows)\n            sv = sum(_f(r.get(\"saving_energy_wh\"\
+          ), 0) for r in slot_rows)\n            summary_lines.append(\n         \
+          \       f\"{sid}｜保持 {k}｜轻载 {l}｜深休眠 {d}｜转移 {tr} 次\"\n                f\"\
+          ｜基准 {b:.2f}Wh｜策略 {st:.2f}Wh｜节能 {sv:.2f}Wh\"\n            )\n\n        strategy_summary_text\
+          \ = \"\\n\".join(summary_lines)\n\n        # ============================================================\n\
+          \        # 三张图数据\n        # ============================================================\n\
+          \        slot_energy_data = []\n        for sid in slot_ordered:\n     \
+          \       slot_rows = [r for r in rows if str(r.get(\"slot_id\")) == sid]\n\
+          \            base = sum(_f(r.get(\"base_energy_wh\"), 0) for r in slot_rows)\n\
+          \            strat = sum(_f(r.get(\"strategy_energy_wh\"), 0) for r in slot_rows)\n\
+          \            slot_energy_data.append({\"slot\": sid, \"type\": \"基准能耗\"\
+          , \"energy\": round(base, 2)})\n            slot_energy_data.append({\"\
+          slot\": sid, \"type\": \"策略能耗\", \"energy\": round(strat, 2)})\n\n     \
+          \   slot_strategy_data = []\n        for sid in slot_ordered:\n        \
+          \    slot_rows = [r for r in rows if str(r.get(\"slot_id\")) == sid]\n \
+          \           k = sum(1 for r in slot_rows if str(r.get(\"state\", \"\")).upper()\
+          \ == \"KEEP_ACTIVE\")\n            l = sum(1 for r in slot_rows if str(r.get(\"\
+          state\", \"\")).upper() == \"LIGHT_SLEEP\")\n            d = sum(1 for r\
+          \ in slot_rows if str(r.get(\"state\", \"\")).upper() == \"DEEP_SLEEP\"\
+          )\n            slot_strategy_data.append({\"slot\": sid, \"type\": \"保持运行\"\
+          , \"count\": k})\n            slot_strategy_data.append({\"slot\": sid,\
+          \ \"type\": \"轻载节能\", \"count\": l})\n            slot_strategy_data.append({\"\
+          slot\": sid, \"type\": \"深度休眠\", \"count\": d})\n\n        cell_trend_data\
+          \ = []\n        for r in rows:\n            cell_trend_data.append({\n \
+          \               \"time\": str(r.get(\"slot_id\")),\n                \"cell\"\
+          : str(r.get(\"cell_id\")),\n                \"value\": round(_f(r.get(\"\
+          final_traffic\"), 0), 2),\n            })\n\n        strategy_summary_json\
+          \ = {\n            \"slot_energy_chart\": {\n                \"type\": \"\
+          grouped_bar\",\n                \"title\": \"分时段基准能耗与策略能耗对比\",\n       \
+          \         \"x_field\": \"slot\",\n                \"x_title\": \"时段\",\n\
+          \                \"y_field\": \"energy\",\n                \"y_title\":\
+          \ \"能耗（Wh）\",\n                \"series_field\": \"type\",\n           \
+          \     \"data\": slot_energy_data,\n            },\n            \"slot_strategy_chart\"\
+          : {\n                \"type\": \"grouped_bar\",\n                \"title\"\
+          : \"分时段节能策略数量分布\",\n                \"x_field\": \"slot\",\n           \
+          \     \"x_title\": \"时段\",\n                \"y_field\": \"count\",\n  \
+          \              \"y_title\": \"小区数量（个）\",\n                \"series_field\"\
+          : \"type\",\n                \"data\": slot_strategy_data,\n           \
+          \ },\n            \"cell_trend_chart\": {\n                \"type\": \"\
+          line\",\n                \"title\": \"小区最终业务量趋势\",\n                \"x_field\"\
+          : \"time\",\n                \"x_title\": \"时段\",\n                \"y_field\"\
+          : \"value\",\n                \"y_title\": \"最终业务量（业务量单位）\",\n         \
+          \       \"series_field\": \"cell\",\n                \"data\": cell_trend_data,\n\
+          \            },\n        }\n\n        # ============================================================\n\
+          \        # ★ 新增：五、结构化汇总数据（Markdown 段落）\n        # ============================================================\n\
+          \        task_by_slot = {str(t.get(\"slot_id\")): t for t in tasks}\n\n\
+          \        slot_summaries = []\n        for sid in slot_ordered:\n       \
+          \     slot_rows = [r for r in rows if str(r.get(\"slot_id\")) == sid]\n\
+          \            t = task_by_slot.get(sid, {})\n\n            k = sum(1 for\
+          \ r in slot_rows if str(r.get(\"state\", \"\")).upper() == \"KEEP_ACTIVE\"\
+          )\n            l = sum(1 for r in slot_rows if str(r.get(\"state\", \"\"\
+          )).upper() == \"LIGHT_SLEEP\")\n            d = sum(1 for r in slot_rows\
+          \ if str(r.get(\"state\", \"\")).upper() == \"DEEP_SLEEP\")\n          \
+          \  tr = sum(1 for r in slot_rows if _f(r.get(\"transfer_out\"), 0) > 0)\n\
+          \n            b = sum(_f(r.get(\"base_energy_wh\"), 0) for r in slot_rows)\n\
+          \            st = sum(_f(r.get(\"strategy_energy_wh\"), 0) for r in slot_rows)\n\
+          \            sw = sum(_f(r.get(\"switch_energy_wh\"), 0) for r in slot_rows)\n\
+          \            sv = sum(_f(r.get(\"saving_energy_wh\"), 0) for r in slot_rows)\n\
+          \n            slot_summaries.append({\n                \"DEEP_SLEEP\": d,\n\
+          \                \"KEEP_ACTIVE\": k,\n                \"LIGHT_SLEEP\": l,\n\
+          \                \"baseline_energy_wh\": round(b, 2),\n                \"\
+          duration_hours\": _f(t.get(\"duration_hours\"), 0),\n                \"\
+          end_time\": t.get(\"end_time\") or \"\",\n                \"saving_wh\"\
+          : round(sv, 2),\n                \"slot_id\": sid,\n                \"start_time\"\
+          : t.get(\"start_time\") or \"\",\n                \"strategy_energy_wh\"\
+          : round(st, 2),\n                \"switch_energy_wh\": round(sw, 2),\n \
+          \               \"transfer_count\": tr,\n            })\n\n        structured_summary\
+          \ = {\n            \"baseline_energy_wh\": round(base_sum, 2),\n       \
+          \     \"cell_count\": cell_count,\n            \"saving_rate_percent\":\
+          \ round(saving_rate, 2),\n            \"saving_wh\": round(saving_sum, 2),\n\
+          \            \"slot_count\": slot_count,\n            \"slot_summaries\"\
+          : slot_summaries,\n            \"strategy_counts\": {\n                \"\
+          DEEP_SLEEP\": deep_total,\n                \"KEEP_ACTIVE\": keep_total,\n\
+          \                \"LIGHT_SLEEP\": light_total,\n            },\n       \
+          \     \"strategy_energy_wh\": round(strat_sum, 2),\n            \"switch_energy_wh\"\
+          : round(switch_sum, 2),\n            \"total_rows\": record_count,\n   \
+          \         \"transfer_count\": transfer_total,\n        }\n\n        structured_summary_md\
+          \ = (\n            \"## 五、结构化汇总数据\\n\\n\"\n            \"```json\\n\"\n\
+          \            + json.dumps(structured_summary, ensure_ascii=False, indent=2)\n\
+          \            + \"\\n```\"\n        )\n\n        # ============================================================\n\
+          \        # 返回（新增 structured_summary_md）\n        # ============================================================\n\
+          \        return {\n            \"strategy_summary_json\": json.dumps(strategy_summary_json,\
+          \ ensure_ascii=False),\n            \"strategy_summary_text\": strategy_summary_text,\n\
+          \            \"strategy_detail_table\": strategy_detail_table,\n       \
+          \     \"structured_summary_md\": structured_summary_md,\n        }\n\n \
+          \   except Exception as e:\n        return {\n            \"strategy_summary_json\"\
+          : \"{}\",\n            \"strategy_summary_text\": f\"汇总失败：{type(e).__name__}:\
+          \ {str(e)}\",\n            \"strategy_detail_table\": f\"明细表生成失败：{type(e).__name__}:\
+          \ {str(e)}\",\n            \"structured_summary_md\": \"## 五、结构化汇总数据\\n\\\
+          n```json\\n{}\\n```\",\n        }"
+        code_language: python3
+        outputs:
+          strategy_detail_table:
+            children: null
+            type: string
+          strategy_summary_json:
+            children: null
+            type: string
+          strategy_summary_text:
+            children: null
+            type: string
+          structured_summary_md:
+            children: null
+            type: string
+        selected: false
+        title: 策略结果汇总与统计
+        type: code
+        variables:
+        - value_selector:
+          - '1793696179356'
+          - validata_result_rows_json
+          value_type: string
+          variable: validata_result_rows_json
+        - value_selector:
+          - '1793621663010'
+          - data_json
+          value_type: string
+          variable: data_json
+      height: 52
+      id: '1793797195035'
+      position:
+        x: 4004.9645182328386
+        y: 147.45312418820498
+      positionAbsolute:
+        x: 4004.9645182328386
+        y: 147.45312418820498
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        outputs:
+        - value_selector:
+          - '1793797102849'
+          - output
+          value_type: string
+          variable: output
+        selected: false
+        title: 输出 4
+        type: end
+      height: 88
+      id: '1793797205183'
+      position:
+        x: 4209.298378766444
+        y: 428.38293713359536
+      positionAbsolute:
+        x: 4209.298378766444
+        y: 428.38293713359536
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek-v4-flash
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: be264fe5-9ee5-43ac-a885-fb78b73d4674
+          role: system
+          text: '你是通信基站节能编排报告的撰写专家。你的任务是根据输入的"策略汇总数据"和"策略明细数据"，按固定模板输出报告的前三章（策略分析结论、策略统计汇总、策略明细），不输出图表章节。
+
+
+            【数据约束（最重要）】
+
+            1. 所有数字必须严格来自输入数据，禁止编造、推算、四舍五入篡改。
+
+            2. 能耗数值保留 2 位小数，百分比保留 2 位小数。
+
+            3. 缺失数据写"—"，不得用 0 或其他值替代。
+
+            4. 若输入中某时段无转移记录，写"无业务转移"。
+
+
+            【输出结构（必须严格遵循）】
+
+            ## 一、策略分析结论
+
+
+            一、整体节能效果
+
+            策略范围：共{小区数}个小区、{时段数}个时段、{记录数}条策略记录。
+
+            策略组成：保持运行{数量}次，轻载节能{数量}次，深度休眠{数量}次，业务转移{数量}次。
+
+            能耗结果：基准总能耗{数值}Wh，策略总能耗{数值}Wh，其中已包含状态切换能耗{数值}Wh；总节能量{数值}Wh，整体节能率{数值}%。
+
+            校验结论：全部策略已通过覆盖、容量、保障、连续休眠和能耗校验。
+
+
+            二、分时段策略分析
+
+            {每个时段一行：T0x：保持运行{数量}，轻载节能{数量}，深度休眠{数量}，业务转移{数量}次；基准能耗{数值}Wh，策略能耗{数值}Wh，节能量{数值}Wh。}
+
+
+            三、业务转移说明
+
+            {每个时段一行：T0x：{承接转移描述或"无业务转移"}。}
+
+            容量结论：所有承接小区均通过容量校验，未出现容量超限。
+
+
+            ## 二、策略统计汇总
+
+
+            使用{{#1793797195035.strategy_summary_text#}}中"## 二、策略统计汇总"下的所有行，包括第一行策略汇总、第二行能耗汇总、以及
+            T01~T0x 各时段行，不改数字}
+
+
+            ## 三、策略明细
+
+
+            直接嵌入{{#1793797195035.strategy_detail_table#}}，不修改任何行}
+
+
+            【业务转移说明取值规则】
+
+            - 扫描策略明细表中"策略=深度休眠"或"转出>0"的行
+
+            - 每行提取：源小区、转出量、承接小区、承接方在该时段的利用率
+
+            - 格式：源小区 {cell_id} 向承接小区 {承接小区} 转移 {转出量}，承接后利用率 {利用率}%
+
+            - 同一时段多个转移用"；"连接
+
+            - 承接方利用率为"—"（容量为0）时，改为"承接方容量为0"
+
+            - 某时段无转移，写"无业务转移"
+
+
+            【格式要求】
+
+            - 输出纯 Markdown，无 HTML
+
+            - 一级标题 ##，二级标题用"一、二、三"，与模板一致
+
+            - 章节之间空一行
+
+            - 不输出报告标题"## 基站分时节能策略分析报告"（由后续拼接节点统一添加）
+
+            - 不输出"四、图表"章节
+
+            - 不加解释性前缀或后缀'
+        - id: 51b56642-8e5b-45bc-8b07-6c422d887aa6
+          role: user
+          text: '请根据以下数据生成《基站分时节能策略分析报告》的前三章（策略分析结论、策略统计汇总、策略明细），不输出图表章节。
+
+
+            ===== 策略汇总数据 =====
+
+            {{#1793797195035.strategy_summary_text#}}
+
+
+            ===== 策略明细表（用于第三章和业务转移说明）=====
+
+            {{#1793797195035.strategy_detail_table#}}
+
+
+            ===== 输出要求 =====
+
+            1. 严格按系统提示词的模板结构输出前三章
+
+            2. 数字必须来自上述数据，能耗和百分比保留 2 位小数
+
+            3. 业务转移说明必须从策略明细表中提取源小区、承接小区、转出量、承接方利用率
+
+            4. 第三章直接嵌入 strategy_detail_table，不重排、不裁剪
+
+            5. 以"## 一、策略分析结论"开头，到策略明细表的最后一行结束'
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 88
+      id: '1793798197267'
+      position:
+        x: 4548.621391227064
+        y: 147.45312418820498
+      positionAbsolute:
+        x: 4548.621391227064
+        y: 147.45312418820498
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        code: "import json\n\n\n# ============================================================\n\
+          # 可视化数据准备节点（AntV 图表输入）\n# 输入: strategy_summary_json, validata_result_rows_json\n\
+          # 输出:\n#   energy_chart_json    纯数组 → AntV 分组柱状图（能耗对比）\n#   strategy_chart_json\
+          \  纯数组 → AntV 分组柱状图（策略数量）\n#   trend_chart_json     纯数组 → AntV 折线图（业务量趋势）\n\
+          # 说明：\n#   柱状图元素 {category, value, group}\n#   折线图元素 {time, value, group}\n\
+          #   group 字段自动生成图例\n# ============================================================\n\
+          \n\ndef _f(v, d=0.0):\n    try:\n        if v is None or v == \"\":\n  \
+          \          return d\n        return float(v)\n    except Exception:\n  \
+          \      return d\n\n\ndef main(strategy_summary_json: str, validata_result_rows_json:\
+          \ str) -> dict:\n    try:\n        rows = json.loads(validata_result_rows_json)\
+          \ if validata_result_rows_json else []\n        if not isinstance(rows,\
+          \ list):\n            rows = []\n\n        # ---------- 时段顺序 ----------\n\
+          \        slot_order = []\n        seen = set()\n\n        # 优先从 strategy_summary_json\
+          \ 中提取已排序的时段\n        try:\n            summary = json.loads(strategy_summary_json)\
+          \ if strategy_summary_json else {}\n            if isinstance(summary, dict):\n\
+          \                sc = summary.get(\"slot_strategy_chart\", {}).get(\"data\"\
+          , [])\n                for item in sc:\n                    s = str(item.get(\"\
+          slot\", \"\"))\n                    if s and s not in seen:\n          \
+          \              seen.add(s)\n                        slot_order.append(s)\n\
+          \        except Exception:\n            pass\n\n        # 兜底：按出现顺序\n   \
+          \     if not slot_order:\n            for r in rows:\n                sid\
+          \ = str(r.get(\"slot_id\"))\n                if sid not in seen:\n     \
+          \               seen.add(sid)\n                    slot_order.append(sid)\n\
+          \n        # ============================================================\n\
+          \        # 图1：分时段基准能耗与策略能耗对比（分组柱状图）\n        # 元素格式：{category, value, group}\n\
+          \        # ============================================================\n\
+          \        energy_data = []\n        for sid in slot_order:\n            slot_rows\
+          \ = [r for r in rows if str(r.get(\"slot_id\")) == sid]\n            base\
+          \ = sum(_f(r.get(\"base_energy_wh\"), 0) for r in slot_rows)\n         \
+          \   strat = sum(_f(r.get(\"strategy_energy_wh\"), 0) for r in slot_rows)\n\
+          \            energy_data.append({\n                \"category\": sid,\n\
+          \                \"value\": round(base, 2),\n                \"group\":\
+          \ \"基准能耗\",\n            })\n            energy_data.append({\n        \
+          \        \"category\": sid,\n                \"value\": round(strat, 2),\n\
+          \                \"group\": \"策略能耗\",\n            })\n\n        # ============================================================\n\
+          \        # 图2：分时段节能策略数量分布（分组柱状图）\n        # 元素格式：{category, value, group}\n\
+          \        # ============================================================\n\
+          \        strategy_data = []\n        for sid in slot_order:\n          \
+          \  slot_rows = [r for r in rows if str(r.get(\"slot_id\")) == sid]\n   \
+          \         k = sum(1 for r in slot_rows if str(r.get(\"state\", \"\")).upper()\
+          \ == \"KEEP_ACTIVE\")\n            l = sum(1 for r in slot_rows if str(r.get(\"\
+          state\", \"\")).upper() == \"LIGHT_SLEEP\")\n            d = sum(1 for r\
+          \ in slot_rows if str(r.get(\"state\", \"\")).upper() == \"DEEP_SLEEP\"\
+          )\n            strategy_data.append({\"category\": sid, \"value\": k, \"\
+          group\": \"保持运行\"})\n            strategy_data.append({\"category\": sid,\
+          \ \"value\": l, \"group\": \"轻载节能\"})\n            strategy_data.append({\"\
+          category\": sid, \"value\": d, \"group\": \"深度休眠\"})\n\n        # ============================================================\n\
+          \        # 图3：小区最终业务量趋势（折线图）\n        # 元素格式：{time, value, group}\n    \
+          \    # ============================================================\n  \
+          \      cell_ids = sorted({str(r.get(\"cell_id\")) for r in rows})\n    \
+          \    value_index = {}\n        for r in rows:\n            key = (str(r.get(\"\
+          slot_id\")), str(r.get(\"cell_id\")))\n            value_index[key] = round(_f(r.get(\"\
+          final_traffic\"), 0), 2)\n\n        trend_data = []\n        for sid in\
+          \ slot_order:\n            for cid in cell_ids:\n                v = value_index.get((sid,\
+          \ cid))\n                if v is None:\n                    continue\n \
+          \               trend_data.append({\n                    \"time\": sid,\n\
+          \                    \"value\": v,\n                    \"group\": cid,\n\
+          \                })\n\n        return {\n            \"energy_chart_json\"\
+          : json.dumps(energy_data, ensure_ascii=False),\n            \"strategy_chart_json\"\
+          : json.dumps(strategy_data, ensure_ascii=False),\n            \"trend_chart_json\"\
+          : json.dumps(trend_data, ensure_ascii=False),\n        }\n\n    except Exception:\n\
+          \        empty = json.dumps([], ensure_ascii=False)\n        return {\n\
+          \            \"energy_chart_json\": empty,\n            \"strategy_chart_json\"\
+          : empty,\n            \"trend_chart_json\": empty,\n        }"
+        code_language: python3
+        outputs:
+          energy_chart_json:
+            children: null
+            type: string
+          strategy_chart_json:
+            children: null
+            type: string
+          trend_chart_json:
+            children: null
+            type: string
+        selected: false
+        title: 可视化代码准备
+        type: code
+        variables:
+        - value_selector:
+          - '1793797195035'
+          - strategy_summary_json
+          value_type: string
+          variable: strategy_summary_json
+        - value_selector:
+          - '1793696179356'
+          - validata_result_rows_json
+          value_type: string
+          variable: validata_result_rows_json
+      height: 52
+      id: '1793798900914'
+      position:
+        x: 5050.792301706542
+        y: 147.45312418820498
+      positionAbsolute:
+        x: 5050.792301706542
+        y: 147.45312418820498
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_team_authorization: true
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Data of column chart, such as, [{ "category":"北京", "value":825,
+              "group":"油车" }].
+            ja_JP: Data of column chart, such as, [{ "category":"北京", "value":825,
+              "group":"油车" }].
+            pt_BR: Data of column chart, such as, [{ "category":"北京", "value":825,
+              "group":"油车" }].
+            zh_Hans: 柱状图数据， 例如，[{ "category":"北京", "value":825, "group":"油车" }]。
+          label:
+            en_US: data of column chart
+            ja_JP: data of column chart
+            pt_BR: data of column chart
+            zh_Hans: 柱状图数据
+          llm_description: Data of column chart, such as, [{ "category":"北京", "value":825,
+            "group":"油车" }].
+          max: null
+          min: null
+          name: data
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: false
+          form: llm
+          human_description:
+            en_US: Whether stacking is enabled. When enabled, area charts require
+              a 'group' field in the data.
+            ja_JP: Whether stacking is enabled. When enabled, area charts require
+              a 'group' field in the data.
+            pt_BR: Whether stacking is enabled. When enabled, area charts require
+              a 'group' field in the data..
+            zh_Hans: 是否开启柱状图叠加，当 stack 为 true， data 数据中 必须有 'group' 字段。
+          label:
+            en_US: stack
+            ja_JP: stack
+            pt_BR: stack
+            zh_Hans: 柱状图叠加
+          llm_description: Whether stacking is enabled. When enabled, area charts
+            require a 'group' field in the data.
+          max: null
+          min: null
+          name: stack
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: boolean
+        - auto_generate: null
+          default: false
+          form: llm
+          human_description:
+            en_US: Whether grouping is enabled. When enabled, column charts require
+              a 'group' field in the data. When `group` is true, `stack` should be
+              false.
+            ja_JP: Whether grouping is enabled. When enabled, column charts require
+              a 'group' field in the data. When `group` is true, `stack` should be
+              false.
+            pt_BR: Whether grouping is enabled. When enabled, column charts require
+              a 'group' field in the data. When `group` is true, `stack` should be
+              false.
+            zh_Hans: 是否开启柱状图分组，当 group 为 true，data 数据中 必须有 'group' 字段。
+          label:
+            en_US: group
+            ja_JP: group
+            pt_BR: group
+            zh_Hans: 柱状图分组
+          llm_description: Whether grouping is enabled. When enabled, column charts
+            require a 'group' field in the data. When `group` is true, `stack` should
+            be false.
+          max: null
+          min: null
+          name: group
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: boolean
+        - auto_generate: null
+          default: 600
+          form: form
+          human_description:
+            en_US: Set the width of chart, default is 600.
+            ja_JP: Set the width of chart, default is 600.
+            pt_BR: Set the width of chart, default is 600.
+            zh_Hans: 请设置图表宽度， 默认值为 600。
+          label:
+            en_US: width
+            ja_JP: width
+            pt_BR: width
+            zh_Hans: 宽
+          llm_description: Set the width of chart, default is 600.
+          max: null
+          min: null
+          name: width
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        - auto_generate: null
+          default: 400
+          form: form
+          human_description:
+            en_US: Set the height of chart, default is 400.
+            ja_JP: Set the height of chart, default is 400.
+            pt_BR: Set the height of chart, default is 400.
+            zh_Hans: 请设置图表高度，默认值为 400。
+          label:
+            en_US: height
+            ja_JP: height
+            pt_BR: height
+            zh_Hans: 高
+          llm_description: Set the height of chart, default is 400.
+          max: null
+          min: null
+          name: height
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Set the title of chart.
+            ja_JP: Set the title of chart.
+            pt_BR: Set the title of chart.
+            zh_Hans: 请设置图表名称。
+          label:
+            en_US: title
+            ja_JP: title
+            pt_BR: title
+            zh_Hans: 图表名称
+          llm_description: Set the title of chart.
+          max: null
+          min: null
+          name: title
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Set the axisXTitle of chart.
+            ja_JP: Set the axisXTitle of chart.
+            pt_BR: Set the axisXTitle of chart.
+            zh_Hans: 请设置图表 X 轴名称。
+          label:
+            en_US: axisXTitle
+            ja_JP: axisXTitle
+            pt_BR: axisXTitle
+            zh_Hans: 图表 X 轴名称
+          llm_description: Set the axisXTitle of chart.
+          max: null
+          min: null
+          name: axisXTitle
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Set the axisYTitle of chart.
+            ja_JP: Set the axisYTitle of chart.
+            pt_BR: Set the axisYTitle of chart.
+            zh_Hans: 请设置图表 Y 轴名称。
+          label:
+            en_US: axisYTitle
+            ja_JP: axisYTitle
+            pt_BR: axisYTitle
+            zh_Hans: 图表 Y 轴名称
+          llm_description: Set the axisYTitle of chart.
+          max: null
+          min: null
+          name: axisYTitle
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: default
+          form: form
+          human_description:
+            en_US: Set the theme of chart.
+            ja_JP: Set the theme of chart.
+            pt_BR: Set the theme of chart.
+            zh_Hans: 请设置图表主题。
+          label:
+            en_US: theme
+            ja_JP: theme
+            pt_BR: theme
+            zh_Hans: 图表主题
+          llm_description: Set the theme of chart.
+          max: null
+          min: null
+          name: theme
+          options:
+          - icon: ''
+            label:
+              en_US: default
+              ja_JP: default
+              pt_BR: default
+              zh_Hans: 默认主题
+            value: default
+          - icon: ''
+            label:
+              en_US: academy
+              ja_JP: academy
+              pt_BR: academy
+              zh_Hans: 学术主题
+            value: academy
+          - icon: ''
+            label:
+              en_US: dark
+              ja_JP: dark
+              pt_BR: dark
+              zh_Hans: 暗黑主题
+            value: dark
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: select
+        - auto_generate: null
+          default: null
+          form: form
+          human_description:
+            en_US: Set the style of chart, such as, { "backgroundColor":"transparent",
+              "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough" }.
+            ja_JP: Set the style of chart, such as, { "backgroundColor":"transparent",
+              "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough" }.
+            pt_BR: Set the style of chart, such as, { "backgroundColor":"transparent",
+              "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough" }.
+            zh_Hans: 请设置图表样式，例如，{ "backgroundColor":"transparent", "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough" }。
+          label:
+            en_US: style
+            ja_JP: style
+            pt_BR: style
+            zh_Hans: 图表样式
+          llm_description: Set the style of chart, such as, { "backgroundColor":"transparent",
+            "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+            "texture":"rough" }.
+          max: null
+          min: null
+          name: style
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          axisXTitle: ''
+          axisYTitle: ''
+          data: ''
+          group: ''
+          height: ''
+          stack: ''
+          style: ''
+          theme: ''
+          title: ''
+          width: ''
+        plugin_id: antv/visualization
+        plugin_unique_identifier: antv/visualization:0.2.0@798a255e7bf02e93b8a5717be235b833482be58daab1c64c79c954281da14b9c
+        provider_icon: /console/api/workspaces/current/plugin/icon?tenant_id=6337e5c3-4648-46e7-a949-ea46ba502470&filename=0845c09f38c8d07ea4250bb588697f25bfe7d35fc590ceb8aa50425a715bb062.svg
+        provider_id: antv/visualization/visualization
+        provider_name: antv/visualization/visualization
+        provider_type: builtin
+        selected: false
+        title: 分时段能耗对比
+        tool_configurations:
+          height:
+            type: constant
+            value: 500
+          style:
+            type: mixed
+            value: null
+          theme:
+            type: constant
+            value: default
+          width:
+            type: constant
+            value: 800
+        tool_description: 生成一个柱状图，对不同类别进行数值比较，例如，当数值接近时，由于人眼对于高度的感知优于其他视觉元素（如面积、角度等），因此，使用柱状图更加合适。
+        tool_label: 生成柱状图
+        tool_name: generate_column_chart
+        tool_node_version: '2'
+        tool_parameters:
+          axisXTitle:
+            type: mixed
+            value: 时段
+          axisYTitle:
+            type: mixed
+            value: 能耗（Wh）
+          data:
+            type: mixed
+            value: '{{#1793798900914.energy_chart_json#}}'
+          group:
+            type: constant
+            value: true
+          stack:
+            type: constant
+            value: false
+          title:
+            type: mixed
+            value: 分时段基准能耗与策略能耗对比
+        type: tool
+      height: 166
+      id: '1793799082257'
+      position:
+        x: 5516.204864826115
+        y: 147.45312418820498
+      positionAbsolute:
+        x: 5516.204864826115
+        y: 147.45312418820498
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_team_authorization: true
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Data of column chart, such as, [{ "category":"北京", "value":825,
+              "group":"油车" }].
+            ja_JP: Data of column chart, such as, [{ "category":"北京", "value":825,
+              "group":"油车" }].
+            pt_BR: Data of column chart, such as, [{ "category":"北京", "value":825,
+              "group":"油车" }].
+            zh_Hans: 柱状图数据， 例如，[{ "category":"北京", "value":825, "group":"油车" }]。
+          label:
+            en_US: data of column chart
+            ja_JP: data of column chart
+            pt_BR: data of column chart
+            zh_Hans: 柱状图数据
+          llm_description: Data of column chart, such as, [{ "category":"北京", "value":825,
+            "group":"油车" }].
+          max: null
+          min: null
+          name: data
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: false
+          form: llm
+          human_description:
+            en_US: Whether stacking is enabled. When enabled, area charts require
+              a 'group' field in the data.
+            ja_JP: Whether stacking is enabled. When enabled, area charts require
+              a 'group' field in the data.
+            pt_BR: Whether stacking is enabled. When enabled, area charts require
+              a 'group' field in the data..
+            zh_Hans: 是否开启柱状图叠加，当 stack 为 true， data 数据中 必须有 'group' 字段。
+          label:
+            en_US: stack
+            ja_JP: stack
+            pt_BR: stack
+            zh_Hans: 柱状图叠加
+          llm_description: Whether stacking is enabled. When enabled, area charts
+            require a 'group' field in the data.
+          max: null
+          min: null
+          name: stack
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: boolean
+        - auto_generate: null
+          default: false
+          form: llm
+          human_description:
+            en_US: Whether grouping is enabled. When enabled, column charts require
+              a 'group' field in the data. When `group` is true, `stack` should be
+              false.
+            ja_JP: Whether grouping is enabled. When enabled, column charts require
+              a 'group' field in the data. When `group` is true, `stack` should be
+              false.
+            pt_BR: Whether grouping is enabled. When enabled, column charts require
+              a 'group' field in the data. When `group` is true, `stack` should be
+              false.
+            zh_Hans: 是否开启柱状图分组，当 group 为 true，data 数据中 必须有 'group' 字段。
+          label:
+            en_US: group
+            ja_JP: group
+            pt_BR: group
+            zh_Hans: 柱状图分组
+          llm_description: Whether grouping is enabled. When enabled, column charts
+            require a 'group' field in the data. When `group` is true, `stack` should
+            be false.
+          max: null
+          min: null
+          name: group
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: boolean
+        - auto_generate: null
+          default: 600
+          form: form
+          human_description:
+            en_US: Set the width of chart, default is 600.
+            ja_JP: Set the width of chart, default is 600.
+            pt_BR: Set the width of chart, default is 600.
+            zh_Hans: 请设置图表宽度， 默认值为 600。
+          label:
+            en_US: width
+            ja_JP: width
+            pt_BR: width
+            zh_Hans: 宽
+          llm_description: Set the width of chart, default is 600.
+          max: null
+          min: null
+          name: width
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        - auto_generate: null
+          default: 400
+          form: form
+          human_description:
+            en_US: Set the height of chart, default is 400.
+            ja_JP: Set the height of chart, default is 400.
+            pt_BR: Set the height of chart, default is 400.
+            zh_Hans: 请设置图表高度，默认值为 400。
+          label:
+            en_US: height
+            ja_JP: height
+            pt_BR: height
+            zh_Hans: 高
+          llm_description: Set the height of chart, default is 400.
+          max: null
+          min: null
+          name: height
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Set the title of chart.
+            ja_JP: Set the title of chart.
+            pt_BR: Set the title of chart.
+            zh_Hans: 请设置图表名称。
+          label:
+            en_US: title
+            ja_JP: title
+            pt_BR: title
+            zh_Hans: 图表名称
+          llm_description: Set the title of chart.
+          max: null
+          min: null
+          name: title
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Set the axisXTitle of chart.
+            ja_JP: Set the axisXTitle of chart.
+            pt_BR: Set the axisXTitle of chart.
+            zh_Hans: 请设置图表 X 轴名称。
+          label:
+            en_US: axisXTitle
+            ja_JP: axisXTitle
+            pt_BR: axisXTitle
+            zh_Hans: 图表 X 轴名称
+          llm_description: Set the axisXTitle of chart.
+          max: null
+          min: null
+          name: axisXTitle
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Set the axisYTitle of chart.
+            ja_JP: Set the axisYTitle of chart.
+            pt_BR: Set the axisYTitle of chart.
+            zh_Hans: 请设置图表 Y 轴名称。
+          label:
+            en_US: axisYTitle
+            ja_JP: axisYTitle
+            pt_BR: axisYTitle
+            zh_Hans: 图表 Y 轴名称
+          llm_description: Set the axisYTitle of chart.
+          max: null
+          min: null
+          name: axisYTitle
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: default
+          form: form
+          human_description:
+            en_US: Set the theme of chart.
+            ja_JP: Set the theme of chart.
+            pt_BR: Set the theme of chart.
+            zh_Hans: 请设置图表主题。
+          label:
+            en_US: theme
+            ja_JP: theme
+            pt_BR: theme
+            zh_Hans: 图表主题
+          llm_description: Set the theme of chart.
+          max: null
+          min: null
+          name: theme
+          options:
+          - icon: ''
+            label:
+              en_US: default
+              ja_JP: default
+              pt_BR: default
+              zh_Hans: 默认主题
+            value: default
+          - icon: ''
+            label:
+              en_US: academy
+              ja_JP: academy
+              pt_BR: academy
+              zh_Hans: 学术主题
+            value: academy
+          - icon: ''
+            label:
+              en_US: dark
+              ja_JP: dark
+              pt_BR: dark
+              zh_Hans: 暗黑主题
+            value: dark
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: select
+        - auto_generate: null
+          default: null
+          form: form
+          human_description:
+            en_US: Set the style of chart, such as, { "backgroundColor":"transparent",
+              "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough" }.
+            ja_JP: Set the style of chart, such as, { "backgroundColor":"transparent",
+              "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough" }.
+            pt_BR: Set the style of chart, such as, { "backgroundColor":"transparent",
+              "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough" }.
+            zh_Hans: 请设置图表样式，例如，{ "backgroundColor":"transparent", "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough" }。
+          label:
+            en_US: style
+            ja_JP: style
+            pt_BR: style
+            zh_Hans: 图表样式
+          llm_description: Set the style of chart, such as, { "backgroundColor":"transparent",
+            "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+            "texture":"rough" }.
+          max: null
+          min: null
+          name: style
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          axisXTitle: ''
+          axisYTitle: ''
+          data: ''
+          group: ''
+          height: ''
+          stack: ''
+          style: ''
+          theme: ''
+          title: ''
+          width: ''
+        plugin_id: antv/visualization
+        plugin_unique_identifier: antv/visualization:0.2.0@798a255e7bf02e93b8a5717be235b833482be58daab1c64c79c954281da14b9c
+        provider_icon: /console/api/workspaces/current/plugin/icon?tenant_id=6337e5c3-4648-46e7-a949-ea46ba502470&filename=0845c09f38c8d07ea4250bb588697f25bfe7d35fc590ceb8aa50425a715bb062.svg
+        provider_id: antv/visualization/visualization
+        provider_name: antv/visualization/visualization
+        provider_type: builtin
+        selected: false
+        title: 分时段策略数量分布 分组柱状图
+        tool_configurations:
+          height:
+            type: constant
+            value: 500
+          style:
+            type: mixed
+            value: null
+          theme:
+            type: constant
+            value: default
+          width:
+            type: constant
+            value: 800
+        tool_description: 生成一个柱状图，对不同类别进行数值比较，例如，当数值接近时，由于人眼对于高度的感知优于其他视觉元素（如面积、角度等），因此，使用柱状图更加合适。
+        tool_label: 生成柱状图
+        tool_name: generate_column_chart
+        tool_node_version: '2'
+        tool_parameters:
+          axisXTitle:
+            type: mixed
+            value: 时段
+          axisYTitle:
+            type: mixed
+            value: 小区数量（个）
+          data:
+            type: mixed
+            value: '{{#1793798900914.strategy_chart_json#}}'
+          group:
+            type: constant
+            value: true
+          stack:
+            type: constant
+            value: false
+          title:
+            type: mixed
+            value: 分时段节能策略数量分布
+        type: tool
+      height: 166
+      id: '1793799094082'
+      position:
+        x: 5516.204864826115
+        y: 384.6166781281219
+      positionAbsolute:
+        x: 5516.204864826115
+        y: 384.6166781281219
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_team_authorization: true
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Data of line chart, such as, [{ "time":"2018", "value":99.9 }].
+            ja_JP: Data of line chart, such as, [{ "time":"2018", "value":99.9 }].
+            pt_BR: Data of line chart, such as, [{ "time":"2018", "value":99.9 }].
+            zh_Hans: 折线图数据，例如，[{ "time":"2018", "value":99.9 }]。
+          label:
+            en_US: data of line chart
+            ja_JP: data of line chart
+            pt_BR: data of line chart
+            zh_Hans: 折线图数据
+          llm_description: Data of line chart, such as, [{ "time":"2018", "value":99.9
+            }].
+          max: null
+          min: null
+          name: data
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: 600
+          form: form
+          human_description:
+            en_US: Set the width of chart, default is 600.
+            ja_JP: Set the width of chart, default is 600.
+            pt_BR: Set the width of chart, default is 600.
+            zh_Hans: 请设置图表宽度，默认值为 600。
+          label:
+            en_US: width
+            ja_JP: width
+            pt_BR: width
+            zh_Hans: 宽
+          llm_description: Set the width of chart, default is 600.
+          max: null
+          min: null
+          name: width
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        - auto_generate: null
+          default: 400
+          form: form
+          human_description:
+            en_US: Set the height of chart, default is 400.
+            ja_JP: Set the height of chart, default is 400.
+            pt_BR: Set the height of chart, default is 400.
+            zh_Hans: 请设置图表高度，默认值为 400。
+          label:
+            en_US: height
+            ja_JP: height
+            pt_BR: height
+            zh_Hans: 高
+          llm_description: Set the height of chart, default is 400.
+          max: null
+          min: null
+          name: height
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Set the title of chart.
+            ja_JP: Set the title of chart.
+            pt_BR: Set the title of chart.
+            zh_Hans: 请设置图表名称。
+          label:
+            en_US: title
+            ja_JP: title
+            pt_BR: title
+            zh_Hans: 图表名称
+          llm_description: Set the title of chart.
+          max: null
+          min: null
+          name: title
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Set the axisXTitle of chart.
+            ja_JP: Set the axisXTitle of chart.
+            pt_BR: Set the axisXTitle of chart.
+            zh_Hans: 请设置图表 X 轴名称。
+          label:
+            en_US: axisXTitle
+            ja_JP: axisXTitle
+            pt_BR: axisXTitle
+            zh_Hans: 图表 X 轴名称
+          llm_description: Set the axisXTitle of chart.
+          max: null
+          min: null
+          name: axisXTitle
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Set the axisYTitle of chart.
+            ja_JP: Set the axisYTitle of chart.
+            pt_BR: Set the axisYTitle of chart.
+            zh_Hans: 请设置图表 Y 轴名称。
+          label:
+            en_US: axisYTitle
+            ja_JP: axisYTitle
+            pt_BR: axisYTitle
+            zh_Hans: 图表 Y 轴名称
+          llm_description: Set the axisYTitle of chart.
+          max: null
+          min: null
+          name: axisYTitle
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: default
+          form: form
+          human_description:
+            en_US: Set the theme of chart.
+            ja_JP: Set the theme of chart.
+            pt_BR: Set the theme of chart.
+            zh_Hans: 请设置图表主题。
+          label:
+            en_US: theme
+            ja_JP: theme
+            pt_BR: theme
+            zh_Hans: 图表主题
+          llm_description: Set the theme of chart.
+          max: null
+          min: null
+          name: theme
+          options:
+          - icon: ''
+            label:
+              en_US: default
+              ja_JP: default
+              pt_BR: default
+              zh_Hans: 默认主题
+            value: default
+          - icon: ''
+            label:
+              en_US: academy
+              ja_JP: academy
+              pt_BR: academy
+              zh_Hans: 学术主题
+            value: academy
+          - icon: ''
+            label:
+              en_US: dark
+              ja_JP: dark
+              pt_BR: dark
+              zh_Hans: 黑暗主题
+            value: dark
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: select
+        - auto_generate: null
+          default: null
+          form: form
+          human_description:
+            en_US: Set the style of chart, such as, { "backgroundColor":"transparent",
+              "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough", "lineWidth":2, startAtZero:true }.
+            ja_JP: Set the style of chart, such as, { "backgroundColor":"transparent",
+              "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough", "lineWidth":2, startAtZero:true }.
+            pt_BR: Set the style of chart, such as, { "backgroundColor":"transparent",
+              "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough", "lineWidth":2, startAtZero:true }.
+            zh_Hans: 请设置图表样式，例如，{ "backgroundColor":"transparent", "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+              "texture":"rough", "lineWidth":2, startAtZero:true }。
+          label:
+            en_US: style
+            ja_JP: style
+            pt_BR: style
+            zh_Hans: 图表样式
+          llm_description: Set the style of chart, such as, { "backgroundColor":"transparent",
+            "palette":["#8459fc","#ff89bd","#1677ff","#00c2ff","#ff9a00","#f2cc2e","#7587dc","#bd80fa"],
+            "texture":"rough", "lineWidth":2, startAtZero:true }.
+          max: null
+          min: null
+          name: style
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          axisXTitle: ''
+          axisYTitle: ''
+          data: ''
+          height: ''
+          style: ''
+          theme: ''
+          title: ''
+          width: ''
+        plugin_id: antv/visualization
+        plugin_unique_identifier: antv/visualization:0.2.0@798a255e7bf02e93b8a5717be235b833482be58daab1c64c79c954281da14b9c
+        provider_icon: /console/api/workspaces/current/plugin/icon?tenant_id=6337e5c3-4648-46e7-a949-ea46ba502470&filename=0845c09f38c8d07ea4250bb588697f25bfe7d35fc590ceb8aa50425a715bb062.svg
+        provider_id: antv/visualization/visualization
+        provider_name: antv/visualization/visualization
+        provider_type: builtin
+        selected: false
+        title: 小区最终业务量趋势
+        tool_configurations:
+          height:
+            type: constant
+            value: 500
+          style:
+            type: mixed
+            value: null
+          theme:
+            type: constant
+            value: default
+          width:
+            type: constant
+            value: 800
+        tool_description: 生成一个折线图来显示随时间变化的趋势，例如，2000 年到 2016 年苹果电脑销量与苹果公司利润比例的变化。
+        tool_label: 生成折线图
+        tool_name: generate_line_chart
+        tool_node_version: '2'
+        tool_parameters:
+          axisXTitle:
+            type: mixed
+            value: 时段
+          axisYTitle:
+            type: mixed
+            value: 最终业务量（业务量单位）
+          data:
+            type: mixed
+            value: '{{#1793798900914.trend_chart_json#}}'
+          title:
+            type: mixed
+            value: 小区最终业务量趋势
+        type: tool
+      height: 166
+      id: '1793799102257'
+      position:
+        x: 5516.204864826115
+        y: 658.5385794279441
+      positionAbsolute:
+        x: 5516.204864826115
+        y: 658.5385794279441
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        selected: false
+        template: "{{ text }}\r\n\r\n## 四、可视化分析\r\n\r\n### 1. 分时段能耗对比\r\n\r\n![分时段基准能耗与策略能耗对比]({{\
+          \ text_1 }})\r\n\r\n### 2. 分时段策略数量分布\r\n\r\n![分时段节能策略数量分布]({{ text_2 }})\r\
+          \n\r\n### 3. 小区最终业务量趋势\r\n\r\n![小区最终业务量趋势]({{ text_3 }})\r\n\r\n{{ structured_summary_md\
+          \ }}\r\n"
+        title: 模板转换 3
+        type: template-transform
+        variables:
+        - value_selector:
+          - '1793798197267'
+          - text
+          value_type: string
+          variable: text
+        - value_selector:
+          - '1793799082257'
+          - text
+          value_type: string
+          variable: text_1
+        - value_selector:
+          - '1793799094082'
+          - text
+          value_type: string
+          variable: text_2
+        - value_selector:
+          - '1793799102257'
+          - text
+          value_type: string
+          variable: text_3
+        - value_selector:
+          - '1793797195035'
+          - structured_summary_md
+          value_type: string
+          variable: structured_summary_md
+      height: 52
+      id: '1793799312246'
+      position:
+        x: 6362.985281804704
+        y: 469.0886635873747
+      positionAbsolute:
+        x: 6362.985281804704
+        y: 469.0886635873747
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_team_authorization: true
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Markdown text
+            ja_JP: Markdown text
+            pt_BR: Markdown text
+            zh_Hans: Markdown格式文本
+          label:
+            en_US: Markdown text
+            ja_JP: Markdown text
+            pt_BR: Markdown text
+            zh_Hans: Markdown格式文本
+          llm_description: ''
+          max: null
+          min: null
+          name: md_text
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: llm
+          human_description:
+            en_US: Optional custom output file name, and the filename suffix is not
+              required.
+            ja_JP: Optional custom output file name, and the filename suffix is not
+              required.
+            pt_BR: Optional custom output file name, and the filename suffix is not
+              required.
+            zh_Hans: 可选的自定义输出文件名，后缀名无需指定
+          label:
+            en_US: Output Filename
+            ja_JP: Output Filename
+            pt_BR: Output Filename
+            zh_Hans: 输出文件名
+          llm_description: ''
+          max: null
+          min: null
+          name: output_filename
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          md_text: ''
+          output_filename: ''
+        plugin_id: bowenliang123/md_exporter
+        plugin_unique_identifier: bowenliang123/md_exporter:3.6.9@3f027d63e80b44d5d5a9f706871afaef37905b8f8a89a2d152dc530211a8acb1
+        provider_icon: /console/api/workspaces/current/plugin/icon?tenant_id=6337e5c3-4648-46e7-a949-ea46ba502470&filename=94713265c9473c3bd2bc8b0dd0794ad40955b7431610243bbd00ab02dae281cf.png
+        provider_id: bowenliang123/md_exporter/md_exporter
+        provider_name: bowenliang123/md_exporter/md_exporter
+        provider_type: builtin
+        selected: false
+        title: Markdown ⮕ MD
+        tool_configurations: {}
+        tool_description: 将 Markdown 转换为 .md 文件的工具
+        tool_label: Markdown ⮕ MD
+        tool_name: md_to_md
+        tool_node_version: '2'
+        tool_parameters:
+          md_text:
+            type: mixed
+            value: '{{#1793799312246.output#}}'
+          output_filename:
+            type: mixed
+            value: result
+        type: tool
+      height: 52
+      id: '1793800686355'
+      position:
+        x: 6991.5130113338555
+        y: 436.9251096474577
+      positionAbsolute:
+        x: 6991.5130113338555
+        y: 436.9251096474577
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: -4580.370862260317
+      y: 108.71658675123024
+      zoom: 0.7578582832552
+  rag_pipeline_variables: []
