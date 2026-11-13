@@ -1,0 +1,1411 @@
+代码节点一
+import csv
+import io
+import json
+import re
+from typing import Any, Dict, List, Tuple
+
+
+# 原始列名 -> 标准列名
+# key 使用 strip().lower() 后的形式；中文 ID 会变成小写 id
+COLUMN_MAP = {
+    "complaint_id": "complaint_id",
+    "投诉id": "complaint_id",
+
+    "accept_time": "accept_time",
+
+    "客户编号": "customer_id",
+    "customer_id": "customer_id",
+    "客户id": "customer_id",
+
+    "员工姓名": "handler_name",
+    "handler_name": "handler_name",
+
+    "package_type": "package_type",
+    "complaint_description": "complaint_description",
+    "complaint_type": "complaint_type",
+    "complaint_subtype": "complaint_subtype",
+
+    "handler_id": "handler_id",
+    "员工id": "handler_id",       # 员工ID
+
+    "hall_id": "hall_id",
+    "营业厅id": "hall_id",        # 营业厅ID
+
+    "customer_feedback": "customer_feedback",
+    "customer_name": "customer_name",
+    "customer_level": "customer_level",
+
+    "hall_name": "hall_name",
+    "营业厅名称": "hall_name",
+
+    "region": "region",
+}
+
+
+# 每张表标准字段固定顺序；source_row_index 单独追加在最后
+TABLE_SPEC = {
+    "complaint_record": [
+        "complaint_id",
+        "accept_time",
+        "customer_id",
+        "handler_name",
+        "package_type",
+        "complaint_description",
+        "complaint_type",
+        "complaint_subtype",
+    ],
+    "complaint_handling": [
+        "complaint_id",
+        "handler_id",
+        "hall_id",
+        "accept_time",
+        "customer_feedback",
+        "customer_name",
+    ],
+    "customer_info": [
+        "customer_id",
+        "customer_name",
+        "customer_level",
+    ],
+    "employee_info": [
+        "handler_id",
+        "handler_name",
+        "hall_id",
+    ],
+    "hall_info": [
+        "hall_id",
+        "hall_name",
+        "region",
+    ],
+}
+
+
+def _is_markdown_table(text: str) -> bool:
+    for line in text.splitlines():
+        s = line.strip()
+        if not s:
+            continue
+        return "|" in s
+    return False
+
+
+def _is_md_separator(cells: List[str]) -> bool:
+    """判断 Markdown 表格分隔行，如 | --- | :---: |。"""
+    non_empty = [c.strip() for c in cells if c.strip() != ""]
+    if not non_empty:
+        return False
+    return all(re.fullmatch(r":?-{3,}:?", c) for c in non_empty)
+
+
+def _parse_table(text: str) -> Tuple[List[str], List[List[str]]]:
+    """
+    兼容 Markdown 表格和 CSV 文本。
+    返回：headers, rows
+    注意：
+    - Markdown 单元格会去掉排版空格；
+    - CSV 数据单元格尽量保留原值；
+    - 空行不作为数据行；
+    - 不追加 source_row_index，本函数只负责解析。
+    """
+    if text is None:
+        text = ""
+    text = str(text).lstrip("\ufeff")
+
+    if _is_markdown_table(text):
+        non_empty_lines = [ln for ln in text.splitlines() if ln.strip() != ""]
+        if not non_empty_lines:
+            return [], []
+
+        header_line = non_empty_lines[0].strip()
+        headers = [c.strip() for c in header_line.strip("|").split("|")]
+
+        rows: List[List[str]] = []
+        for line in non_empty_lines[1:]:
+            s = line.strip()
+            if not s:
+                continue
+            cells = [c.strip() for c in s.strip("|").split("|")]
+            if _is_md_separator(cells):
+                continue
+            rows.append(cells)
+        return headers, rows
+
+    # CSV 解析
+    reader = csv.reader(io.StringIO(text))
+    all_rows = [row for row in reader if row and any(str(c) != "" for c in row)]
+    if not all_rows:
+        return [], []
+
+    headers = [str(c).strip() for c in all_rows[0]]
+    rows = [[str(c) for c in row] for row in all_rows[1:]]
+    return headers, rows
+
+
+def _normalize_extra_column_name(name: str, idx: int) -> str:
+    """额外列名标准化为小写 snake_case 风格；中文保留。"""
+    s = "" if name is None else str(name).strip()
+    if not s:
+        s = f"extra_col_{idx + 1}"
+
+    s = s.lower()
+    s = re.sub(r"[\s\-/]+", "_", s)
+    s = re.sub(r"[^\w\u4e00-\u9fff]+", "_", s)
+    s = re.sub(r"_+", "_", s).strip("_")
+
+    if not s:
+        s = f"extra_col_{idx + 1}"
+    if s == "source_row_index":
+        s = "extra_source_row_index"
+    return s
+
+
+def _standardize_one_table(
+    table_name: str,
+    table_text: str,
+) -> List[Dict[str, Any]]:
+    """
+    标准化单张表：
+    1. 统一列名；
+    2. 标准字段按固定顺序；
+    3. 额外列放在标准字段之后、source_row_index 之前；
+    4. 按原始数据行序追加 0 基 source_row_index；
+    5. 不转换时间、不修 ID、不补缺失、不删除记录。
+    """
+    std_cols = TABLE_SPEC[table_name]
+    std_set = set(std_cols)
+
+    headers, rows = _parse_table(table_text)
+
+    if not headers and not rows:
+        return []
+
+    # 对齐列数：如果某些行比表头长，补齐额外表头，避免丢数据
+    max_len = len(headers)
+    for row in rows:
+        if len(row) > max_len:
+            max_len = len(row)
+
+    headers = list(headers)
+    while len(headers) < max_len:
+        headers.append(f"extra_col_{len(headers) + 1}")
+
+    # 建立“原始列索引 -> 标准列名 / 额外列名”的映射
+    mapped_std: Dict[int, str] = {}
+    mapped_extra: Dict[int, str] = {}
+    used_names = set(std_cols) | {"source_row_index"}
+
+    for j, raw_header in enumerate(headers):
+        norm_header = str(raw_header).strip().lower()
+        std_name = COLUMN_MAP.get(norm_header)
+
+        if std_name is not None and std_name in std_set:
+            mapped_std[j] = std_name
+        else:
+            base = _normalize_extra_column_name(raw_header, j)
+            extra_name = base
+            k = 2
+            while extra_name in used_names:
+                extra_name = f"{base}_{k}"
+                k += 1
+            used_names.add(extra_name)
+            mapped_extra[j] = extra_name
+
+    result: List[Dict[str, Any]] = []
+
+    for row_index, row in enumerate(rows):
+        # 补齐本行长度
+        row_values = list(row)
+        if len(row_values) < max_len:
+            row_values.extend([""] * (max_len - len(row_values)))
+
+        # 先按标准字段固定顺序建立空值
+        out: Dict[str, Any] = {col: "" for col in std_cols}
+
+        # 填入标准字段和额外列
+        for j in range(max_len):
+            value = row_values[j] if j < len(row_values) else ""
+
+            if j in mapped_std:
+                out[mapped_std[j]] = value
+            elif j in mapped_extra:
+                out[mapped_extra[j]] = value
+
+        # 追加 source_row_index，按原始数据行序 0 基连续编号
+        out["source_row_index"] = row_index
+        result.append(out)
+
+    return result
+
+
+def main(
+    complaint_record: str = "",
+    complaint_handling: str = "",
+    customer_info: str = "",
+    employee_info: str = "",
+    hall_info: str = "",
+    **kwargs,
+) -> dict:
+    """
+    Dify 代码节点入口。
+    输入：五张原始表文本（字符串）。
+    输出：五张标准化表，均为 JSON 字符串（标准 JSON 数组文本）。
+    """
+    result = {
+        "complaint_record": _standardize_one_table("complaint_record", complaint_record),
+        "complaint_handling": _standardize_one_table("complaint_handling", complaint_handling),
+        "customer_info": _standardize_one_table("customer_info", customer_info),
+        "employee_info": _standardize_one_table("employee_info", employee_info),
+        "hall_info": _standardize_one_table("hall_info", hall_info),
+    }
+
+    # 输出 5 个 JSON 字符串，保证是标准 JSON，后续节点可直接 json.loads
+    return {k: json.dumps(v, ensure_ascii=False) for k, v in result.items()}
+
+输入：
+complaint_record   
+complaint_handling 
+customer_info
+employee_info
+hall_info
+
+输出
+complaint_record   string
+complaint_handling string
+customer_info string
+employee_info string
+hall_info string
+
+代码节点二
+import json
+import re
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
+
+
+MONTH_MAP = {
+    "jan": 1, "january": 1,
+    "feb": 2, "february": 2,
+    "mar": 3, "march": 3,
+    "apr": 4, "april": 4,
+    "may": 5,
+    "jun": 6, "june": 6,
+    "jul": 7, "july": 7,
+    "aug": 8, "august": 8,
+    "sep": 9, "sept": 9, "september": 9,
+    "oct": 10, "october": 10,
+    "nov": 11, "november": 11,
+    "dec": 12, "december": 12,
+}
+
+BASELINE_SLASH = re.compile(
+    r"^\s*(\d{4})/(\d{1,2})/(\d{1,2})\s+(\d{1,2}):(\d{2})(?::\d{2})?\s*$"
+)
+
+
+def _fmt(y: int, m: int, d: int, hh: int, mm: int) -> str:
+    return f"{y:04d}/{m:02d}/{d:02d} {hh:02d}:{mm:02d}"
+
+
+def _valid(y: int, m: int, d: int, hh: int, mm: int) -> bool:
+    try:
+        datetime(y, m, d, hh, mm)
+        return True
+    except Exception:
+        return False
+
+
+def _build_dt(y, m, d, hh, mm) -> Optional[str]:
+    if not _valid(y, m, d, hh, mm):
+        return None
+    return _fmt(y, m, d, hh, mm)
+
+
+def _parse_12h(hour_str: str, ampm: str) -> Optional[int]:
+    try:
+        h = int(hour_str)
+    except Exception:
+        return None
+    if ampm is None:
+        return h if 0 <= h <= 23 else None
+    ap = ampm.strip().lower().replace(".", "")
+    if ap not in ("am", "pm"):
+        return None
+    if not (1 <= h <= 12):
+        return None
+    if ap == "am":
+        return 0 if h == 12 else h
+    return 12 if h == 12 else h + 12
+
+
+def _parse_month_word(s: str) -> Optional[int]:
+    return MONTH_MAP.get(s.strip().lower().rstrip("."))
+
+
+def parse_time_value(raw: str) -> Tuple[Optional[str], str]:
+    """
+    返回 (normalized, reason)
+    - normalized: 'YYYY/MM/DD HH:MM' 或 None
+    - reason: 'baseline' | 'fixed' | 'empty' | 'unrecognized'
+    """
+    if raw is None:
+        return None, "empty"
+    s = str(raw).strip()
+    if s == "":
+        return None, "empty"
+
+    # 基准斜杠格式：只补零
+    m = BASELINE_SLASH.match(s)
+    if m:
+        y, mo, d, hh, mm = (int(x) for x in m.groups())
+        out = _build_dt(y, mo, d, hh, mm)
+        return (out, "baseline") if out else (None, "unrecognized")
+
+    # 纯数字紧凑格式
+    if re.fullmatch(r"\d{8}|\d{12}|\d{14}", s):
+        y, mo, d = int(s[0:4]), int(s[4:6]), int(s[6:8])
+        if len(s) == 8:
+            hh, mm = 0, 0
+        else:
+            hh, mm = int(s[8:10]), int(s[10:12])
+        out = _build_dt(y, mo, d, hh, mm)
+        return (out, "fixed") if out else (None, "unrecognized")
+
+    # 中文日期
+    m = re.fullmatch(
+        r"(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日(?:\s*(\d{1,2}):(\d{2})(?::\d{2})?)?",
+        s,
+    )
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        hh = int(m.group(4)) if m.group(4) else 0
+        mm = int(m.group(5)) if m.group(5) else 0
+        out = _build_dt(y, mo, d, hh, mm)
+        return (out, "fixed") if out else (None, "unrecognized")
+
+    # 点号日期
+    m = re.fullmatch(
+        r"(\d{4})\.(\d{1,2})\.(\d{1,2})(?:\s+(\d{1,2}):(\d{2})(?::\d{2})?)?",
+        s,
+    )
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        hh = int(m.group(4)) if m.group(4) else 0
+        mm = int(m.group(5)) if m.group(5) else 0
+        out = _build_dt(y, mo, d, hh, mm)
+        return (out, "fixed") if out else (None, "unrecognized")
+
+    # 短横线日期 DD-MM-YYYY
+    m = re.fullmatch(
+        r"(\d{1,2})-(\d{1,2})-(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::\d{2})?)?",
+        s,
+    )
+    if m:
+        d, mo, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        hh = int(m.group(4)) if m.group(4) else 0
+        mm = int(m.group(5)) if m.group(5) else 0
+        out = _build_dt(y, mo, d, hh, mm)
+        return (out, "fixed") if out else (None, "unrecognized")
+
+    # 时间在前、日期在后
+    m = re.fullmatch(
+        r"(\d{1,2}):(\d{2})(?::\d{2})?\s+(\d{1,2})-(\d{1,2})-(\d{4})",
+        s,
+    )
+    if m:
+        hh, mm = int(m.group(1)), int(m.group(2))
+        d, mo, y = int(m.group(3)), int(m.group(4)), int(m.group(5))
+        out = _build_dt(y, mo, d, hh, mm)
+        return (out, "fixed") if out else (None, "unrecognized")
+
+    # 美式斜杠 + AM/PM
+    m = re.fullmatch(
+        r"(\d{1,2})/(\d{1,2})/(\d{4})\s+(\d{1,2}):(\d{2})(?::\d{2})?\s*([AaPp][Mm])",
+        s,
+    )
+    if m:
+        mo, d, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        hh = _parse_12h(m.group(4), m.group(6))
+        mm = int(m.group(5))
+        if hh is not None:
+            out = _build_dt(y, mo, d, hh, mm)
+            return (out, "fixed") if out else (None, "unrecognized")
+
+    # 英文月份：Thursday, 10 July 2025 02:20 PM
+    m = re.fullmatch(
+        r"(?:[A-Za-z]+,\s*)?(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::\d{2})?\s*([AaPp][Mm]))?",
+        s,
+    )
+    if m:
+        d = int(m.group(1))
+        mo = _parse_month_word(m.group(2))
+        y = int(m.group(3))
+        if mo is not None:
+            if m.group(4):
+                hh = _parse_12h(m.group(4), m.group(6))
+                mm = int(m.group(5))
+            else:
+                hh, mm = 0, 0
+            if hh is not None:
+                out = _build_dt(y, mo, d, hh, mm)
+                return (out, "fixed") if out else (None, "unrecognized")
+
+    # 英文月份：May 27, 2025 10:32 AM
+    m = re.fullmatch(
+        r"([A-Za-z]+)\s+(\d{1,2}),\s*(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::\d{2})?\s*([AaPp][Mm]))?",
+        s,
+    )
+    if m:
+        mo = _parse_month_word(m.group(1))
+        d = int(m.group(2))
+        y = int(m.group(3))
+        if mo is not None:
+            if m.group(4):
+                hh = _parse_12h(m.group(4), m.group(6))
+                mm = int(m.group(5))
+            else:
+                hh, mm = 0, 0
+            if hh is not None:
+                out = _build_dt(y, mo, d, hh, mm)
+                return (out, "fixed") if out else (None, "unrecognized")
+
+    # 仅日期 YYYY-MM-DD
+    m = re.fullmatch(r"(\d{4})-(\d{1,2})-(\d{1,2})", s)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        out = _build_dt(y, mo, d, 0, 0)
+        return (out, "fixed") if out else (None, "unrecognized")
+
+    # 仅日期 YYYY/M/D
+    m = re.fullmatch(r"(\d{4})/(\d{1,2})/(\d{1,2})", s)
+    if m:
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        out = _build_dt(y, mo, d, 0, 0)
+        return (out, "fixed") if out else (None, "unrecognized")
+
+    return None, "unrecognized"
+
+
+def _normalize_table_time(rows: List[Dict[str, Any]], table_name: str):
+    fixed = 0
+    baseline = 0
+    empty = 0
+    unrecognized = 0
+    samples = []
+    new_rows = []
+
+    for row in rows:
+        new_row = dict(row)
+        raw = row.get("accept_time", "")
+        normalized, reason = parse_time_value(raw)
+
+        if normalized is not None:
+            new_row["accept_time"] = normalized
+            if reason == "fixed":
+                fixed += 1
+            else:
+                baseline += 1
+        else:
+            new_row["accept_time"] = ""
+            if reason == "empty":
+                empty += 1
+            else:
+                unrecognized += 1
+                if len(samples) < 20:
+                    samples.append({
+                        "source_row_index": row.get("source_row_index"),
+                        "raw": raw,
+                    })
+
+        new_rows.append(new_row)
+
+    stats = {
+        "table": table_name,
+        "total_rows": len(rows),
+        "fixed_rows": fixed,
+        "zero_padded_only_rows": baseline,
+        "empty_rows": empty,
+        "unrecognized_rows": unrecognized,
+        "unrecognized_samples": samples,
+    }
+    return new_rows, stats
+
+
+def _safe_loads(s: Any) -> List[Dict[str, Any]]:
+    if s is None:
+        return []
+    if isinstance(s, list):
+        return s
+    if isinstance(s, dict):
+        return [s]
+    text = str(s).strip()
+    if text == "":
+        return []
+    try:
+        data = json.loads(text)
+    except Exception:
+        return []
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        return [data]
+    return []
+
+
+def _format_summary(cr_stats: Dict[str, Any], ch_stats: Dict[str, Any]) -> str:
+    lines = ["时间格式统一（任务二）修复总结", "=" * 32, ""]
+
+    for st in (cr_stats, ch_stats):
+        lines.append(f"表：{st['table']}")
+        lines.append(f"  总行数：{st['total_rows']}")
+        lines.append(f"  非基准格式转换（计入修复行数）：{st['fixed_rows']}")
+        lines.append(f"  基准斜杠格式仅补零（不计修复）：{st['zero_padded_only_rows']}")
+        lines.append(f"  空白时间（置空）：{st['empty_rows']}")
+        lines.append(f"  无法识别（置空）：{st['unrecognized_rows']}")
+        if st["unrecognized_samples"]:
+            lines.append("  无法识别样本（最多20条）：")
+            for s in st["unrecognized_samples"]:
+                lines.append(
+                    f"    - source_row_index={s['source_row_index']}, raw={s['raw']!r}"
+                )
+        lines.append("")
+
+    lines.append("说明：")
+    lines.append("- 目标格式：YYYY/MM/DD HH:MM，月/日/时/分不足两位左补零。")
+    lines.append("- 仅日期记录补 00:00，计入修复行数。")
+    lines.append("- 秒一律舍去，不四舍五入。")
+    lines.append("- 空白或无法识别保留空值，不猜测，不删除记录。")
+    lines.append("- 其他字段、行序、source_row_index 保持不变。")
+
+    return "\n".join(lines)
+
+
+def main(
+    complaint_record: str = "",
+    complaint_handling: str = "",
+    customer_info: str = "",
+    employee_info: str = "",
+    hall_info: str = "",
+    **kwargs,
+) -> dict:
+    cr = _safe_loads(complaint_record)
+    ch = _safe_loads(complaint_handling)
+
+    cr_new, cr_stats = _normalize_table_time(cr, "complaint_record")
+    ch_new, ch_stats = _normalize_table_time(ch, "complaint_handling")
+
+    summary = _format_summary(cr_stats, ch_stats)
+
+    return {
+        "complaint_record": json.dumps(cr_new, ensure_ascii=False),
+        "complaint_handling": json.dumps(ch_new, ensure_ascii=False),
+        "summary": summary,
+    }
+
+输入：
+complaint_record
+complaint_handling
+
+输出
+complaint_record  string
+complaint_handling  string
+summary  string
+
+
+代码节点3
+import json
+import re
+from typing import Any, Dict, List, Optional, Tuple
+
+
+# ===== 正则 =====
+RE_COMPLAINT = re.compile(r"^TS(\d{10})$", re.IGNORECASE)
+RE_CUSTOMER = re.compile(r"^CUST(\d{4})$", re.IGNORECASE)
+RE_EMP = re.compile(r"^EMP(\d{4})$", re.IGNORECASE)
+RE_HALL = re.compile(r"^HALL(\d{3})$", re.IGNORECASE)
+
+# 投诉单63 / 投诉单1233 / 投诉单41
+RE_CN_COMPLAINT = re.compile(r"^投诉单\s*(\d+)$")
+# 客户921 / 客户2
+RE_CN_CUSTOMER = re.compile(r"^客户\s*(\d+)$")
+# 员工1080 / 员工71
+RE_CN_EMP = re.compile(r"^员工\s*(\d+)$")
+# 营业厅4 / 营业厅15
+RE_CN_HALL = re.compile(r"^营业厅\s*(\d+)$")
+
+# 纯数字
+RE_PURE_DIGITS = re.compile(r"^\d+$")
+
+# 本题固定年月，用于投诉号纯序号补齐
+COMPLAINT_PREFIX_YEAR_MONTH = "202507"
+COMPLAINT_DIGITS_LEN = 10
+
+
+# ===== 通用格式化 =====
+def _fmt_complaint(seq4: str) -> str:
+    return f"TS{COMPLAINT_PREFIX_YEAR_MONTH}{seq4}"
+
+
+def _fmt_customer(num: int) -> str:
+    return f"CUST{num:04d}"
+
+
+def _fmt_emp(num: int) -> str:
+    return f"EMP{num:04d}"
+
+
+def _fmt_hall(num: int) -> str:
+    return f"HALL{num:03d}"
+
+
+# ===== 各 ID 规范化 =====
+def normalize_complaint_id(raw: Any) -> Tuple[Optional[str], bool, str]:
+    """
+    返回 (normalized, changed, reason)
+    reason: 'ok' / 'fixed' / 'empty' / 'unrecognized'
+    """
+    if raw is None:
+        return None, False, "empty"
+    s = str(raw).strip()
+    if s == "":
+        return None, False, "empty"
+
+    # 已合法
+    m = RE_COMPLAINT.match(s)
+    if m:
+        canonical = "TS" + m.group(1)
+        return canonical, (canonical != s), "ok" if canonical == s else "fixed"
+
+    # 中文序号：序号 - 1，0 基
+    m = RE_CN_COMPLAINT.match(s)
+    if m:
+        seq = int(m.group(1))
+        if seq < 1:
+            return None, False, "unrecognized"
+        num = seq - 1
+        # 补成 4 位序号（题干示例均为 4 位）
+        if num > 9999:
+            return None, False, "unrecognized"
+        canonical = _fmt_complaint(f"{num:04d}")
+        return canonical, True, "fixed"
+
+    # 纯数字
+    if RE_PURE_DIGITS.match(s):
+        # 情况 A：完整 10 位数字串，直接补 TS
+        if len(s) == COMPLAINT_DIGITS_LEN:
+            canonical = "TS" + s
+            return canonical, True, "fixed"
+        # 情况 B：含义明确的纯序号（1~4 位），按本题年月补齐，不减 1
+        if 1 <= len(s) <= 4:
+            num = int(s)
+            if num > 9999:
+                return None, False, "unrecognized"
+            canonical = _fmt_complaint(f"{num:04d}")
+            return canonical, True, "fixed"
+        # 其他位数无法唯一解释
+        return None, False, "unrecognized"
+
+    # 带 TS 前缀但数字位数不对：只有 10 位数字才合法，其他不猜测
+    return None, False, "unrecognized"
+
+
+def normalize_customer_id(raw: Any) -> Tuple[Optional[str], bool, str]:
+    if raw is None:
+        return None, False, "empty"
+    s = str(raw).strip()
+    if s == "":
+        return None, False, "empty"
+
+    m = RE_CUSTOMER.match(s)
+    if m:
+        canonical = "CUST" + m.group(1)
+        return canonical, (canonical != s), "ok" if canonical == s else "fixed"
+
+    m = RE_CN_CUSTOMER.match(s)
+    if m:
+        seq = int(m.group(1))
+        if seq < 1 or seq > 9999:
+            return None, False, "unrecognized"
+        canonical = _fmt_customer(seq - 1)
+        return canonical, True, "fixed"
+
+    if RE_PURE_DIGITS.match(s):
+        num = int(s)
+        if num > 9999:
+            return None, False, "unrecognized"
+        canonical = _fmt_customer(num)
+        return canonical, True, "fixed"
+
+    return None, False, "unrecognized"
+
+
+def normalize_emp_id(raw: Any) -> Tuple[Optional[str], bool, str]:
+    if raw is None:
+        return None, False, "empty"
+    s = str(raw).strip()
+    if s == "":
+        return None, False, "empty"
+
+    m = RE_EMP.match(s)
+    if m:
+        canonical = "EMP" + m.group(1)
+        return canonical, (canonical != s), "ok" if canonical == s else "fixed"
+
+    m = RE_CN_EMP.match(s)
+    if m:
+        seq = int(m.group(1))
+        if seq < 1 or seq > 9999:
+            return None, False, "unrecognized"
+        canonical = _fmt_emp(seq - 1)
+        return canonical, True, "fixed"
+
+    if RE_PURE_DIGITS.match(s):
+        num = int(s)
+        if num > 9999:
+            return None, False, "unrecognized"
+        canonical = _fmt_emp(num)
+        return canonical, True, "fixed"
+
+    return None, False, "unrecognized"
+
+
+def normalize_hall_id(raw: Any) -> Tuple[Optional[str], bool, str]:
+    if raw is None:
+        return None, False, "empty"
+    s = str(raw).strip()
+    if s == "":
+        return None, False, "empty"
+
+    m = RE_HALL.match(s)
+    if m:
+        canonical = "HALL" + m.group(1)
+        return canonical, (canonical != s), "ok" if canonical == s else "fixed"
+
+    m = RE_CN_HALL.match(s)
+    if m:
+        seq = int(m.group(1))
+        if seq < 1 or seq > 999:
+            return None, False, "unrecognized"
+        canonical = _fmt_hall(seq - 1)
+        return canonical, True, "fixed"
+
+    if RE_PURE_DIGITS.match(s):
+        num = int(s)
+        if num > 999:
+            return None, False, "unrecognized"
+        canonical = _fmt_hall(num)
+        return canonical, True, "fixed"
+
+    return None, False, "unrecognized"
+
+
+# ===== 表处理 =====
+def _safe_loads(s: Any) -> List[Dict[str, Any]]:
+    if s is None:
+        return []
+    if isinstance(s, list):
+        return s
+    if isinstance(s, dict):
+        return [s]
+    text = str(s).strip()
+    if text == "":
+        return []
+    try:
+        data = json.loads(text)
+    except Exception:
+        return []
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        return [data]
+    return []
+
+
+ID_FIELDS = {
+    "complaint_id": ("complaint", normalize_complaint_id),
+    "customer_id": ("customer", normalize_customer_id),
+    "handler_id": ("employee", normalize_emp_id),
+    "hall_id": ("hall", normalize_hall_id),
+}
+
+
+def _normalize_table_ids(
+    rows: List[Dict[str, Any]],
+    table_name: str,
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    stats = {
+        "table": table_name,
+        "total_rows": len(rows),
+        "cells_fixed": 0,
+        "cells_already_valid": 0,
+        "cells_empty": 0,
+        "cells_unrecognized": 0,
+        "per_field": {
+            "complaint_id": {"fixed": 0, "valid": 0, "empty": 0, "unrecognized": 0},
+            "customer_id": {"fixed": 0, "valid": 0, "empty": 0, "unrecognized": 0},
+            "handler_id": {"fixed": 0, "valid": 0, "empty": 0, "unrecognized": 0},
+            "hall_id": {"fixed": 0, "valid": 0, "empty": 0, "unrecognized": 0},
+        },
+        "unrecognized_samples": [],
+    }
+
+    new_rows: List[Dict[str, Any]] = []
+    for row in rows:
+        new_row = dict(row)
+        for field, (_, fn) in ID_FIELDS.items():
+            if field not in row:
+                continue
+            raw = row.get(field, "")
+            normalized, changed, reason = fn(raw)
+            pfield = stats["per_field"][field]
+
+            if reason == "empty":
+                new_row[field] = ""
+                stats["cells_empty"] += 1
+                pfield["empty"] += 1
+            elif reason == "unrecognized":
+                new_row[field] = ""
+                stats["cells_unrecognized"] += 1
+                pfield["unrecognized"] += 1
+                if len(stats["unrecognized_samples"]) < 30:
+                    stats["unrecognized_samples"].append({
+                        "source_row_index": row.get("source_row_index"),
+                        "field": field,
+                        "raw": raw,
+                    })
+            else:
+                # ok 或 fixed
+                new_row[field] = normalized
+                if changed:
+                    stats["cells_fixed"] += 1
+                    pfield["fixed"] += 1
+                else:
+                    stats["cells_already_valid"] += 1
+                    pfield["valid"] += 1
+
+        new_rows.append(new_row)
+
+    return new_rows, stats
+
+
+# ===== 总结 =====
+def _format_summary(stats_list: List[Dict[str, Any]]) -> str:
+    lines = ["ID 格式还原（任务三）修复总结", "=" * 32, ""]
+    total_fixed = 0
+    total_valid = 0
+    total_empty = 0
+    total_unrec = 0
+
+    for st in stats_list:
+        total_fixed += st["cells_fixed"]
+        total_valid += st["cells_already_valid"]
+        total_empty += st["cells_empty"]
+        total_unrec += st["cells_unrecognized"]
+
+        lines.append(f"表：{st['table']}")
+        lines.append(f"  总行数：{st['total_rows']}")
+        lines.append(f"  修复 ID 单元格数：{st['cells_fixed']}")
+        lines.append(f"  原本合法未改动：{st['cells_already_valid']}")
+        lines.append(f"  空 ID（留给任务四）：{st['cells_empty']}")
+        lines.append(f"  无法识别（置空，留给任务四）：{st['cells_unrecognized']}")
+        for f, s in st["per_field"].items():
+            if s["fixed"] or s["valid"] or s["empty"] or s["unrecognized"]:
+                lines.append(
+                    f"    - {f}: fixed={s['fixed']}, valid={s['valid']}, "
+                    f"empty={s['empty']}, unrecognized={s['unrecognized']}"
+                )
+        if st["unrecognized_samples"]:
+            lines.append("  无法识别样本（最多30条）：")
+            for x in st["unrecognized_samples"]:
+                lines.append(
+                    f"    - source_row_index={x['source_row_index']}, "
+                    f"field={x['field']}, raw={x['raw']!r}"
+                )
+        lines.append("")
+
+    lines.append("汇总：")
+    lines.append(f"  修复 ID 单元格总数：{total_fixed}")
+    lines.append(f"  原本合法单元格总数：{total_valid}")
+    lines.append(f"  空 ID 单元格总数（留给任务四）：{total_empty}")
+    lines.append(f"  无法识别单元格总数（置空，留给任务四）：{total_unrec}")
+    lines.append("")
+    lines.append("说明：")
+    lines.append("- 投诉号目标：TS + 10 位数字（本题 TS202507 + 4 位序号）。")
+    lines.append("- 客户 CUST + 4 位；员工 EMP + 4 位；营业厅 HALL + 3 位。")
+    lines.append("- 中文序号按“序号 − 1”转 0 基；纯数字直接补零不减 1。")
+    lines.append("- 无法唯一解释的非空 ID 置空并记录，交给任务四；不猜测。")
+    lines.append("- 空 ID 不计入本任务修复数，留给任务四。")
+    return "\n".join(lines)
+
+
+def main(
+    complaint_record: str = "",
+    complaint_handling: str = "",
+    customer_info: str = "",
+    employee_info: str = "",
+    hall_info: str = "",
+    summary: str = "",
+    **kwargs,
+) -> dict:
+    cr = _safe_loads(complaint_record)
+    ch = _safe_loads(complaint_handling)
+    ci = _safe_loads(customer_info)
+    ei = _safe_loads(employee_info)
+    hi = _safe_loads(hall_info)
+
+    cr_new, cr_stats = _normalize_table_ids(cr, "complaint_record")
+    ch_new, ch_stats = _normalize_table_ids(ch, "complaint_handling")
+    ci_new, ci_stats = _normalize_table_ids(ci, "customer_info")
+    ei_new, ei_stats = _normalize_table_ids(ei, "employee_info")
+    hi_new, hi_stats = _normalize_table_ids(hi, "hall_info")
+
+    out_summary = _format_summary([cr_stats, ch_stats, ci_stats, ei_stats, hi_stats])
+
+    return {
+        "complaint_record": json.dumps(cr_new, ensure_ascii=False),
+        "complaint_handling": json.dumps(ch_new, ensure_ascii=False),
+        "customer_info": json.dumps(ci_new, ensure_ascii=False),
+        "employee_info": json.dumps(ei_new, ensure_ascii=False),
+        "hall_info": json.dumps(hi_new, ensure_ascii=False),
+        "summary": out_summary,
+    }
+
+输入
+complaint_record   string
+complaint_handling string
+customer_info string
+employee_info string
+hall_info string
+
+输出
+complaint_record   string
+complaint_handling string
+customer_info string
+employee_info string
+hall_info string
+summary string
+
+代码节点4
+import json
+import re
+from typing import Any, Dict, List, Optional, Tuple
+
+
+# ===== 缺失标记（逐字一致）=====
+MARK = {
+    "complaint_id": "该条投诉号记录丢失",
+    "accept_time": "该条时间记录丢失",
+    "customer_id": "该条客户记录丢失",
+    "customer_name": "该条客户记录丢失",
+    "handler_id": "该条员工记录丢失",
+    "handler_name": "该条员工记录丢失",
+    "hall_id": "该条营业厅记录丢失",
+    "package_type": "该条套餐记录丢失",
+    "complaint_type": "该条投诉类型记录丢失",
+    "complaint_subtype": "该条投诉子类记录丢失",
+    "customer_feedback": "该条反馈记录丢失",
+}
+
+RE_COMPLAINT_SEQ = re.compile(r"^TS(\d{10})$", re.IGNORECASE)
+
+
+def _is_blank(v: Any) -> bool:
+    return v is None or str(v).strip() == ""
+
+
+def _safe_loads(s: Any) -> List[Dict[str, Any]]:
+    if s is None:
+        return []
+    if isinstance(s, list):
+        return s
+    if isinstance(s, dict):
+        return [s]
+    text = str(s).strip()
+    if text == "":
+        return []
+    try:
+        data = json.loads(text)
+    except Exception:
+        return []
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        return [data]
+    return []
+
+
+# ===== 删除 =====
+def _delete_invalid(
+    cr: List[Dict[str, Any]],
+    ch: List[Dict[str, Any]],
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], Dict[str, Any]]:
+    deleted_idx: set = set()
+    deleted_rows = 0
+    for row in cr:
+        desc = row.get("complaint_description", "")
+        if _is_blank(desc):
+            deleted_rows += 1
+            sri = row.get("source_row_index")
+            if sri is not None:
+                deleted_idx.add(sri)
+
+    cr_kept = [r for r in cr if r.get("source_row_index") not in deleted_idx]
+    ch_kept = [r for r in ch if r.get("source_row_index") not in deleted_idx]
+
+    # 只按 source_row_index 升序；不重编号
+    cr_kept.sort(key=lambda r: r.get("source_row_index", 0))
+    ch_kept.sort(key=lambda r: r.get("source_row_index", 0))
+
+    stats = {
+        "deleted_record_rows": deleted_rows,
+        "deleted_handling_rows": len(ch) - len(ch_kept),
+        "kept_record_rows": len(cr_kept),
+        "kept_handling_rows": len(ch_kept),
+        "deleted_source_row_index_sample": sorted(list(deleted_idx))[:50],
+    }
+    return cr_kept, ch_kept, stats
+
+
+# ===== 主表索引 =====
+def _build_indices(ci: List[Dict[str, Any]], ei: List[Dict[str, Any]]):
+    cust_by_id: Dict[str, Dict[str, Any]] = {}
+    cust_name_to_ids: Dict[str, set] = {}
+    emp_by_id: Dict[str, Dict[str, Any]] = {}
+    emp_name_to_ids: Dict[str, set] = {}
+
+    for r in ci:
+        cid = str(r.get("customer_id", "")).strip()
+        cname = str(r.get("customer_name", "")).strip()
+        if cid:
+            cust_by_id[cid] = r
+        if cname:
+            cust_name_to_ids.setdefault(cname, set()).add(cid)
+
+    for r in ei:
+        eid = str(r.get("handler_id", "")).strip()
+        ename = str(r.get("handler_name", "")).strip()
+        if eid:
+            emp_by_id[eid] = r
+        if ename:
+            emp_name_to_ids.setdefault(ename, set()).add(eid)
+
+    return cust_by_id, cust_name_to_ids, emp_by_id, emp_name_to_ids
+
+
+# ===== 补全 =====
+def _fill_two_tables(
+    cr: List[Dict[str, Any]],
+    ch: List[Dict[str, Any]],
+    cust_by_id: Dict[str, Dict[str, Any]],
+    cust_name_to_ids: Dict[str, set],
+    emp_by_id: Dict[str, Dict[str, Any]],
+    emp_name_to_ids: Dict[str, set],
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], Dict[str, Any]]:
+    stats = {
+        "filled_complaint_id": 0,
+        "filled_accept_time": 0,
+        "filled_customer_id": 0,
+        "filled_customer_name": 0,
+        "filled_handler_id": 0,
+        "filled_handler_name": 0,
+        "inferred_complaint_id": 0,
+        "conflict_customer_name": 0,
+        "conflict_handler_name": 0,
+        "conflict_samples": [],
+    }
+
+    # 按 source_row_index 对齐
+    cr_by_idx = {r.get("source_row_index"): dict(r) for r in cr}
+    ch_by_idx = {r.get("source_row_index"): dict(r) for r in ch}
+    indices = sorted(set(cr_by_idx.keys()) | set(ch_by_idx.keys()))
+
+    # ---- 第一步：跨表补全 complaint_id / accept_time ----
+    for idx in indices:
+        r = cr_by_idx.get(idx)
+        h = ch_by_idx.get(idx)
+
+        if r is not None and h is not None:
+            if _is_blank(r.get("complaint_id")) and not _is_blank(h.get("complaint_id")):
+                r["complaint_id"] = h["complaint_id"]
+                stats["filled_complaint_id"] += 1
+            elif _is_blank(h.get("complaint_id")) and not _is_blank(r.get("complaint_id")):
+                h["complaint_id"] = r["complaint_id"]
+                stats["filled_complaint_id"] += 1
+
+            if _is_blank(r.get("accept_time")) and not _is_blank(h.get("accept_time")):
+                r["accept_time"] = h["accept_time"]
+                stats["filled_accept_time"] += 1
+            elif _is_blank(h.get("accept_time")) and not _is_blank(r.get("accept_time")):
+                h["accept_time"] = r["accept_time"]
+                stats["filled_accept_time"] += 1
+
+    # ---- 第二步：投诉号等差推定 ----
+    # 仅当两表都缺 complaint_id，且前后最近已知编号满足
+    # source_row_index 差 == 数字差（完全一致）
+    def _extract_num(s: Any) -> Optional[int]:
+        if _is_blank(s):
+            return None
+        m = RE_COMPLAINT_SEQ.match(str(s).strip())
+        if not m:
+            return None
+        return int(m.group(1))
+
+    # 构造“已知编号点”列表（两表同一 source_row_index 至多一个有效编号）
+    known_points: List[Tuple[int, int]] = []  # (source_row_index, num)
+    for idx in indices:
+        r = cr_by_idx.get(idx)
+        h = ch_by_idx.get(idx)
+        num = None
+        if r is not None:
+            num = _extract_num(r.get("complaint_id"))
+        if num is None and h is not None:
+            num = _extract_num(h.get("complaint_id"))
+        if num is not None:
+            known_points.append((idx, num))
+
+    known_points.sort(key=lambda x: x[0])
+
+    # 对每个两侧均缺编号的区间，若前后已知且等差完全一致，才填
+    for i in range(len(known_points) - 1):
+        left_idx, left_num = known_points[i]
+        right_idx, right_num = known_points[i + 1]
+        gap_idx = [k for k in indices if left_idx < k < right_idx]
+        if not gap_idx:
+            continue
+        # 这些 gap 行必须两侧都缺编号
+        all_missing = True
+        for k in gap_idx:
+            rr = cr_by_idx.get(k)
+            hh = ch_by_idx.get(k)
+            if rr is not None and not _is_blank(rr.get("complaint_id")):
+                all_missing = False
+                break
+            if hh is not None and not _is_blank(hh.get("complaint_id")):
+                all_missing = False
+                break
+        if not all_missing:
+            continue
+
+        # 检查每个 gap 行与左点的差值是否与编号差完全一致
+        ok = True
+        for k in gap_idx:
+            if (k - left_idx) != (right_num - left_num) * 0 + (k - left_idx):
+                pass
+        # 直接按“区间整体等差”判断：
+        # 要求 right_idx - left_idx == right_num - left_num，
+        # 且中间每个 gap 行都满足 idx - left_idx == num - left_num
+        if (right_idx - left_idx) != (right_num - left_num):
+            ok = False
+        if ok:
+            for k in gap_idx:
+                expected_num = left_num + (k - left_idx)
+                if expected_num != right_num - (right_idx - k):
+                    ok = False
+                    break
+        if not ok:
+            continue
+
+        for k in gap_idx:
+            expected_num = left_num + (k - left_idx)
+            inferred = f"TS{expected_num:010d}"
+            rr = cr_by_idx.get(k)
+            hh = ch_by_idx.get(k)
+            if rr is not None and _is_blank(rr.get("complaint_id")):
+                rr["complaint_id"] = inferred
+                stats["inferred_complaint_id"] += 1
+            if hh is not None and _is_blank(hh.get("complaint_id")):
+                hh["complaint_id"] = inferred
+                stats["inferred_complaint_id"] += 1
+
+    # ---- 第三步：客户/员工字段借助主表补全 ----
+    for idx in indices:
+        r = cr_by_idx.get(idx)
+        h = ch_by_idx.get(idx)
+
+        # 记录表 customer_id 空，处理表 customer_name 唯一匹配 -> 填客户编号
+        if r is not None and h is not None:
+            if _is_blank(r.get("customer_id")) and not _is_blank(h.get("customer_name")):
+                name = str(h["customer_name"]).strip()
+                ids = cust_name_to_ids.get(name, set())
+                if len(ids) == 1:
+                    r["customer_id"] = next(iter(ids))
+                    stats["filled_customer_id"] += 1
+                elif len(ids) > 1:
+                    stats["conflict_customer_name"] += 1
+                    if len(stats["conflict_samples"]) < 30:
+                        stats["conflict_samples"].append({
+                            "source_row_index": idx,
+                            "kind": "customer_name",
+                            "name": name,
+                            "candidates": sorted(ids),
+                        })
+
+        # 处理表 handler_id 空，记录表 handler_name 唯一匹配 -> 填员工编号
+        if r is not None and h is not None:
+            if _is_blank(h.get("handler_id")) and not _is_blank(r.get("handler_name")):
+                name = str(r["handler_name"]).strip()
+                ids = emp_name_to_ids.get(name, set())
+                if len(ids) == 1:
+                    h["handler_id"] = next(iter(ids))
+                    stats["filled_handler_id"] += 1
+                elif len(ids) > 1:
+                    stats["conflict_handler_name"] += 1
+                    if len(stats["conflict_samples"]) < 30:
+                        stats["conflict_samples"].append({
+                            "source_row_index": idx,
+                            "kind": "handler_name",
+                            "name": name,
+                            "candidates": sorted(ids),
+                        })
+
+        # 记录表 handler_name 空，处理表 handler_id 能在员工主档找到 -> 填姓名
+        if r is not None and h is not None:
+            if _is_blank(r.get("handler_name")) and not _is_blank(h.get("handler_id")):
+                eid = str(h["handler_id"]).strip()
+                emp = emp_by_id.get(eid)
+                if emp is not None:
+                    name = str(emp.get("handler_name", "")).strip()
+                    if name:
+                        r["handler_name"] = name
+                        stats["filled_handler_name"] += 1
+
+        # 处理表 customer_name 空，记录表 customer_id 能在客户主档找到 -> 填姓名
+        if r is not None and h is not None:
+            if _is_blank(h.get("customer_name")) and not _is_blank(r.get("customer_id")):
+                cid = str(r["customer_id"]).strip()
+                cust = cust_by_id.get(cid)
+                if cust is not None:
+                    name = str(cust.get("customer_name", "")).strip()
+                    if name:
+                        h["customer_name"] = name
+                        stats["filled_customer_name"] += 1
+
+    # ---- 第四步：其余空字段填缺失标记 ----
+    # 记录表字段标记
+    cr_mark_fields = [
+        "complaint_id", "accept_time", "customer_id", "handler_name",
+        "package_type", "complaint_type", "complaint_subtype",
+    ]
+    # 处理表字段标记
+    ch_mark_fields = [
+        "complaint_id", "accept_time", "handler_id", "hall_id",
+        "customer_feedback", "customer_name",
+    ]
+
+    for idx in indices:
+        r = cr_by_idx.get(idx)
+        h = ch_by_idx.get(idx)
+        if r is not None:
+            for f in cr_mark_fields:
+                if f in r and _is_blank(r.get(f)):
+                    r[f] = MARK[f]
+        if h is not None:
+            for f in ch_mark_fields:
+                if f in h and _is_blank(h.get(f)):
+                    h[f] = MARK[f]
+
+    # 按 source_row_index 升序返回
+    cr_out = [cr_by_idx[k] for k in sorted(cr_by_idx.keys())]
+    ch_out = [ch_by_idx[k] for k in sorted(ch_by_idx.keys())]
+    return cr_out, ch_out, stats
+
+
+# ===== 总结 =====
+def _format_summary(
+    del_stats: Dict[str, Any],
+    fill_stats: Dict[str, Any],
+) -> str:
+    lines = ["缺失数据还原与删除（任务四）总结", "=" * 32, ""]
+    lines.append("（1）删除")
+    lines.append(f"  删除的投诉记录行数：{del_stats['deleted_record_rows']}")
+    lines.append(f"  同步删除的处理记录行数：{del_stats['deleted_handling_rows']}")
+    lines.append(f"  保留的投诉记录行数：{del_stats['kept_record_rows']}")
+    lines.append(f"  保留的处理记录行数：{del_stats['kept_handling_rows']}")
+    sample = del_stats.get("deleted_source_row_index_sample", [])
+    if sample:
+        lines.append(f"  删除的 source_row_index 样本（最多50个）：{sample}")
+    lines.append("")
+
+    lines.append("（2）补全")
+    lines.append(f"  跨表补全 complaint_id 行数：{fill_stats['filled_complaint_id']}")
+    lines.append(f"  跨表补全 accept_time 行数：{fill_stats['filled_accept_time']}")
+    lines.append(f"  按行序等差推定 complaint_id 单元格数：{fill_stats['inferred_complaint_id']}")
+    lines.append(f"  借助主表补全 customer_id 数：{fill_stats['filled_customer_id']}")
+    lines.append(f"  借助主表补全 customer_name 数：{fill_stats['filled_customer_name']}")
+    lines.append(f"  借助主表补全 handler_id 数：{fill_stats['filled_handler_id']}")
+    lines.append(f"  借助主表补全 handler_name 数：{fill_stats['filled_handler_name']}")
+    lines.append(f"  客户姓名多候选冲突数：{fill_stats['conflict_customer_name']}")
+    lines.append(f"  员工姓名多候选冲突数：{fill_stats['conflict_handler_name']}")
+    if fill_stats["conflict_samples"]:
+        lines.append("  冲突样本（最多30条）：")
+        for s in fill_stats["conflict_samples"]:
+            lines.append(
+                f"    - source_row_index={s['source_row_index']}, "
+                f"kind={s['kind']}, name={s['name']!r}, "
+                f"candidates={s['candidates']}"
+            )
+    lines.append("")
+    lines.append("说明：")
+    lines.append("- 只按 complaint_description 是否为空删除；两张投诉表按 source_row_index 同步删除。")
+    lines.append("- 删除后保留记录按 source_row_index 升序排列，不重新编号。")
+    lines.append("- 只填空值，不覆盖已有非空值；无、0 视为有效值。")
+    lines.append("- 重名/多候选不猜，按缺失标记填写并记录冲突。")
+    lines.append("- hall_id 不用员工所属营业厅反推，空值直接填该条营业厅记录丢失。")
+    lines.append("- 补全后两张投诉表不再有空白单元格，全部用固定缺失标记表示。")
+    return "\n".join(lines)
+
+
+def main(
+    complaint_record: str = "",
+    complaint_handling: str = "",
+    customer_info: str = "",
+    employee_info: str = "",
+    hall_info: str = "",
+    summary: str = "",
+    **kwargs,
+) -> dict:
+    cr = _safe_loads(complaint_record)
+    ch = _safe_loads(complaint_handling)
+    ci = _safe_loads(customer_info)
+    ei = _safe_loads(employee_info)
+    hi = _safe_loads(hall_info)
+
+    # 删除
+    cr_kept, ch_kept, del_stats = _delete_invalid(cr, ch)
+
+    # 主表索引
+    cust_by_id, cust_name_to_ids, emp_by_id, emp_name_to_ids = _build_indices(ci, ei)
+
+    # 补全
+    cr_out, ch_out, fill_stats = _fill_two_tables(
+        cr_kept, ch_kept,
+        cust_by_id, cust_name_to_ids,
+        emp_by_id, emp_name_to_ids,
+    )
+
+    out_summary = _format_summary(del_stats, fill_stats)
+
+    return {
+        "complaint_record": json.dumps(cr_out, ensure_ascii=False),
+        "complaint_handling": json.dumps(ch_out, ensure_ascii=False),
+        "customer_info": json.dumps(ci, ensure_ascii=False),
+        "employee_info": json.dumps(ei, ensure_ascii=False),
+        "hall_info": json.dumps(hi, ensure_ascii=False),
+        "summary": out_summary,
+    }
+
+输入:
+complaint_record   string
+complaint_handling string
+customer_info string
+employee_info string
+hall_info string
+
+输出
+complaint_record   string
+complaint_handling string
+customer_info string
+employee_info string
+hall_info string
+summary string
+
