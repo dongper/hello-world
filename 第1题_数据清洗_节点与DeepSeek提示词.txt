@@ -1,0 +1,385 @@
+第 1 题｜数据清洗工作流｜老师式节点提示词
+版本：2026-11-15 修订
+
+怎么用
+------
+1. 每题新开一个 DeepSeek 网页对话，先发完整题目，包含字段、规则、报告模板、提交要求，再附实际文件表头和少量必要样例。规则表很短时应给完整规则；表头看不出含义时补代表性数据。完整数据上传 Dify 运行，不用逐行粘到网页里。
+2. 对 DeepSeek 说：“我用 Dify 1.14.2，从零搭建。先读题，不要一次生成整个工作流。我会逐节点给你输入、处理、输出要求；你每次只写当前节点完整代码。”
+3. 下面的代码节点，每次复制【复制给 DeepSeek】至【提示词结束】整个区块。前面题目和上一节点的代码保留在同一对话。
+4. 文件、提取器、条件分支、工具、模板、输出节点按本文直接配置。第二题的 SYSTEM／USER 是粘到 Dify 模型节点中，不是粘进 Python。
+5. 左边输入变量名必须与 main 参数一致；右边用变量选择器选来源；输出名、类型必须与 return 一致。String 只是类型，CSV 和 JSON 内容不能混用。
+6. 每完成一个代码节点，临时连接输出，绑定该节点报告检查。正式提交前按末尾最终输出配置，并跑完整流程。
+7. 所有“当前数据校验值”仅适用这批练习数据。正式考试变动时，以现场完整题目及发放数据为准，不强行凑数字。未做端到端执行的提示词不等于已验证的考试答案。
+
+本题画布
+--------
+01 上传 → 02 五个提取器 → 03 表结构统一 → 04 时间统一 → 05 ID 修复 → 06 缺失还原与统计 → 07 Markdown 转换与总报告 → 08 五个文件工具 → 09 输出
+
+本版采用老师提供的 06 节点输入输出。三张主表从 05 直接绑定到 07，不在 06 重复输出。中间表用 CSV String，最终表才转 Markdown。原版任务四的代码不能只改几个变量就接入新版，需按 06、07 分别生成代码。
+
+01 | 上传题目数据
+===========
+
+类型：用户输入
+
+输入：
+无上游输入。
+
+处理：
+- 创建下表全部变量，类型选单文件 File，允许文档和 CSV，本地上传，设为必填。
+- 每个变量上传对应题目文件；只按文件实际内容选择，不因文件顺序相似而错传。
+
+输出：
+| 变量 | 类型 | 作用 |
+| --- | --- | --- |
+| complaint_record | File | complaint_record.csv |
+| complaint_handling | File | complaint_handling.csv |
+| customer_info | File | customer_info.csv |
+| employee_info | File | employee_info.csv |
+| hall_info | File | hall_info.csv |
+
+当前数据／校验方法：
+上传数量和文件名正确。
+
+节点作用：
+把试题文件交给工作流。
+
+下一步：所有文件分别连接 02 组对应文档提取器。
+
+02 | 文档提取器（每个文件一个）
+==================
+
+类型：文档提取器
+
+输入：
+| 输入变量 | 类型 | 来源／内容 |
+| --- | --- | --- |
+| complaint_record | File | 01.complaint_record |
+| complaint_handling | File | 01.complaint_handling |
+| customer_info | File | 01.customer_info |
+| employee_info | File | 01.employee_info |
+| hall_info | File | 01.hall_info |
+
+处理：
+- 本节是一组并联节点，不是把多个文件塞进一个提取器。
+- 每个节点命名为“提取_变量名”，输入选择对应的 01 文件变量。
+- 每个节点输出 text。打开实际输出，确认是 CSV 文本还是 Markdown 表格，并将该格式告诉 DeepSeek。
+
+输出：
+| 变量 | 类型 | 作用 |
+| --- | --- | --- |
+| 提取_complaint_record.text | String | complaint_record.csv 的实际文本 |
+| 提取_complaint_handling.text | String | complaint_handling.csv 的实际文本 |
+| 提取_customer_info.text | String | customer_info.csv 的实际文本 |
+| 提取_employee_info.text | String | employee_info.csv 的实际文本 |
+| 提取_hall_info.text | String | hall_info.csv 的实际文本 |
+
+当前数据／校验方法：
+每份 text 都有表头和数据；CSV 引号内的逗号及换行必须保留。
+
+节点作用：
+把文件转成代码可读的文本。
+
+下一步：所有提取器连接 03；03 中逐项绑定相应 text。
+
+03 | 表结构统一与原始行号
+===============
+
+类型：代码节点（Python3）
+
+【复制给 DeepSeek：从这里到“提示词结束”】
+请根据前面完整题目，为下面节点生成完整可粘贴的 Python 代码，仅用标准库。main 的参数名与输入表完全一致，return 的键和类型与输出表完全一致。不得省略辅助函数，不读本地路径、不安装依赖、不联网、不写死结果。
+
+输入：
+| 输入变量 | 类型 | 来源／内容 |
+| --- | --- | --- |
+| record_text | String | 02 提取_complaint_record.text |
+| handling_text | String | 02 提取_complaint_handling.text |
+| customer_text | String | 02 提取_customer_info.text |
+| employee_text | String | 02 提取_employee_info.text |
+| hall_text | String | 02 提取_hall_info.text |
+
+处理：
+- 只写任务一。main(record_text, handling_text, customer_text, employee_text, hall_text) 返回 record_csv、handling_csv、customer_csv、employee_csv、hall_csv、check_report，全部是 String。
+- 每张表支持 CSV 或 Markdown 表格，处理 BOM。CSV 使用 csv.reader/writer，正确处理引号、逗号和单元格内换行。按我贴出的题面表头映射和五张标准列顺序输出。额外列留在标准列后、source_row_index 前。按原始行序从 0 编 source_row_index，必须先编号，保留全空的数据记录、原值、空值和原始行序。“无”和“0”保留。这里不清洗时间或 ID、不补空、不删记录。缺标准列、重复列或列数错误要报清楚；两张投诉表的原始行数不一致时停止。表格结果为完整 CSV 文本，check_report 给五表行数、列顺序及前两行预览，核对全量原始值与行号。
+
+输出：
+| 变量 | 类型 | 作用 |
+| --- | --- | --- |
+| record_csv | String | 按标准列顺序的完整 CSV 文本 |
+| handling_csv | String | 按标准列顺序的完整 CSV 文本 |
+| customer_csv | String | 按标准列顺序的完整 CSV 文本 |
+| employee_csv | String | 按标准列顺序的完整 CSV 文本 |
+| hall_csv | String | 按标准列顺序的完整 CSV 文本 |
+| check_report | String | 五表行数、原始值与行号校验及预览 |
+
+当前数据／校验方法：
+check_report：1998、1998、2000、200、50 行，首行 source_row_index=0；此时还没有修时间或 ID。
+
+节点作用：
+统一表结构，保留可追溯原始行序。
+
+请同时给出 main 函数签名，并检查输入名、返回键和 CSV／JSON 内容格式是否逐一对应。校验数字仅用来核对，禁止写死。
+【提示词结束】
+
+下一步：连 04；三张主表供 05 绑定。
+
+04 | 时间格式统一
+===========
+
+类型：代码节点（Python3）
+
+【复制给 DeepSeek：从这里到“提示词结束”】
+请根据前面完整题目，为下面节点生成完整可粘贴的 Python 代码，仅用标准库。main 的参数名与输入表完全一致，return 的键和类型与输出表完全一致。不得省略辅助函数，不读本地路径、不安装依赖、不联网、不写死结果。
+
+输入：
+| 输入变量 | 类型 | 来源／内容 |
+| --- | --- | --- |
+| record_csv | String | 03.record_csv |
+| handling_csv | String | 03.handling_csv |
+
+处理：
+- 只写任务二。main(record_csv, handling_csv) 接收任务一的两个完整 CSV 文本。返回 record_time_csv、handling_time_csv、time_report、time_check，全部 String。仅修改两张投诉表的 accept_time。按题面支持斜杠、短横线、点号、中文、英文、紧凑数字、日期和时间前置等可识别格式，验证日期是否合法。输出 YYYY/MM/DD HH:MM，只有日期补 00:00，秒直接舍去。空白或无法可靠识别的内容留空并记录原值和 source_row_index，不猜。原本为年/月/日加时间的基准格式仅做补零或舍秒，不计修复；日期补时间及其他可识别格式转换计修复。两表行号、行序和其他列保持原样。
+- time_report 是序列化 JSON String，形状 {"time_repairs":{"complaint_record":整数,"complaint_handling":整数},"time_issues":[{"table":表名,"source_row_index":整数,"original":原值,"issue":原因}]}。time_check 是可读统计，给一两个真实的前后样例。
+
+输出：
+| 变量 | 类型 | 作用 |
+| --- | --- | --- |
+| record_time_csv | String | 时间修复后的完整 CSV |
+| handling_time_csv | String | 时间修复后的完整 CSV |
+| time_report | String | JSON String，记录时间修复数和问题明细 |
+| time_check | String | 可读检查报告 |
+
+当前数据／校验方法：
+时间修复预计记录表420、处理表415行，空白或不可识别592处。有效时间格式 YYYY/MM/DD HH:MM。
+
+节点作用：
+只规范时间，保持其他单元格和行号。
+
+请同时给出 main 函数签名，并检查输入名、返回键和 CSV／JSON 内容格式是否逐一对应。校验数字仅用来核对，禁止写死。
+【提示词结束】
+
+下一步：连 05；time_report 留给 07。
+
+05 | ID 格式还原
+============
+
+类型：代码节点（Python3）
+
+【复制给 DeepSeek：从这里到“提示词结束”】
+请根据前面完整题目，为下面节点生成完整可粘贴的 Python 代码，仅用标准库。main 的参数名与输入表完全一致，return 的键和类型与输出表完全一致。不得省略辅助函数，不读本地路径、不安装依赖、不联网、不写死结果。
+
+输入：
+| 输入变量 | 类型 | 来源／内容 |
+| --- | --- | --- |
+| record_time_csv | String | 04.record_time_csv |
+| handling_time_csv | String | 04.handling_time_csv |
+| customer_csv | String | 03.customer_csv |
+| employee_csv | String | 03.employee_csv |
+| hall_csv | String | 03.hall_csv |
+
+处理：
+- 只写任务三。main(record_time_csv, handling_time_csv, customer_csv, employee_csv, hall_csv) 接收五表 CSV 文本。返回 record_id_csv、handling_id_csv、customer_id_csv、employee_id_csv、hall_id_csv、id_report、id_check，全部 String。仅处理非空的 complaint_id、customer_id、handler_id、hall_id，五张表中的这些列都适用，包括员工主档的 hall_id。标准前缀 TS/CUST/EMP/HALL，数字位宽分别为 10/4/4/3。投诉短序号使用题面指定的 TS202507 和 4 位序号，完整编号保留自己的日期段。中文序号减 1，纯数字不减；合法 ID 保留，前缀统一大写，位数不足左补零。无法可靠解释的非空 ID 留空并记录，未成功还原不计修复。按实际改变的非空 ID 单元格统计。保留已统一的时间、原始行号及其他字段。
+- id_report 是 JSON String，形状 {"id_repairs":{"complaint_record":整数,"complaint_handling":整数,"customer_info":整数,"employee_info":整数,"hall_info":整数},"id_issues":[{"table":表名,"source_row_index":整数,"field":列名,"original":原值,"issue":原因}]}。id_check 输出统计和规则示例。
+
+输出：
+| 变量 | 类型 | 作用 |
+| --- | --- | --- |
+| record_id_csv | String | ID 修复后的完整 CSV |
+| handling_id_csv | String | ID 修复后的完整 CSV |
+| customer_id_csv | String | ID 修复后的完整 CSV |
+| employee_id_csv | String | ID 修复后的完整 CSV |
+| hall_id_csv | String | ID 修复后的完整 CSV |
+| id_report | String | JSON String，五表 ID 修复统计及问题 |
+| id_check | String | 可读 ID 检查报告 |
+
+当前数据／校验方法：
+两投诉表预计修复856、1272格；三主表为0。投诉单63→TS2025070062；纯数字63→TS2025070063。
+
+节点作用：
+只还原 ID，为后续关联准备可靠键。
+
+请同时给出 main 函数签名，并检查输入名、返回键和 CSV／JSON 内容格式是否逐一对应。校验数字仅用来核对，禁止写死。
+【提示词结束】
+
+下一步：连 06；主表和 id_report 同时供 07 绑定。
+
+06 | 缺失数据还原与统计
+==============
+
+类型：代码节点（Python3）
+
+【复制给 DeepSeek：从这里到“提示词结束”】
+请根据前面完整题目，为下面节点生成完整可粘贴的 Python 代码，仅用标准库。main 的参数名与输入表完全一致，return 的键和类型与输出表完全一致。不得省略辅助函数，不读本地路径、不安装依赖、不联网、不写死结果。
+
+输入：
+| 输入变量 | 类型 | 来源／内容 |
+| --- | --- | --- |
+| record_id_csv | String | 05.record_id_csv |
+| handling_id_csv | String | 05.handling_id_csv |
+| customer_id_csv | String | 05.customer_id_csv |
+| employee_id_csv | String | 05.employee_id_csv |
+| hall_id_csv | String | 05.hall_id_csv |
+
+处理：
+- 按 source_row_index 的整数值对齐两张投诉表。行号重复、缺失或两表集合不一致时明确报错，不取交集额外删行。先标记 complaint_description 为空或纯空白的投诉，最终同步删除其对应处理记录；对保留行补全并统计。“0”和“无”不是缺失。
+- 只补空白，保留原有非空值和原始 source_row_index。优先从同行另一张投诉表补 complaint_id、accept_time。原始时间格式已经在04处理，不能重新猜测。
+- 两表都缺 complaint_id 时，仅在前后已知且互不冲突的编号能唯一确定、编号数字差与原始行号差一致时推定。使用两侧已知编号和相对原始行号差，记录依据；不能直接用 source_row_index 拼出 ID。前后条件不足或两表非空编号冲突时记录问题，不覆盖非空值。
+- 四种主表补全关系：记录表 customer_id 缺→处理表 customer_name 在客户主档唯一匹配；处理表 customer_name 缺→记录表 customer_id 在客户主档唯一匹配；处理表 handler_id 缺→记录表 handler_name 在员工主档唯一匹配；记录表 handler_name 缺→处理表 handler_id 在员工主档唯一匹配。名称重名、ID 对应多种值、关联冲突时都不猜。主表重复相同映射可去重，多种映射才算冲突。不能把员工所属 hall_id 当作实际受理 hall_id。
+- 依题面逐字填写各字段的“记录丢失”标记；标记不得当真实 ID 参与关联。只处理原本存在的字段，不给投诉表随意添加新业务列。三主表不在本节点改写或重复返回。
+- record_fill_count 和 handling_fill_count 分别仅计保留记录中“空白→真实值”的单元格数，跨表补、行序推定、主档补全部计入；标记不计，删除行不计，一个单元格最多计一次。deleted_count 为删除投诉组数，同步删除处理行不重复计；final_count 为保留投诉组数。
+- record_clean_csv、handling_clean_csv 为完整 CSV 字符串，保留表头、额外列、行号和原始顺序。使用 csv 模块读写。
+- clean_report_json 为 JSON String，固定结构：{"tables":{"complaint_record":{"original_count":整数,"deleted_count":整数,"final_count":整数,"fill_count":整数,"field_stats":{字段名:{"filled":整数,"marked":整数,"conflicts":整数}}},"complaint_handling":同样结构},"cross_fill":{"complaint_id":整数,"accept_time":整数},"inference":{"group_count":整数,"cell_count":整数,"sources":[{"source_row_index":整数,"previous_source_row_index":整数,"previous_id":字符串,"next_source_row_index":整数,"next_id":字符串,"inferred_id":字符串}]},"master_fill_count":整数,"conflicts":[{"table":字符串,"field":字符串,"source_row_index":整数,"candidates":数组,"reason":字符串}]}。两个 tables 分项均输出，统计实际操作；同一待补格只计一条冲突。推定补两张表时 group_count 加1、cell_count 加2。非空值冲突也列入 conflicts，并说明未覆盖。
+
+输出：
+| 变量 | 类型 | 作用 |
+| --- | --- | --- |
+| record_clean_csv | String | 清洗后的完整 CSV |
+| handling_clean_csv | String | 清洗后的完整 CSV |
+| record_fill_count | Number | 记录表保留行中空白补成真实值的格数 |
+| handling_fill_count | Number | 处理表保留行中空白补成真实值的格数 |
+| deleted_count | Number | 删除投诉组数，不把处理表重复计数 |
+| final_count | Number | 最终保留投诉组数 |
+| clean_report_json | String | 按字段统计补全、占位、冲突及行序推定来源的 JSON |
+
+当前数据／校验方法：
+deleted_count预计279，final_count预计1719。投诉号跨表补448格、行序推定59组共118格；主档唯一匹配补833格。保留行的补全总数还应包含跨表补时间，不能只数投诉号。以上为当前数据核对值，不能写死。两表保留原始行号，不重新编号。
+
+节点作用：
+在有依据的前提下补缺，并提供能直接检查的数值统计。
+
+请同时给出 main 函数签名，并检查输入名、返回键和 CSV／JSON 内容格式是否逐一对应。校验数字仅用来核对，禁止写死。
+【提示词结束】
+
+下一步：连 07。临时测试时可把四个 Number 和 clean_report_json 绑定到输出查看。
+
+07 | Markdown 转换与清洗总报告
+======================
+
+类型：代码节点（Python3）
+
+【复制给 DeepSeek：从这里到“提示词结束”】
+请根据前面完整题目，为下面节点生成完整可粘贴的 Python 代码，仅用标准库。main 的参数名与输入表完全一致，return 的键和类型与输出表完全一致。不得省略辅助函数，不读本地路径、不安装依赖、不联网、不写死结果。
+
+输入：
+| 输入变量 | 类型 | 来源／内容 |
+| --- | --- | --- |
+| record_clean_csv | String | 06.record_clean_csv |
+| handling_clean_csv | String | 06.handling_clean_csv |
+| customer_id_csv | String | 05.customer_id_csv |
+| employee_id_csv | String | 05.employee_id_csv |
+| hall_id_csv | String | 05.hall_id_csv |
+| time_report | String | 04.time_report |
+| id_report | String | 05.id_report |
+| clean_report_json | String | 06.clean_report_json |
+
+处理：
+- main 接收两张清洗 CSV、三张05主表 CSV，以及04、05、06的三个报告 JSON String。只转换展示格式，不再次清洗、补值或删行。
+- 五个 _md 变量各生成一张完整 Markdown 表格，包含表头和分隔行，列顺序及 source_row_index 不变。转义单元格竖线，单元格换行用 <br>；保留中文，不截断或仅输出前几行。不得把 CSV、JSON 或压缩字符串当作 Markdown 正文。
+- cleaning_report 按前面各节点固定 JSON 结构读取：04的 time_repairs/time_issues、05的 id_repairs/id_issues、06的 tables/cross_fill/inference/master_fill_count/conflicts。汇总五表原始、删除、保留行数，时间修复和 ID 修复数，两投诉表实际补全格数，各字段占位数、冲突清单、行序推定依据。主表行数从本节点输入解析，删除数为0；不重新计算或重复累加补全事件。
+- 报告应明确时间/ID修复是前序节点处理时统计，缺失补全只计最终保留行，统计范围不同。核对两张投诉表行数及行号集合一致，数字与06.tables匹配；不匹配时报告失败，不伪造校验通过。
+
+输出：
+| 变量 | 类型 | 作用 |
+| --- | --- | --- |
+| complaint_record_md | String | 完整 Markdown 表格 |
+| complaint_handling_md | String | 完整 Markdown 表格 |
+| customer_info_md | String | 完整 Markdown 表格 |
+| employee_info_md | String | 完整 Markdown 表格 |
+| hall_info_md | String | 完整 Markdown 表格 |
+| cleaning_report | String | 可读清洗变更报告 |
+
+当前数据／校验方法：
+五表预计1719、1719、2000、200、50行。检查前两行和最后一行确实存在，报告补值与实际表一致。原始行号有间断正常。
+
+节点作用：
+将内部数据变成提交格式，并合并清洗统计。
+
+请同时给出 main 函数签名，并检查输入名、返回键和 CSV／JSON 内容格式是否逐一对应。校验数字仅用来核对，禁止写死。
+【提示词结束】
+
+下一步：连 08 五个导出工具；cleaning_report 直接供 09 输出。
+
+08 | 导出五张 Markdown 表
+====================
+
+类型：工具：五个 Markdown ⮕ MD（并联）
+
+输入：
+| 输入变量 | 类型 | 来源／内容 |
+| --- | --- | --- |
+| complaint_record_md | String | 07.complaint_record_md |
+| complaint_handling_md | String | 07.complaint_handling_md |
+| customer_info_md | String | 07.customer_info_md |
+| employee_info_md | String | 07.employee_info_md |
+| hall_info_md | String | 07.hall_info_md |
+
+处理：
+- 本节建五个工具节点，每个 md_text 只绑定对应表的 _md 输出。
+- output_filename 分别填写 complaint_record、complaint_handling、customer_info、employee_info、hall_info，不填 .md。
+- 五个工具分别命名为“导出_表名”，全部连09。
+
+输出：
+| 变量 | 类型 | 作用 |
+| --- | --- | --- |
+| 导出_complaint_record.files | Array[File] | complaint_record.md |
+| 导出_complaint_handling.files | Array[File] | complaint_handling.md |
+| 导出_customer_info.files | Array[File] | customer_info.md |
+| 导出_employee_info.files | Array[File] | employee_info.md |
+| 导出_hall_info.files | Array[File] | hall_info.md |
+
+当前数据／校验方法：
+逐一下载，检查是真正表格，无遗漏；不是把 JSON 数组改扩展名。
+
+节点作用：
+生成五个独立提交文件。
+
+下一步：五个工具全部连接09。
+
+09 | 最终输出
+=========
+
+类型：输出
+
+输入：
+| 输入变量 | 类型 | 来源／内容 |
+| --- | --- | --- |
+| complaint_record | Array[File] | 08 导出_complaint_record.files |
+| complaint_handling | Array[File] | 08 导出_complaint_handling.files |
+| customer_info | Array[File] | 08 导出_customer_info.files |
+| employee_info | Array[File] | 08 导出_employee_info.files |
+| hall_info | Array[File] | 08 导出_hall_info.files |
+| cleaning_report | String | 07.cleaning_report |
+
+处理：
+- 在输出节点逐项添加变量，引用五个文件工具的 files 和07报告。
+
+输出：
+| 变量 | 类型 | 作用 |
+| --- | --- | --- |
+| complaint_record | Array[File] | complaint_record.md |
+| complaint_handling | Array[File] | complaint_handling.md |
+| customer_info | Array[File] | customer_info.md |
+| employee_info | Array[File] | employee_info.md |
+| hall_info | Array[File] | hall_info.md |
+| cleaning_report | String | 完整变更报告 |
+
+当前数据／校验方法：
+一次完整测试应同时看到五个可下载文件和报告。
+
+节点作用：
+统一交付。
+
+下一步：下载文件、保存报告及导出 DSL。
+
+提交检查
+--------
+提交五个 .md、完整变更报告截图，并按题面导出“选手姓名_数据清洗step1.yml”。核对分钟级时间、ID、原始行号、补全数。与参考 YAML 相比，本版明确增加 Markdown 转换和报告，不直接导出 JSON。
+
+报错时复制给 DeepSeek
+---------------------
+这是本题的【节点编号和名称】。以下是本节点完整代码、实际输入变量名与来源、输出名与类型，以及原样报错／不符合要求的结果。请只修当前节点，保持已有输入输出接口，给完整替换代码，说明用哪条数据验证。不要用空数组或伪造成功报告掩盖异常。
+【在这里粘贴代码、绑定、报错；涉及解析时附实际提取文本表头和必要样例】
+
+长度报错：先核对实际报错与当前平台限制，不预先拆很多片。若需要压缩，明确编码方式并同步修改下一节点解码；最终导出必须恢复完整 Markdown，不能直接导出压缩文本。
+图片检查：参考工具的 text 用作图片 URL。实际运行若返回 Markdown 图片语法或 JSON，需要提取真正 URL 再嵌入，不能套两层图片语法。下载后检查图片链接可打开。
