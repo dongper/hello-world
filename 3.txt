@@ -1,0 +1,1162 @@
+﻿第3题 基站分时节能｜按最新参考节点结构复核修订的提示词与搭建手册
+================================================================
+节点结构依据：C:/Users/dpbju/Desktop/download (1)/考试数据文件/考试数据文件-3.yml
+参考应用名：workflow_基站节能；导出DSL版本：0.6.0。该版本号不是Dify平台版本。
+共31个图节点（包括内部开始节点），其中6个代码节点。
+本手册保留原节点与主连线；处理要求对照题目和实际数据修订。输入输出绑定及少量工具配置的必要修正已写入步骤，不能理解为原代码逐字照抄。
+原YAML未改写。本次实际执行的是原代码和明确标注的局部修正/独立核对程序；未在你的Dify实例执行新生成代码、模型、知识库或图表。可复制提示词是修订后的编程要求，不是已执行的程序。
+
+一、考试时怎样使用
+1. 在DeepSeek网页版新建本题对话，先发本次完整题目（含提交要求），再提供题目数据的表头及必要样例。规则表有阈值或分流条件时，应提供完整相关规则；这是编程依据。数据处理仍在Dify读取文件完成。
+2. 告诉DeepSeek：“我要在Dify 1.14.2从零搭建，按下面节点接口逐个生成Python3代码。我会依次给每个节点的处理要求，请保持上下游JSON字段一致，不自行增删节点或换接口。”
+3. 按本手册建节点、接线、设置输入输出。每个代码节点复制其【可复制提示词】一段给DeepSeek，再把返回的完整Python代码粘进该代码节点。保持同一题在同一对话，便于沿用前一节点的JSON结构。
+4. 所有变量来源都通过Dify变量选择器选择，不把“节点 → 变量”的说明当普通字符串输入。输入变量名、main参数名、return键、输出变量名必须分别对齐。
+5. LLM节点的SYSTEM/USER使用下文给出的提示词。出现【插入变量：……】处，用编辑框里的变量选择器插入对应变量，再删除说明占位文字。新建节点ID不同，不能直接粘旧YAML里的数字ID引用。
+6. 本手册是复习资料，不假设考场能带入。复习时记住节点用途、输入、处理、输出这四部分，再结合现场题目与数据写提示词。本手册附本套数据验收表，数字仅供练习对照，不要求考场记住数值。
+
+二、完整流程
+用户输入 → 8个文档提取器 → 数据整合 → 条件分支
+  false → 模板转换 → 输出2
+  true → 计算状态初始化 → 循环［内部：开始 → 当前时段策略计算 → 变量赋值］
+       → 风险校验 → 条件分支2
+          false → 模板转换2 → 输出4
+          true → 策略结果汇总与统计 → LLM报告 → 可视化代码准备
+               → 两柱状图+一折线图 → 模板转换3 → MD导出 → 输出3
+
+节点编号仅用于本手册定位，Dify节点名称可按原名称填写。内部开始节点由迭代/循环自动创建，不要在外层再造一个普通开始节点。
+
+三、逐节点搭建与提示词
+
+================================================================
+N01 用户输入
+原节点ID：1793621370892
+类型：用户输入（开始）
+连入：由外层或容器启动
+连出：N02 01_任务时段表；N03 02_小区基础信息表；N04 03_分时业务需求表；N05 04_覆盖保障约束表；N06 05_小区业务承接关系表；N07 06_运行状态容量与功耗参数表；N08 07_临时保障限制表.；N09 08_节能策略编排规则表
+添加以下用户输入项，每项选择单文件 File、必填、文件类型document。
+- 变量名 case；界面名称 case；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 cell；界面名称 cell；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 slot；界面名称 slot；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 group；界面名称 group；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 source_cell；界面名称 source_cell；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 model；界面名称 model；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 restriction；界面名称 restriction；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 rule；界面名称 rule；类型 file；必填 True；上传方式 local_file, remote_url
+按后面各提取器名称选择对应题目文件。此处上传文件，提取后的text才交给代码。
+
+================================================================
+N02 01_任务时段表
+原节点ID：1793621422684
+类型：文档提取器
+连入：N01 用户输入
+连出：N10 数据整合
+输入文件：N01 用户输入 → case
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N03 02_小区基础信息表
+原节点ID：1793621446258
+类型：文档提取器
+连入：N01 用户输入
+连出：N10 数据整合
+输入文件：N01 用户输入 → cell
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N04 03_分时业务需求表
+原节点ID：1793621454143
+类型：文档提取器
+连入：N01 用户输入
+连出：N10 数据整合
+输入文件：N01 用户输入 → slot
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N05 04_覆盖保障约束表
+原节点ID：1793621456002
+类型：文档提取器
+连入：N01 用户输入
+连出：N10 数据整合
+输入文件：N01 用户输入 → group
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N06 05_小区业务承接关系表
+原节点ID：1793621457809
+类型：文档提取器
+连入：N01 用户输入
+连出：N10 数据整合
+输入文件：N01 用户输入 → source_cell
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N07 06_运行状态容量与功耗参数表
+原节点ID：1793621459418
+类型：文档提取器
+连入：N01 用户输入
+连出：N10 数据整合
+输入文件：N01 用户输入 → model
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N08 07_临时保障限制表.
+原节点ID：1793621461662
+类型：文档提取器
+连入：N01 用户输入
+连出：N10 数据整合
+输入文件：N01 用户输入 → restriction
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N09 08_节能策略编排规则表
+原节点ID：1793621463247
+类型：文档提取器
+连入：N01 用户输入
+连出：N10 数据整合
+输入文件：N01 用户输入 → rule
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N10 数据整合
+原节点ID：1793621663010
+类型：代码节点 / Python3
+连入：N02 01_任务时段表；N03 02_小区基础信息表；N04 03_分时业务需求表；N05 04_覆盖保障约束表；N06 05_小区业务承接关系表；N07 06_运行状态容量与功耗参数表；N08 07_临时保障限制表.；N09 08_节能策略编排规则表
+连出：N11 条件分支
+节点作用：解析八张输入表，统一类型、时间和字段，构建后续循环使用的完整数据索引。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+task_file | N02 01_任务时段表 → text | String
+cell_file | N03 02_小区基础信息表 → text | String
+traffic_file | N04 03_分时业务需求表 → text | String
+coverage_file | N05 04_覆盖保障约束表 → text | String
+transfer_file | N06 05_小区业务承接关系表 → text | String
+power_file | N07 06_运行状态容量与功耗参数表 → text | String
+restriction_file | N08 07_临时保障限制表. → text | String
+rule_file | N09 08_节能策略编排规则表 → text | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+data_json | String
+parse | Boolean
+parse_message | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“数据整合”生成完整代码。
+本节点作用：解析八张输入表，统一类型、时间和字段，构建后续循环使用的完整数据索引。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(task_file: str, cell_file: str, traffic_file: str, coverage_file: str, transfer_file: str, power_file: str, restriction_file: str, rule_file: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+task_file | N02 01_任务时段表 → text | String
+cell_file | N03 02_小区基础信息表 → text | String
+traffic_file | N04 03_分时业务需求表 → text | String
+coverage_file | N05 04_覆盖保障约束表 → text | String
+transfer_file | N06 05_小区业务承接关系表 → text | String
+power_file | N07 06_运行状态容量与功耗参数表 → text | String
+restriction_file | N08 07_临时保障限制表. → text | String
+rule_file | N09 08_节能策略编排规则表 → text | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+data_json | String
+parse | Boolean
+parse_message | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 支持CSV和文档提取器实际输出的Markdown表格，清理表头BOM。CSV用csv模块，不能按逗号直接split；Markdown识别分隔行，支持转义竖线。列数异常必须定位到表和原始行，不得静默裁列、吞行或把解析失败当空数组。无法确定的未转义单元格竖线不能随意拼列。 表头按下方EXPECTED与SCHEMA显式映射，数值转为有限值，保留ISO时区。
+2. slot_id 必须保留字符串，如 T01。数字字段按 SCHEMA 转换，非法转换值为 None；规则 value 能转整数或浮点则转，否则保留字符串。时间统一 +08:00 ISO 秒级，并增加 start_ts/end_ts 秒级时间戳。
+3. task 按 start_ts 升序，cell 按 cell_id，coverage 按 group_id，transfer 按 source_cell_id、priority、target_cell_id，power 按 model_id/state，restriction 按 cell_id/start_ts，rule 按 rule_key 排序。traffic 最后按 slot_id/cell_id 排序。
+4. 严格校验必要值、主键唯一性、关联ID、时段起止与正时长及duration_hours一致、role/state合法、需求非负、需求恰好覆盖全部时段×小区、承接ID及优先级/上限合法、每个实际会用到的model/state功耗记录存在。不得按行序或取模生成缺失slot_id；缺失必须parse=false。ANCHOR只需其实际使用的KEEP_ACTIVE参数，不要求本套不存在的锚点休眠参数。
+5. data_json 顶层固定 normalized、index、meta。normalized 有 task/cell/traffic/coverage/transfer/power/restriction/rule 八个行对象数组。每类字段与下面 SCHEMA 一致，task/restriction 加时间戳。
+6. index 必须提供 task_by_case_id（每case第一条）、tasks_by_case_id（每case数组）、task_by_slot_id；cell_by_cell_id、cell_by_coverage_group（数组）、cell_by_role（数组）、anchor_cell_ids、booster_cell_ids；traffic_by_slot_cell（键为 slot_id|cell_id，值为整行）、traffic_by_cell（数组）；coverage_by_group；transfer_by_source（优先级排序数组）；power_by_model_state（键model_id|state）；restriction_by_cell（数组）；rule_by_key（值为包含value的整行，不直接存裸数字）。
+7. meta含counts、slot_count、cell_count、traffic_total_demand、transfer_total_max_units、anchor_cell_count、booster_cell_count。九项规则须存在且合法；不以示例默认值掩盖缺失。合法则data_json普通JSON字符串、parse=true；否则parse=false，data_json="{}"，parse_message列明字段/行/原因。
+8. 本次用户确认题目数量只是示例，实际使用ES-MINI-001：4时段、6小区、24需求；读取实际规则0.2/0.5/0.8/2/5/0，不照题目示例写死0.55/0.85/8/5。规则按rule_key查找，不依赖CSV行顺序。
+
+必须保持的字段清单与本题编码常量：
+HEADER_ALIASES = {
+  "slot": "slot_id",
+  "slotid": "slot_id",
+  "slotno": "slot_id",
+  "slotseq": "slot_id",
+  "slotindex": "slot_id",
+  "period": "slot_id",
+  "periodid": "slot_id",
+  "periodno": "slot_id",
+  "timeslot": "slot_id",
+  "timeslotid": "slot_id",
+  "timeslotno": "slot_id",
+  "seq": "slot_id",
+  "index": "slot_id",
+  "id": "slot_id",
+  "时段": "slot_id",
+  "时段id": "slot_id",
+  "时段序号": "slot_id",
+  "时段编号": "slot_id",
+  "时间片": "slot_id",
+  "时间片序号": "slot_id",
+  "序号": "slot_id",
+  "编号": "slot_id",
+  "cell": "cell_id",
+  "cellid": "cell_id",
+  "cellno": "cell_id",
+  "小区": "cell_id",
+  "小区id": "cell_id",
+  "小区编号": "cell_id",
+  "基站小区id": "cell_id",
+  "case": "case_id",
+  "caseid": "case_id",
+  "任务id": "case_id",
+  "任务编号": "case_id",
+  "start": "start_time",
+  "starttime": "start_time",
+  "开始时间": "start_time",
+  "起始时间": "start_time",
+  "end": "end_time",
+  "endtime": "end_time",
+  "结束时间": "end_time",
+  "终止时间": "end_time",
+  "duration": "duration_hours",
+  "durationhours": "duration_hours",
+  "hours": "duration_hours",
+  "时长": "duration_hours",
+  "时长小时": "duration_hours",
+  "demand": "demand_units",
+  "demandunits": "demand_units",
+  "units": "demand_units",
+  "需求量": "demand_units",
+  "业务量": "demand_units",
+  "业务需求量": "demand_units",
+  "coveragegroup": "coverage_group",
+  "覆盖组": "coverage_group",
+  "groupid": "group_id",
+  "组id": "group_id",
+  "minactivecells": "min_active_cells",
+  "minactive": "min_active_cells",
+  "最小活跃数": "min_active_cells",
+  "最小活跃小区数": "min_active_cells",
+  "anchorcellid": "anchor_cell_id",
+  "锚点小区id": "anchor_cell_id",
+  "sourcecellid": "source_cell_id",
+  "源小区id": "source_cell_id",
+  "targetcellid": "target_cell_id",
+  "目标小区id": "target_cell_id",
+  "优先级": "priority",
+  "maxtransferunits": "max_transfer_units",
+  "最大转移量": "max_transfer_units",
+  "转移上限": "max_transfer_units",
+  "modelid": "model_id",
+  "模型id": "model_id",
+  "状态": "state",
+  "capacityunits": "capacity_units",
+  "容量": "capacity_units",
+  "basepowerw": "base_power_w",
+  "基础功率": "base_power_w",
+  "slopewperunit": "slope_w_per_unit",
+  "单位功率": "slope_w_per_unit",
+  "restrictionid": "restriction_id",
+  "限制id": "restriction_id",
+  "restrictiontype": "restriction_type",
+  "限制类型": "restriction_type",
+  "原因": "reason",
+  "rulekey": "rule_key",
+  "规则键": "rule_key",
+  "值": "value",
+  "description": "description",
+  "desc": "description",
+  "描述": "description",
+  "initialstate": "initial_state",
+  "初始状态": "initial_state",
+  "initialdeepslots": "initial_deep_slots",
+  "初始连续深休眠次数": "initial_deep_slots",
+  "角色": "role",
+  "场景": "scene",
+  "siteid": "site_id",
+  "站点id": "site_id",
+  "cellname": "cell_name",
+  "小区名称": "cell_name",
+  "名称": "cell_name"
+}
+EXPECTED_TASK = [
+  "case_id",
+  "slot_id",
+  "start_time",
+  "end_time",
+  "duration_hours"
+]
+EXPECTED_CELL = [
+  "cell_id",
+  "cell_name",
+  "site_id",
+  "scene",
+  "coverage_group",
+  "role",
+  "model_id",
+  "x",
+  "y",
+  "initial_state",
+  "initial_deep_slots"
+]
+EXPECTED_TRAFFIC = [
+  "slot_id",
+  "cell_id",
+  "demand_units"
+]
+EXPECTED_COVERAGE = [
+  "group_id",
+  "anchor_cell_id",
+  "min_active_cells"
+]
+EXPECTED_TRANSFER = [
+  "source_cell_id",
+  "target_cell_id",
+  "priority",
+  "max_transfer_units"
+]
+EXPECTED_POWER = [
+  "model_id",
+  "state",
+  "capacity_units",
+  "base_power_w",
+  "slope_w_per_unit"
+]
+EXPECTED_RESTRICTION = [
+  "restriction_id",
+  "cell_id",
+  "restriction_type",
+  "start_time",
+  "end_time",
+  "reason"
+]
+EXPECTED_RULE = [
+  "rule_key",
+  "value",
+  "description"
+]
+SCHEMA_TASK = {
+  "case_id": "str",
+  "slot_id": "str",
+  "start_time": "str",
+  "end_time": "str",
+  "duration_hours": "number"
+}
+SCHEMA_CELL = {
+  "cell_id": "str",
+  "cell_name": "str",
+  "site_id": "str",
+  "scene": "str",
+  "coverage_group": "str",
+  "role": "str",
+  "model_id": "str",
+  "x": "float",
+  "y": "float",
+  "initial_state": "str",
+  "initial_deep_slots": "int"
+}
+SCHEMA_TRAFFIC = {
+  "slot_id": "str",
+  "cell_id": "str",
+  "demand_units": "number"
+}
+SCHEMA_COVERAGE = {
+  "group_id": "str",
+  "anchor_cell_id": "str",
+  "min_active_cells": "int"
+}
+SCHEMA_TRANSFER = {
+  "source_cell_id": "str",
+  "target_cell_id": "str",
+  "priority": "int",
+  "max_transfer_units": "number"
+}
+SCHEMA_POWER = {
+  "model_id": "str",
+  "state": "str",
+  "capacity_units": "number",
+  "base_power_w": "float",
+  "slope_w_per_unit": "float"
+}
+SCHEMA_RESTRICTION = {
+  "restriction_id": "str",
+  "cell_id": "str",
+  "restriction_type": "str",
+  "start_time": "str",
+  "end_time": "str",
+  "reason": "str"
+}
+SCHEMA_RULE = {
+  "rule_key": "str",
+  "value": "rule_value",
+  "description": "str"
+}
+
+自检要求：八表行数4/6/24/3/3/4/1/9，meta.slot_count=4、cell_count=6。缺slot_id、重复需求键、未知cell_id、少规则时必须parse=false。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+八表行数4/6/24/3/3/4/1/9，meta.slot_count=4、cell_count=6。缺slot_id、重复需求键、未知cell_id、少规则时必须parse=false。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N11 条件分支
+原节点ID：1793634116612
+类型：条件分支
+连入：N10 数据整合
+连出：[true] N14 计算状态初始化；[false] N12 模板转换
+IF分支 true，组内关系 and
+  N10 数据整合 → parse is true（Boolean）
+ELSE进入上方连出列表的false路径。布尔true要选布尔值，不填字符串“true”。
+
+================================================================
+N12 模板转换
+原节点ID：1793634139626
+类型：模板转换
+连入：N11 条件分支 [false]
+连出：N13 输出 2
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+parse_message | N10 数据整合 → parse_message | String
+模板原文（直接粘贴）：
+{{ parse_message }}
+输出：output（String）。
+
+================================================================
+N13 输出 2
+原节点ID：1793634153808
+类型：输出
+连入：N12 模板转换
+连出：结束或由容器收集输出
+在输出节点逐项添加下列输出：
+- output ← N12 模板转换 → output；String
+
+================================================================
+N14 计算状态初始化
+原节点ID：1793634133152
+类型：代码节点 / Python3
+连入：N11 条件分支 [true]
+连出：N15 循环
+节点作用：初始化跨时段状态和循环累计结果。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+data_json | N10 数据整合 → data_json | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+loop_index | Number
+result_rows_json | String
+slot_count | Number
+slot_summaries_text | String
+state_json | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“计算状态初始化”生成完整代码。
+本节点作用：初始化跨时段状态和循环累计结果。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(data_json: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+data_json | N10 数据整合 → data_json | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+loop_index | Number
+result_rows_json | String
+slot_count | Number
+slot_summaries_text | String
+state_json | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 使用已校验data_json，slot_count=len(normalized.task)，不得用缺失ID的回退拼出时段。
+2. state_json按cell_id建字典，每项{cell_id,state,last_state,consecutive_deep_slots}。state/last_state严格取initial_state，次数严格取initial_deep_slots；不以KEEP_ACTIVE/0掩盖无效输入。
+3. loop_index=0，result_rows_json='[]'，slot_summaries_text=''。所有输出字段与循环变量同名。
+4. 输入不合法抛ValueError，不能返回slot_count=0冒充没有任务。
+
+自检要求：slot_count 与输入时段数一致；state_json 每个小区一项；loop_index 为 Number 0，两个数组/对象集合均序列化为 String。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+slot_count 与输入时段数一致；state_json 每个小区一项；loop_index 为 Number 0，两个数组/对象集合均序列化为 String。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N15 循环
+原节点ID：1793687205700
+类型：循环
+连入：N14 计算状态初始化
+连出：N19 风险校验
+最大循环次数：10
+循环变量初始化：
+- loop_index（Number）← N14 计算状态初始化 → loop_index
+- state_json（String）← N14 计算状态初始化 → state_json
+- slot_count（Number）← N14 计算状态初始化 → slot_count
+- result_rows_json（String）← N14 计算状态初始化 → result_rows_json
+- slot_summaries_text（String）← N14 计算状态初始化 → slot_summaries_text
+退出条件（每轮检查）：
+N15 循环 → loop_index ≥ 【插入变量：N14 计算状态初始化 → slot_count】
+条件关系：and
+异常处理：terminated
+循环之后读取“循环”下的累计变量；不能再取初始化节点的空集合。循环内完成一次计算后必须执行下方变量赋值。
+
+================================================================
+N16 循环内部开始
+原节点ID：1793687205700start
+类型：循环内部开始
+位置：放在 N15 循环 内部。
+连入：由外层或容器启动
+连出：N17 当前时段策略计算
+由容器自动创建，连接到上方“连出”节点即可，不配置业务输入或代码。
+
+================================================================
+N17 当前时段策略计算
+原节点ID：1793687211641
+类型：代码节点 / Python3
+位置：放在 N15 循环 内部。
+连入：N16 循环内部开始
+连出：N18 变量赋值
+节点作用：循环内每次计算一个时段，按原参考顺序尝试深度休眠、轻载节能、保持运行。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+loop_index | N15 循环 → loop_index | Number
+state_json | N15 循环 → state_json | String
+data_json | N10 数据整合 → data_json | String
+result_rows_json | N15 循环 → result_rows_json | String
+slot_summaries_text | N15 循环 → slot_summaries_text | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+current_slot_summary | String
+next_loop_index | Number
+updated_result_rows_json | String
+updated_slot_summaries_text | String
+updated_state_json | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“当前时段策略计算”生成完整代码。
+本节点作用：循环内每次计算一个时段，按原参考顺序尝试深度休眠、轻载节能、保持运行。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(data_json: str, loop_index: int, state_json: str, result_rows_json: str, slot_summaries_text: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+loop_index | N15 循环 → loop_index | Number
+state_json | N15 循环 → state_json | String
+data_json | N10 数据整合 → data_json | String
+result_rows_json | N15 循环 → result_rows_json | String
+slot_summaries_text | N15 循环 → slot_summaries_text | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+current_slot_summary | String
+next_loop_index | Number
+updated_result_rows_json | String
+updated_slot_summaries_text | String
+updated_state_json | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 读取 normalized.task[loop_index]，按 cell_id 升序处理全部小区。读取 state_json 中前一时段状态和连续深休眠数，result_rows_json 为此前累计行数组，slot_summaries_text 为此前摘要。
+2. 所有门槛来自rule_by_key[key].value；缺少或非法立即报错。数值比较用Decimal(str(value))或可证明不提前舍入的计算，不能把示例默认阈值当本套规则。
+3. 用 traffic_by_slot_cell['slot|cell'].demand_units 初始化 original/current，转入转出初始0。ANCHOR 固定 KEEP_ACTIVE、原因 COVERAGE_ANCHOR；FORCE_ACTIVE 与当前时段满足 start<slot_end 且 end>slot_start 的小区固定 KEEP_ACTIVE、原因 TEMP_GUARANTEE。
+4. BOOSTER按cell_id升序、先DEEP_SLEEP后LIGHT_SLEEP。deep：原始量/KEEP容量≤深阈值；进入时连续次数<上限；覆盖组始终至少min_active_cells非深休眠小区。判覆盖时以当前已决定状态及未处理暂保持运行的状态计算，不能保守假设所有后续小区都已休眠而改变首个可行选择；后续决定也重新检查覆盖。
+5. 承接关系按priority、target_cell_id升序选择第一条满足全部条件的关系；转出量等于源全部原始量，只能一个目标。目标当前量+转入≤KEEP容量×利用率上限。本套目标均为ANCHOR。若扩展输入允许BOOSTER承接，必须证明其最终可承载且不再把已接收量丢掉或二次转移；题面未定义这种情形的细节时明确报不支持，不能暗猜新规则。保存实际receiver_cell_id，不能后续从合计转入反推。
+6. 深休眠增量收益=源KEEP_ACTIVE基准能耗－源深休眠基础功率×时长－源切换能耗－目标KEEP_ACTIVE斜率×转出量×时长，必须严格大于 minimum_incremental_saving_wh。源前状态不是DEEP_SLEEP才计切换能耗。首个通过的目标接收源original，源current归0，分别累计transfer_out/transfer_in。
+7. 深休眠失败原因按检查顺序用 LOAD_ABOVE_DEEP、DEEP_DURATION_LIMIT、COVERAGE_PROTECT、NO_TRANSFER_PATH、TRANSFER_LIMIT、RECEIVER_CAPACITY、NO_NET_SAVING。保留失败路径原因供轻载说明。
+8. DEEP不通过再尝试LIGHT：原始负荷率≤light门槛，LIGHT容量>0且原始量≤其容量×利用率；基准－轻载能耗－切换能耗>最低收益。轻载不转移，final=original；用深休眠未通过原因；两者不满足KEEP_ACTIVE/LIGHT_NOT_FEASIBLE。所有比较严格按≤与>边界。
+9. final=original+in-out，负数属于错误必须报错，不能max(0)掩盖。基准=(KEEPbase+KEEPslope×original)×duration；策略=(所选base+slope×final)×duration+切换；节能=基准－策略。前状态不同才计switch，包括唤醒；DEEP次数加1，其余归0。
+10. 每行字段slot_id,start_time,end_time,duration_hours,cell_id,cell_name,site_id,scene,coverage_group,role,model_id,prev_state,state,reason,original_traffic,transfer_in,transfer_out,final_traffic,capacity_units,load_ratio,utilization_ratio,base_energy_wh,strategy_energy_wh,switch_energy_wh,saving_energy_wh,consecutive_deep_slots；新增内部receiver_cell_id（非深休眠为空），输出端变量名不变。内部保留未舍入数值，可JSON存精确十进制字符串供下游Decimal读取；只在展示层HALF_UP两位。DEEP原因用DEEP_ALLOWED；LIGHT原因沿用实际失败路径。
+11. 每轮追加本时段所有小区，更新状态和摘要、next_loop_index+1。异常抛ValueError停止，不能不增加index却返回成功导致反复计算；已达slot_count可原样返回。
+
+自检要求：本套每轮+6条、最终24；状态14/4/6、转移6次；基准6815.25Wh、策略5432.25Wh（含切换35Wh）、节能1383Wh。均仅校验用，严禁硬编码。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+本套每轮+6条、最终24；状态14/4/6、转移6次；基准6815.25Wh、策略5432.25Wh（含切换35Wh）、节能1383Wh。均仅校验用，严禁硬编码。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N18 变量赋值
+原节点ID：1793687214903
+类型：变量赋值
+位置：放在 N15 循环 内部。
+连入：N17 当前时段策略计算
+连出：结束或由容器收集输出
+每一项均选择变量来源，并使用覆盖 over-write：
+- N15 循环 → loop_index ← N17 当前时段策略计算 → next_loop_index
+- N15 循环 → state_json ← N17 当前时段策略计算 → updated_state_json
+- N15 循环 → result_rows_json ← N17 当前时段策略计算 → updated_result_rows_json
+- N15 循环 → slot_summaries_text ← N17 当前时段策略计算 → updated_slot_summaries_text
+slot_count 无需每轮重赋值。四项全部覆盖后，下一轮才会使用更新状态与索引。
+
+================================================================
+N19 风险校验
+原节点ID：1793696179356
+类型：代码节点 / Python3
+连入：N15 循环
+连出：N20 条件分支 2
+节点作用：独立复核循环累计结果，为每行增加风险标记，并决定是否允许生成报告。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+data_json | N10 数据整合 → data_json | String
+result_rows_json | N15 循环 → result_rows_json | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+risk_detail | String
+risk_ok | Boolean
+risk_summary | String
+validata_result_rows_json | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“风险校验”生成完整代码。
+本节点作用：独立复核循环累计结果，为每行增加风险标记，并决定是否允许生成报告。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(data_json: str, result_rows_json: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+data_json | N10 数据整合 → data_json | String
+result_rows_json | N15 循环 → result_rows_json | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+risk_detail | String
+risk_ok | Boolean
+risk_summary | String
+validata_result_rows_json | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 读取 data_json 的原八表与索引、result_rows_json 的结果数组。生成全部 task.slot_id×cell.cell_id 期望组合，检查漏项、多项、重复与按开始时间/cell_id排序。
+2. 每行原始量必须等于原traffic值，duration等于原task值；prev_state必须等于上时段实际结果，首段取initial_state。检查original+in-out=final，final≥0，时段总量守恒。receiver_cell_id必须是实际承接关系，按源累加转入须逐目标等于其transfer_in，不能一笔转入重复支撑多个源。
+3. KEEP_ACTIVE/LIGHT_SLEEP 按对应功耗参数容量检查上限；深休眠最终业务量应0且全部转出原始量。同一时段总转入等于总转出。
+4. 覆盖组活跃数、锚点必须KEEP_ACTIVE（轻载也不允许）、临时保障重叠必须KEEP_ACTIVE；从初始次数顺序复算连续休眠并核对上限。
+5. 原因校验对照实际失败原因；DEEP允许DEEP_ALLOWED/DEEP_ELIGIBLE；锚点COVERAGE_ANCHOR，保障TEMP_GUARANTEE，两策略失败的普通KEEP用LIGHT_NOT_FEASIBLE。不能仅比较标签而不复核条件。
+6. 独立从原功耗参数、原需求、原时长、状态链复算全部能耗，Decimal计算不读取结果行自称的原始量作为唯一证据。展示用HALF_UP_2。数值容差只用于浮点表示，不可让明显超过容量/阈值的业务违规通过。
+7. 独立复核深/轻负荷门槛、轻载容量、单条转移上限、deep受方增量能耗以及两类增量收益严格>规则最小值。风险检查代码不能直接调用策略计算函数或照抄它的布尔结论。
+8. 每个结果行增加 risk_state='PASS'或'FAIL'，risk_reasons 为去重字符串数组。validata_result_rows_json 保留此拼写并序列化全部行。无结构错误且无行级错误时 risk_ok=true；risk_detail 列出结构/行错误，risk_summary 汇总。异常risk_ok=false并输出错误，不能继续正式报告。
+
+自检要求：原数据24条通过；故意删一行、重复一行、打乱排序、任一行能耗+100均须risk_ok=false。再核对需求来源、前状态链、承接账本、恰好阈值/恰好收益边界。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+原数据24条通过；故意删一行、重复一行、打乱排序、任一行能耗+100均须risk_ok=false。再核对需求来源、前状态链、承接账本、恰好阈值/恰好收益边界。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N20 条件分支 2
+原节点ID：1793797090767
+类型：条件分支
+连入：N19 风险校验
+连出：[false] N21 模板转换 2；[true] N23 策略结果汇总与统计
+IF分支 true，组内关系 and
+  N19 风险校验 → risk_ok is true（Boolean）
+ELSE进入上方连出列表的false路径。布尔true要选布尔值，不填字符串“true”。
+
+================================================================
+N21 模板转换 2
+原节点ID：1793797102849
+类型：模板转换
+连入：N20 条件分支 2 [false]
+连出：N22 输出 4
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+risk_detail | N19 风险校验 → risk_detail | String
+risk_summary | N19 风险校验 → risk_summary | String
+模板原文（直接粘贴）：
+{{ risk_detail }}
+
+{{ risk_summary }}
+输出：output（String）。
+
+================================================================
+N22 输出 4
+原节点ID：1793797205183
+类型：输出
+连入：N21 模板转换 2
+连出：结束或由容器收集输出
+在输出节点逐项添加下列输出：
+- output ← N21 模板转换 2 → output；String
+
+================================================================
+N23 策略结果汇总与统计
+原节点ID：1793797195035
+类型：代码节点 / Python3
+连入：N20 条件分支 2 [true]
+连出：N24 LLM
+节点作用：汇总通过风险校验的策略，生成明细表、统计文本和结构化汇总。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+validata_result_rows_json | N19 风险校验 → validata_result_rows_json | String
+data_json | N10 数据整合 → data_json | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+strategy_detail_table | String
+strategy_summary_json | String
+strategy_summary_text | String
+structured_summary_md | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“策略结果汇总与统计”生成完整代码。
+本节点作用：汇总通过风险校验的策略，生成明细表、统计文本和结构化汇总。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(data_json: str, validata_result_rows_json: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+validata_result_rows_json | N19 风险校验 → validata_result_rows_json | String
+data_json | N10 数据整合 → data_json | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+strategy_detail_table | String
+strategy_summary_json | String
+strategy_summary_text | String
+structured_summary_md | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 读取通过校验的行；任何risk_state非PASS均停止，按时间/cell_id排序。中文状态与题面REASON_MAP一致。
+2. 承接小区直接读取已计算、校验的receiver_cell_id；非DEEP填-。不按转入余额反推，不回退到任意有余额小区。
+3. strategy_detail_table 为17列表：时段、小区、场景、策略、原因说明、原始业务量、转入、转出、最终业务量、容量、利用率、承接小区、切换能耗(Wh)、基准能耗(Wh)、策略能耗(Wh)、节能量(Wh)、风险状态。数字按原代码显示2位小数，深休眠或容量<=0的利用率显示'-'。 展示用Decimal.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)，不能直接round或f格式代替HALF_UP。
+4. strategy_summary_text 包含总小区/时段/行数，三种状态次数、转出>0次数，总基准/策略/切换/节能能耗与saving/base×100节能率，并逐时段统计。 从未舍入能耗先求和再展示，不能用已经逐行舍入的数累计；节能率=总节能/总基准×100。
+5. strategy_summary_json 并非单纯总计，它含 slot_energy_chart、slot_strategy_chart、cell_trend_chart 三个对象。每项有type/title/x_field/x_title/y_field/y_title/series_field/data。能耗data每项{slot,type,energy}，策略data每项{slot,type,count}，趋势data每项{time,cell,value}。
+6. structured_summary_md 为'## 五、结构化汇总数据'加json代码块。内部字段 baseline_energy_wh、cell_count、saving_rate_percent、saving_wh、slot_count、slot_summaries、strategy_counts（三状态键）、strategy_energy_wh、switch_energy_wh、total_rows、transfer_count。slot_summaries 每项含三状态计数、baseline_energy_wh、duration_hours、end_time、saving_wh、slot_id、start_time、strategy_energy_wh、switch_energy_wh、transfer_count。 saving_rate_percent按HALF_UP保留6位。
+7. 四个输出保持String；仅汇总，不重算策略。数据错误抛出异常停止正式报告。
+8. 深休眠失败但轻载成功时，原因文字只描述深休眠失败原因，不得写“保持运行”；实际策略以state字段为准。
+
+必须保持的字段清单与本题编码常量：
+REASON_MAP = {
+  "COVERAGE_ANCHOR": "覆盖锚点保障",
+  "TEMP_GUARANTEE": "临时保障限制",
+  "LOAD_ABOVE_DEEP": "负载高于深休眠阈值，采用轻载节能",
+  "DEEP_ALLOWED": "负载满足深度休眠条件",
+  "DEEP_ELIGIBLE": "负载满足深度休眠条件",
+  "DEEP_SLEEP": "负载满足深度休眠条件",
+  "DEEP_DURATION_LIMIT": "达到连续深度休眠上限",
+  "LOAD_ABOVE_LIGHT": "负载较高，保持运行",
+  "LIGHT_ELIGIBLE": "负载满足轻载节能条件",
+  "LIGHT_NOT_FEASIBLE": "轻载条件不满足，保持运行",
+  "NO_NET_SAVING": "无正净收益",
+  "RECEIVER_CAPACITY": "承接方容量不足",
+  "NO_TRANSFER_PATH": "无可承接小区，保持运行",
+  "COVERAGE_PROTECT": "覆盖保障不足，保持运行",
+  "TRANSFER_LIMIT": "超出转移上限，保持运行",
+  "LIGHT_SLEEP": "负载满足轻载节能条件"
+}
+STATE_MAP = {
+  "KEEP_ACTIVE": "保持运行",
+  "LIGHT_SLEEP": "轻载节能",
+  "DEEP_SLEEP": "深度休眠"
+}
+
+自检要求：明细行数等于校验结果数；三状态次数之和等于记录数；结构化汇总总计与逐时段和一致；策略总能耗已含切换能耗。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+明细行数等于校验结果数；三状态次数之和等于记录数；结构化汇总总计与逐时段和一致；策略总能耗已含切换能耗。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N24 LLM
+原节点ID：1793798197267
+类型：LLM
+连入：N23 策略结果汇总与统计
+连出：N25 可视化代码准备
+用途：使用已计算的结果撰写报告
+原文件模型：langgenius/deepseek/deepseek / deepseek-v4-flash；mode=chat。
+原模型参数：{
+  "temperature": 0.1
+}
+在平台选取已配置可用的模型。若原模型不可用，模型选择需要现场完成，不假设参考文件携带账号凭据。
+以下沿用参考提示词，并在必要位置附修订要求；旧ID引用改为可读变量插入位置，修订要求优先。
+
+SYSTEM框原文：
+你是通信基站节能编排报告的撰写专家。你的任务是根据输入的"策略汇总数据"和"策略明细数据"，按固定模板输出报告的前三章（策略分析结论、策略统计汇总、策略明细），不输出图表章节。
+
+【数据约束（最重要）】
+1. 所有数字必须严格来自输入数据，禁止编造、推算、四舍五入篡改。
+2. 能耗数值保留 2 位小数，百分比保留 2 位小数。
+3. 缺失数据写"—"，不得用 0 或其他值替代。
+4. 若输入中某时段无转移记录，写"无业务转移"。
+
+【输出结构（必须严格遵循）】
+## 一、策略分析结论
+
+一、整体节能效果
+策略范围：共{小区数}个小区、{时段数}个时段、{记录数}条策略记录。
+策略组成：保持运行{数量}次，轻载节能{数量}次，深度休眠{数量}次，业务转移{数量}次。
+能耗结果：基准总能耗{数值}Wh，策略总能耗{数值}Wh，其中已包含状态切换能耗{数值}Wh；总节能量{数值}Wh，整体节能率{数值}%。
+校验结论：全部策略已通过覆盖、容量、保障、连续休眠和能耗校验。
+
+二、分时段策略分析
+{每个时段一行：T0x：保持运行{数量}，轻载节能{数量}，深度休眠{数量}，业务转移{数量}次；基准能耗{数值}Wh，策略能耗{数值}Wh，节能量{数值}Wh。}
+
+三、业务转移说明
+{每个时段一行：T0x：{承接转移描述或"无业务转移"}。}
+容量结论：所有承接小区均通过容量校验，未出现容量超限。
+
+## 二、策略统计汇总
+
+使用【插入变量：N23 策略结果汇总与统计 → strategy_summary_text】的全部统计行（输入不带章节标题），包括第一行策略汇总、第二行能耗汇总、以及 T01~T0x 各时段行，不改数字。
+
+## 三、策略明细
+
+直接嵌入【插入变量：N23 策略结果汇总与统计 → strategy_detail_table】，不修改任何行。
+
+【业务转移说明取值规则】
+- 扫描策略明细表中"策略=深度休眠"或"转出>0"的行
+- 每行提取源小区、转出量、承接小区；承接方利用率必须查找同一时段中小区ID等于承接小区ID的那一行，不能用源小区行的利用率，不重新计算
+- 格式：源小区 {cell_id} 向承接小区 {承接小区} 转移 {转出量}，承接后利用率 {利用率}%
+- 同一时段多个转移用"；"连接
+- 承接方利用率为"—"（容量为0）时，改为"承接方容量为0"
+- 某时段无转移，写"无业务转移"
+
+【格式要求】
+- 输出纯 Markdown，无 HTML
+- 一级标题 ##，二级标题用"一、二、三"，与模板一致
+- 章节之间空一行
+- 不输出报告标题"## 基站分时节能策略分析报告"（由后续拼接节点统一添加）
+- 不输出"四、图表"章节
+- 不加解释性前缀或后缀
+【本次修订】只转写已通过校验的数据，报告总标题仅由下游模板添加，不重复标题。数量从输入读取（当前6小区、4时段、24条），不能照示例写9/36；不得改变任何数值、状态或承接关系；不能输出省略号省略明细。
+
+USER框原文：
+请根据以下数据生成《基站分时节能策略分析报告》的前三章（策略分析结论、策略统计汇总、策略明细），不输出图表章节。
+
+===== 策略汇总数据 =====
+【插入变量：N23 策略结果汇总与统计 → strategy_summary_text】
+
+===== 策略明细表（用于第三章和业务转移说明）=====
+【插入变量：N23 策略结果汇总与统计 → strategy_detail_table】
+
+===== 输出要求 =====
+1. 严格按系统提示词的模板结构输出前三章
+2. 数字必须来自上述数据，能耗和百分比保留 2 位小数
+3. 业务转移说明必须从策略明细表中提取源小区、承接小区、转出量、承接方利用率
+4. 第三章直接嵌入 strategy_detail_table，不重排、不裁剪
+5. 以"## 一、策略分析结论"开头，到策略明细表的最后一行结束
+输出：text（String）；下游引用本节点text。
+注意：发给DeepSeek网页版的是本手册的“代码节点提示词”；这里的SYSTEM/USER是填在Dify工作流的LLM节点里，两者位置不同。
+
+================================================================
+N25 可视化代码准备
+原节点ID：1793798900914
+类型：代码节点 / Python3
+连入：N24 LLM
+连出：N26 分时段能耗对比；N27 分时段策略数量分布 分组柱状图；N28 小区最终业务量趋势
+节点作用：将策略结果转换为三个 AntV 工具要求的纯数组 JSON 字符串。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+strategy_summary_json | N23 策略结果汇总与统计 → strategy_summary_json | String
+validata_result_rows_json | N19 风险校验 → validata_result_rows_json | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+energy_chart_json | String
+strategy_chart_json | String
+trend_chart_json | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“可视化代码准备”生成完整代码。
+本节点作用：将策略结果转换为三个 AntV 工具要求的纯数组 JSON 字符串。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(strategy_summary_json: str, validata_result_rows_json: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+strategy_summary_json | N23 策略结果汇总与统计 → strategy_summary_json | String
+validata_result_rows_json | N19 风险校验 → validata_result_rows_json | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+energy_chart_json | String
+strategy_chart_json | String
+trend_chart_json | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 读取 strategy_summary_json.slot_strategy_chart.data 中slot去重顺序；取不到时按 validata_result_rows_json 的slot_id首次出现顺序。
+2. energy_chart_json 每时段两项，结构{category:slot_id,value:能耗数,group:'基准能耗'或'策略能耗'}，分别求和base_energy_wh和strategy_energy_wh，保留2位。
+3. strategy_chart_json 每时段三项，结构{category:slot_id,value:数量,group:'保持运行'或'轻载节能'或'深度休眠'}。按实际state统计。
+4. trend_chart_json按时段时间和cell_id生成{time:slot_id,value:final_traffic,group:cell_id}。value数字，最终量不任意提前舍入。组合缺失、数字非法时停止，不省略或补0掩盖。
+5. 三个输出都是纯数组JSON字符串，不生成假图片；两柱状图group=true，折线time字段。失败抛ValueError而非返回三个空图数组。
+
+自检要求：能耗数组项数=2×时段数，策略数组项数=3×时段数，完整数据下趋势项数=时段数×小区数；两柱状图的group字段与group=true配套。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+能耗数组项数=2×时段数，策略数组项数=3×时段数，完整数据下趋势项数=时段数×小区数；两柱状图的group字段与group=true配套。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N26 分时段能耗对比
+原节点ID：1793799082257
+类型：工具节点
+连入：N25 可视化代码准备
+连出：N29 模板转换 3
+插件：antv/visualization
+工具：生成柱状图 / generate_column_chart
+参数（保留参考，必要修正已列入）：
+- axisXTitle = 时段；配置类型 mixed
+- axisYTitle = 能耗（Wh）；配置类型 mixed
+- data = 【插入变量：N25 可视化代码准备 → energy_chart_json】；配置类型 mixed
+- group = True；配置类型 constant
+- stack = False；配置类型 constant
+- title = 分时段基准能耗与策略能耗对比；配置类型 mixed
+- height = 500；工具固定配置
+- style = 留空（原值null）；工具固定配置
+- theme = default；工具固定配置
+- width = 800；工具固定配置
+图表结果由后续模板引用本工具text。运行后确认text实际能作为图片地址显示。
+
+================================================================
+N27 分时段策略数量分布 分组柱状图
+原节点ID：1793799094082
+类型：工具节点
+连入：N25 可视化代码准备
+连出：N29 模板转换 3
+插件：antv/visualization
+工具：生成柱状图 / generate_column_chart
+参数（保留参考，必要修正已列入）：
+- axisXTitle = 时段；配置类型 mixed
+- axisYTitle = 小区数量（个）；配置类型 mixed
+- data = 【插入变量：N25 可视化代码准备 → strategy_chart_json】；配置类型 mixed
+- group = True；配置类型 constant
+- stack = False；配置类型 constant
+- title = 分时段节能策略数量分布；配置类型 mixed
+- height = 500；工具固定配置
+- style = 留空（原值null）；工具固定配置
+- theme = default；工具固定配置
+- width = 800；工具固定配置
+图表结果由后续模板引用本工具text。运行后确认text实际能作为图片地址显示。
+
+================================================================
+N28 小区最终业务量趋势
+原节点ID：1793799102257
+类型：工具节点
+连入：N25 可视化代码准备
+连出：N29 模板转换 3
+插件：antv/visualization
+工具：生成折线图 / generate_line_chart
+参数（保留参考，必要修正已列入）：
+- axisXTitle = 时段；配置类型 mixed
+- axisYTitle = 最终业务量（业务量单位）；配置类型 mixed
+- data = 【插入变量：N25 可视化代码准备 → trend_chart_json】；配置类型 mixed
+- title = 小区最终业务量趋势；配置类型 mixed
+- height = 500；工具固定配置
+- style = 留空（原值null）；工具固定配置
+- theme = default；工具固定配置
+- width = 800；工具固定配置
+图表结果由后续模板引用本工具text。运行后确认text实际能作为图片地址显示。
+
+================================================================
+N29 模板转换 3
+原节点ID：1793799312246
+类型：模板转换
+连入：N26 分时段能耗对比；N27 分时段策略数量分布 分组柱状图；N28 小区最终业务量趋势
+连出：N30 Markdown ⮕ MD（result）
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+text | N24 LLM → text | String
+text_1 | N26 分时段能耗对比 → text | String
+text_2 | N27 分时段策略数量分布 分组柱状图 → text | String
+text_3 | N28 小区最终业务量趋势 → text | String
+structured_summary_md | N23 策略结果汇总与统计 → structured_summary_md | String
+模板原文（直接粘贴）：
+## 基站分时节能策略分析报告
+
+{{ text }}
+
+
+
+## 四、可视化分析
+
+
+
+### 1. 分时段能耗对比
+
+
+
+![分时段基准能耗与策略能耗对比]({{ text_1 }})
+
+
+
+### 2. 分时段策略数量分布
+
+
+
+![分时段节能策略数量分布]({{ text_2 }})
+
+
+
+### 3. 小区最终业务量趋势
+
+
+
+![小区最终业务量趋势]({{ text_3 }})
+
+
+
+{{ structured_summary_md }}
+
+
+输出：output（String）。
+
+================================================================
+N30 Markdown ⮕ MD（result）
+原节点ID：1793800686355
+类型：工具节点
+连入：N29 模板转换 3
+连出：N31 输出 3
+插件：bowenliang123/md_exporter
+工具：Markdown ⮕ MD / md_to_md
+参数（保留参考，必要修正已列入）：
+- md_text = 【插入变量：N29 模板转换 3 → output】；配置类型 mixed
+- output_filename = result；配置类型 mixed
+文件名不加后缀。文件输出选择工具files（Array[File]），不要只绑定工具text。
+
+================================================================
+N31 输出 3
+原节点ID：1793634482901
+类型：输出
+连入：N30 Markdown ⮕ MD（result）
+连出：结束或由容器收集输出
+在输出节点逐项添加下列输出：
+- output ← N29 模板转换 3 → output；String
+- files ← N30 Markdown ⮕ MD（result） → files；Array[File]
+
+四、原参考连线核对表
+N01 用户输入 --source--> N02 01_任务时段表
+N01 用户输入 --source--> N03 02_小区基础信息表
+N01 用户输入 --source--> N04 03_分时业务需求表
+N01 用户输入 --source--> N05 04_覆盖保障约束表
+N01 用户输入 --source--> N06 05_小区业务承接关系表
+N01 用户输入 --source--> N07 06_运行状态容量与功耗参数表
+N01 用户输入 --source--> N08 07_临时保障限制表.
+N01 用户输入 --source--> N09 08_节能策略编排规则表
+N02 01_任务时段表 --source--> N10 数据整合
+N03 02_小区基础信息表 --source--> N10 数据整合
+N04 03_分时业务需求表 --source--> N10 数据整合
+N05 04_覆盖保障约束表 --source--> N10 数据整合
+N06 05_小区业务承接关系表 --source--> N10 数据整合
+N07 06_运行状态容量与功耗参数表 --source--> N10 数据整合
+N08 07_临时保障限制表. --source--> N10 数据整合
+N09 08_节能策略编排规则表 --source--> N10 数据整合
+N11 条件分支 --true--> N14 计算状态初始化
+N11 条件分支 --false--> N12 模板转换
+N12 模板转换 --source--> N13 输出 2
+N16 循环内部开始 --source--> N17 当前时段策略计算
+N17 当前时段策略计算 --source--> N18 变量赋值
+N10 数据整合 --source--> N11 条件分支
+N14 计算状态初始化 --source--> N15 循环
+N15 循环 --source--> N19 风险校验
+N19 风险校验 --source--> N20 条件分支 2
+N20 条件分支 2 --false--> N21 模板转换 2
+N20 条件分支 2 --true--> N23 策略结果汇总与统计
+N21 模板转换 2 --source--> N22 输出 4
+N23 策略结果汇总与统计 --source--> N24 LLM
+N24 LLM --source--> N25 可视化代码准备
+N25 可视化代码准备 --source--> N26 分时段能耗对比
+N25 可视化代码准备 --source--> N27 分时段策略数量分布 分组柱状图
+N25 可视化代码准备 --source--> N28 小区最终业务量趋势
+N26 分时段能耗对比 --source--> N29 模板转换 3
+N27 分时段策略数量分布 分组柱状图 --source--> N29 模板转换 3
+N28 小区最终业务量趋势 --source--> N29 模板转换 3
+N29 模板转换 3 --source--> N30 Markdown ⮕ MD（result）
+N30 Markdown ⮕ MD（result） --source--> N31 输出 3
+
+五、本版修正与验证边界
+1. 保留原8提取器、6代码、循环与两条异常分支、3图和MD导出。循环四变量赋值及validata_result_rows_json拼写保留。
+2. 当前CSV为ES-MINI-001：6小区、4时段、24需求；你已说明题目数量是示例。计算用实际数据动态推导，正式比赛若硬性要求9/36，必须确认或补发配套数据，不能自行造3个小区。
+3. 本套规则实际light=0.5、max_utilization=0.8、switch=5Wh、minimum_saving=0，与题面示例0.55/0.85/8/5不同。代码必须读规则CSV；若正式题面与正式规则冲突应确认，不自选对结果有利的阈值。
+4. 本套24条策略逐字段与独立Decimal计算一致。原代码round不满足通用HALF_UP边界，源数据严格校验与承接ID追踪也须按新版提示词补齐。未执行实际模型报告和AntV出图。
+
+六、分阶段试跑方法
+1. 先运行提取器，看text表头与样例是否正确；输入绑定到text，不能绑定到上传文件对象。
+2. 每个代码节点检查“上次运行”的输入、输出和关键统计；节点显示成功只说明执行结束，业务判断仍要看parse、is_completed、risk_ok或报告内容。
+3. 上一步字段结构和下一步要求不一致时，把前一节点输出样例与当前节点接口一起发给DeepSeek，让它只修当前接口问题。
+4. 最后完整试跑，检查所有应经过的节点已运行。有files输出的题目再检查下载文件与正文；第四题原参考仅输出text，复制完整正文另存UTF-8的选手姓名.md，不要保存JSON或只保存下载链接。不能只单测最后一个输出节点。
+
+七、向DeepSeek反馈报错时可用的短句
+“这是【节点名称】的报错，下面是该节点完整代码、输入变量名与来源、输出变量名与类型，以及上一步输出的少量样例。请保持其他节点和接口不变，解释直接原因后给我完整替换代码。”
+
+整理核对范围
+已执行四题参考代码的本地数据链路，使用独立程序核对关键数值及异常边界；结果见后附验收表和总核验报告。第二题采用明确标注的人工判读意图fixture；第四题采用全手册fixture测试证据代码，不是实际知识库。DeepSeek生成的新代码、Dify平台、图表工具和真实知识库仍须现场验收。
+源文件SHA-256：2db851297c0417737802ca2c97e84e0d4a22eb62815327c4e080e6b71d90861a
+
+
+八、本套数据验收表
+本次为ES-MINI-001，实际4时段、6小区、24需求；用户已确认题目数量为示例。
+若正式评分仍要求9小区/36明细，这套数据与要求不一致，应由老师确认或补发数据；不能复制小区凑数。以下通过只针对现有6小区数据。
+八表行数依次4/6/24/3/3/4/1/9。
+实际规则：deep≤0.2，light≤0.5，利用率≤0.8，连续deep最多2，切换5Wh，增量节能>0Wh。
+独立用原始CSV、Decimal和状态链复算全部24条，状态和能耗与原参考本套运行结果一致：
+保持14，轻载4，深休眠6，业务转移6次；基准6815.25Wh、策略5432.25Wh、切换35.00Wh、节能1383.00Wh、节能率20.292726%。
+时段 | 小区 | 状态 | 原因 | 转入 | 转出 | 最终量 | 承接小区 | 基准Wh | 策略Wh | 切换Wh
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+T01 | C01 | KEEP_ACTIVE | COVERAGE_ANCHOR | 0.0 | 0.0 | 50.0 | - | 150.00 | 150.00 | 0.00
+T01 | C02 | LIGHT_SLEEP | LOAD_ABOVE_DEEP | 0.0 | 0.0 | 30.0 | - | 95.00 | 70.00 | 5.00
+T01 | C03 | KEEP_ACTIVE | COVERAGE_ANCHOR | 0.0 | 0.0 | 18.0 | - | 126.00 | 126.00 | 0.00
+T01 | C04 | KEEP_ACTIVE | TEMP_GUARANTEE | 0.0 | 0.0 | 12.0 | - | 86.00 | 86.00 | 0.00
+T01 | C05 | KEEP_ACTIVE | COVERAGE_ANCHOR | 0.0 | 0.0 | 72.0 | - | 166.50 | 166.50 | 0.00
+T01 | C06 | LIGHT_SLEEP | DEEP_DURATION_LIMIT | 0.0 | 0.0 | 12.0 | - | 86.00 | 61.00 | 5.00
+T02 | C01 | KEEP_ACTIVE | COVERAGE_ANCHOR | 16.0 | 0.0 | 60.0 | - | 436.50 | 472.50 | 0.00
+T02 | C02 | DEEP_SLEEP | DEEP_SLEEP | 0.0 | 16.0 | 0.0 | C01 | 264.00 | 27.50 | 5.00
+T02 | C03 | KEEP_ACTIVE | COVERAGE_ANCHOR | 0.0 | 0.0 | 16.0 | - | 373.50 | 373.50 | 0.00
+T02 | C04 | KEEP_ACTIVE | TEMP_GUARANTEE | 0.0 | 0.0 | 10.0 | - | 255.00 | 255.00 | 0.00
+T02 | C05 | KEEP_ACTIVE | COVERAGE_ANCHOR | 12.0 | 0.0 | 77.0 | - | 483.75 | 510.75 | 0.00
+T02 | C06 | DEEP_SLEEP | DEEP_SLEEP | 0.0 | 12.0 | 0.0 | C05 | 258.00 | 27.50 | 5.00
+T03 | C01 | KEEP_ACTIVE | COVERAGE_ANCHOR | 12.0 | 0.0 | 42.0 | - | 270.00 | 288.00 | 0.00
+T03 | C02 | DEEP_SLEEP | DEEP_SLEEP | 0.0 | 12.0 | 0.0 | C01 | 172.00 | 15.00 | 0.00
+T03 | C03 | KEEP_ACTIVE | COVERAGE_ANCHOR | 8.0 | 0.0 | 22.0 | - | 246.00 | 258.00 | 0.00
+T03 | C04 | DEEP_SLEEP | DEEP_SLEEP | 0.0 | 8.0 | 0.0 | C03 | 168.00 | 20.00 | 5.00
+T03 | C05 | KEEP_ACTIVE | COVERAGE_ANCHOR | 10.0 | 0.0 | 48.0 | - | 282.00 | 297.00 | 0.00
+T03 | C06 | DEEP_SLEEP | DEEP_SLEEP | 0.0 | 10.0 | 0.0 | C05 | 170.00 | 15.00 | 0.00
+T04 | C01 | KEEP_ACTIVE | COVERAGE_ANCHOR | 0.0 | 0.0 | 25.0 | - | 525.00 | 525.00 | 0.00
+T04 | C02 | LIGHT_SLEEP | LOAD_ABOVE_DEEP | 0.0 | 0.0 | 28.0 | - | 376.00 | 261.00 | 5.00
+T04 | C03 | KEEP_ACTIVE | COVERAGE_ANCHOR | 6.0 | 0.0 | 18.0 | - | 486.00 | 504.00 | 0.00
+T04 | C04 | DEEP_SLEEP | DEEP_SLEEP | 0.0 | 6.0 | 0.0 | C03 | 332.00 | 30.00 | 0.00
+T04 | C05 | KEEP_ACTIVE | COVERAGE_ANCHOR | 0.0 | 0.0 | 70.0 | - | 660.00 | 660.00 | 0.00
+T04 | C06 | LIGHT_SLEEP | DEEP_DURATION_LIMIT | 0.0 | 0.0 | 14.0 | - | 348.00 | 233.00 | 5.00
+验收表中的DEEP_SLEEP原因码是原参考原值；新提示词使用题目规定的等价DEEP_ALLOWED，中文均为“负载满足深度休眠条件”。
+风险节点已用删行、重复、乱序、能耗+100试验，原参考均能拒绝；但这不等于原风险代码检查了全部原始量、状态链、门槛、承接账本，新提示词补充这些条件。
+HALF_UP边界：2.675应显示2.68，Python round(2.675,2)为2.67，不能混用。
+本套三图数组长度8/12/24，趋势6条线；最终24行17列、三张真实图、结构化JSON，报告总标题由模板添加一次。
+交付：SUCCESS详情截图、result.md、workflow.yml。新生成代码必须依次验证初始化→4轮循环→风险true→汇总，风险false不得继续正式报告。

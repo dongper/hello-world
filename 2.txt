@@ -1,0 +1,725 @@
+﻿第2题 通信客户投诉智能分流与工单｜按最新参考节点结构复核修订的提示词与搭建手册
+================================================================
+节点结构依据：C:/Users/dpbju/Desktop/download (1)/考试数据文件/考试数据文件-2.yml
+参考应用名：考试数据文件-2；导出DSL版本：0.6.0。该版本号不是Dify平台版本。
+共21个图节点（包括内部开始节点），其中4个代码节点。
+本手册保留原节点与主连线；处理要求对照题目和实际数据修订。输入输出绑定及少量工具配置的必要修正已写入步骤，不能理解为原代码逐字照抄。
+原YAML未改写。本次实际执行的是原代码和明确标注的局部修正/独立核对程序；未在你的Dify实例执行新生成代码、模型、知识库或图表。可复制提示词是修订后的编程要求，不是已执行的程序。
+
+一、考试时怎样使用
+1. 在DeepSeek网页版新建本题对话，先发本次完整题目（含提交要求），再提供题目数据的表头及必要样例。规则表有阈值或分流条件时，应提供完整相关规则；这是编程依据。数据处理仍在Dify读取文件完成。
+2. 告诉DeepSeek：“我要在Dify 1.14.2从零搭建，按下面节点接口逐个生成Python3代码。我会依次给每个节点的处理要求，请保持上下游JSON字段一致，不自行增删节点或换接口。”
+3. 按本手册建节点、接线、设置输入输出。每个代码节点复制其【可复制提示词】一段给DeepSeek，再把返回的完整Python代码粘进该代码节点。保持同一题在同一对话，便于沿用前一节点的JSON结构。
+4. 所有变量来源都通过Dify变量选择器选择，不把“节点 → 变量”的说明当普通字符串输入。输入变量名、main参数名、return键、输出变量名必须分别对齐。
+5. LLM节点的SYSTEM/USER使用下文给出的提示词。出现【插入变量：……】处，用编辑框里的变量选择器插入对应变量，再删除说明占位文字。新建节点ID不同，不能直接粘旧YAML里的数字ID引用。
+6. 本手册是复习资料，不假设考场能带入。复习时记住节点用途、输入、处理、输出这四部分，再结合现场题目与数据写提示词。本手册附本套数据验收表，数字仅供练习对照，不要求考场记住数值。
+
+二、完整流程
+用户输入 → 5个文档提取器 → 代码执行（解析）→ 条件分支
+  false → 模板转换 → 输出2
+  true → 迭代［内部：开始 → LLM候选意图识别 → 代码执行2］
+       → 代码执行3（报告）→ 代码执行4（图表数据）→ 两个柱状图
+       → 模板转换2 → MD导出 → 输出
+
+节点编号仅用于本手册定位，Dify节点名称可按原名称填写。内部开始节点由迭代/循环自动创建，不要在外层再造一个普通开始节点。
+
+三、逐节点搭建与提示词
+
+================================================================
+N01 用户输入
+原节点ID：1793583474975
+类型：用户输入（开始）
+连入：由外层或容器启动
+连出：N02 01_待处理新诉求；N03 02_业务核验快照；N04 03_分流与时限规则；N05 04_在途与历史工单；N06 customer_info
+添加以下用户输入项，每项选择单文件 File、必填、文件类型document。
+- 变量名 case；界面名称 case；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 service；界面名称 service；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 rule；界面名称 rule；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 ticket；界面名称 ticket；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 customer_info；界面名称 customer_info；类型 file；必填 True；上传方式 local_file, remote_url
+按后面各提取器名称选择对应题目文件。此处上传文件，提取后的text才交给代码。
+
+================================================================
+N02 01_待处理新诉求
+原节点ID：1793586292961
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 代码执行
+输入文件：N01 用户输入 → case
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N03 02_业务核验快照
+原节点ID：1793586295794
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 代码执行
+输入文件：N01 用户输入 → service
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N04 03_分流与时限规则
+原节点ID：1793586302244
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 代码执行
+输入文件：N01 用户输入 → rule
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N05 04_在途与历史工单
+原节点ID：1793586304469
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 代码执行
+输入文件：N01 用户输入 → ticket
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N06 customer_info
+原节点ID：1793586306625
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 代码执行
+输入文件：N01 用户输入 → customer_info
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N07 代码执行
+原节点ID：1793586366873
+类型：代码节点 / Python3
+连入：N02 01_待处理新诉求；N03 02_业务核验快照；N04 03_分流与时限规则；N05 04_在途与历史工单；N06 customer_info
+连出：N08 条件分支
+节点作用：解析五张提取后的表，校验结构并为逐条迭代装配 case_item。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+case_csv | N02 01_待处理新诉求 → text | String
+service_csv | N03 02_业务核验快照 → text | String
+rule_csv | N04 03_分流与时限规则 → text | String
+ticket_csv | N05 04_在途与历史工单 → text | String
+custome_csv | N06 customer_info → text | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+case_item | Array[Object]
+data_json | String
+parse | Boolean
+parse_message | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“代码执行”生成完整代码。
+本节点作用：解析五张提取后的表，校验结构并为逐条迭代装配 case_item。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(case_csv: str, service_csv: str, rule_csv: str, ticket_csv: str, custome_csv: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+case_csv | N02 01_待处理新诉求 → text | String
+service_csv | N03 02_业务核验快照 → text | String
+rule_csv | N04 03_分流与时限规则 → text | String
+ticket_csv | N05 04_在途与历史工单 → text | String
+custome_csv | N06 customer_info → text | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+case_item | Array[Object]
+data_json | String
+parse | Boolean
+parse_message | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 保留参数custome_csv拼写。支持CSV和文档提取器实际输出的Markdown表格，清理表头BOM。CSV用csv模块，不能按逗号直接split；Markdown识别分隔行，支持转义竖线。列数异常必须定位到表和原始行，不得静默裁列、吞行或把解析失败当空数组。无法确定的未转义单元格竖线不能随意拼列。
+2. 必要列使用下方清单；主键case_id/service_id/rule_id/ticket_id/customer_id检查非空、唯一。关键结构错误、规则键/数值不合法时parse=false，case_item=[]，parse_message写清位置。缺单条诉求service_id、某条找不到快照、归属冲突属于逐条业务问题，不阻断其他诉求。
+3. 时间解析带时区ISO；业务类型MOBILE/BROADBAND，规则可ANY。precedence应为合法整数，不能int(float)截断小数；规则SLA须有限且非负。金额留原值，空/UNKNOWN/不可解析金额均留给逐条核验判UNKNOWN，不把单条金额问题变为整批解析失败，也不填0。
+4. 客户主档只读。普通客户/VIP客户/企业客户分别映射normal/vip/enterprise，不改源等级，不凭空把未知等级当普通。保留原表source_row_index不影响查找。
+5. 每个case_item保留原诉求全部字段，追加customer_info:{customer_name,customer_level,customer_level_code}或null；snapshot严格先按service_id查找，再由下一代码校验customer_id/service_type/region。不能按客户+类型+区域拿第一条业务。ticket_candidates为同客户+业务号工单；rule_candidates为本service_type与ANY规则并按rule_id去重。
+6. data_json顶层parse、parse_message、tables、stats、errors、case_items；tables键cases/services/rules/tickets/customers；stats同名行数及case_items。case_item另以Array[Object]输出；JSON使用ensure_ascii=False，数字为数字，保留业务事实的原始文本供逐条核验。
+
+必须保持的字段清单与本题编码常量：
+LEVEL_MAP = {
+  "普通客户": "normal",
+  "VIP客户": "vip",
+  "企业客户": "enterprise",
+  "normal": "normal",
+  "vip": "vip",
+  "enterprise": "enterprise"
+}
+case_required = [
+  "case_id",
+  "received_at",
+  "channel",
+  "customer_id",
+  "service_id",
+  "service_type",
+  "region",
+  "complaint_text"
+]
+service_required = [
+  "service_id",
+  "customer_id",
+  "service_type",
+  "region",
+  "snapshot_at",
+  "account_status",
+  "bill_cycle",
+  "contract_monthly_fee_yuan",
+  "charged_monthly_fee_yuan",
+  "network_incident_status",
+  "access_line_status",
+  "install_order_id",
+  "install_order_status",
+  "planned_complete_at",
+  "evidence_id"
+]
+rule_required = [
+  "rule_id",
+  "intent_code",
+  "service_type",
+  "verification_result",
+  "required_fields",
+  "queue_id",
+  "precedence",
+  "priority_normal",
+  "priority_vip",
+  "priority_enterprise",
+  "sla_hours_normal",
+  "sla_hours_vip",
+  "sla_hours_enterprise",
+  "ticket_action"
+]
+ticket_required = [
+  "ticket_id",
+  "customer_id",
+  "service_id",
+  "intent_code",
+  "status",
+  "created_at",
+  "last_updated_at",
+  "owner_queue"
+]
+customer_required = [
+  "customer_id",
+  "customer_name",
+  "customer_level"
+]
+
+自检要求：本套parse=true、20个item；MOB-0015实收原值UNKNOWN不全批失败；CASE017须能找到BB-0017快照，下一节点报告customer_id冲突；CASE020缺业务号转逐条人工。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+本套parse=true、20个item；MOB-0015实收原值UNKNOWN不全批失败；CASE017须能找到BB-0017快照，下一节点报告customer_id冲突；CASE020缺业务号转逐条人工。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N08 条件分支
+原节点ID：1793587745933
+类型：条件分支
+连入：N07 代码执行
+连出：[true] N11 迭代；[false] N09 模板转换
+IF分支 true，组内关系 and
+  N07 代码执行 → parse is true（Boolean）
+ELSE进入上方连出列表的false路径。布尔true要选布尔值，不填字符串“true”。
+
+================================================================
+N09 模板转换
+原节点ID：1793587799169
+类型：模板转换
+连入：N08 条件分支 [false]
+连出：N10 输出 2
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+parse_message | N07 代码执行 → parse_message | String
+模板原文（直接粘贴）：
+{{ parse_message }}
+输出：output（String）。
+
+================================================================
+N10 输出 2
+原节点ID：1793587815557
+类型：输出
+连入：N09 模板转换
+连出：结束或由容器收集输出
+在输出节点逐项添加下列输出：
+- output ← N09 模板转换 → output；String
+
+================================================================
+N11 迭代
+原节点ID：1793587687014
+类型：迭代
+连入：N08 条件分支 [true]
+连出：N15 代码执行 3
+迭代输入：N07 代码执行 → case_item
+输入类型：Array[Object]
+单次迭代对象：本迭代 → item（Object）；只在迭代内部引用。
+收集输出：N14 代码执行 2 → case_result
+本版输出类型设置：Array[Object]。每轮返回Object，flatten_output=false；引用下游两个代码输入时类型也选Array[Object]。
+并行：关闭（is_parallel=false）。原parallel_nums=10在关闭并行时不表示一次处理10条。
+异常处理：terminated，终止；flatten_output=False
+内部最后节点无需手工连线到外部汇总节点，退出容器后由“迭代”外层出口连接。
+
+================================================================
+N12 迭代内部开始
+原节点ID：1793587687014start
+类型：迭代内部开始
+位置：放在 N11 迭代 内部。
+连入：由外层或容器启动
+连出：N13 LLM
+由容器自动创建，连接到上方“连出”节点即可，不配置业务输入或代码。
+
+================================================================
+N13 LLM
+原节点ID：1793587948936
+类型：LLM
+位置：放在 N11 迭代 内部。
+连入：N12 迭代内部开始
+连出：N14 代码执行 2
+用途：逐条候选意图识别
+原文件模型：langgenius/deepseek/deepseek / deepseek-v4-flash；mode=chat。
+原模型参数：{
+  "max_tokens": 4096,
+  "temperature": 0.1
+}
+在平台选取已配置可用的模型。若原模型不可用，模型选择需要现场完成，不假设参考文件携带账号凭据。
+以下沿用参考提示词，并在必要位置附修订要求；旧ID引用改为可读变量插入位置，修订要求优先。
+
+SYSTEM框原文：
+你是运营商客服工单的候选意图识别器。你一次只处理一条客户诉求，只根据 complaint_text 的语义识别出全部候选意图。
+
+【可识别的意图代码】
+BILLING_DISPUTE
+MOBILE_NETWORK
+BROADBAND_FAULT
+INSTALL_DELAY
+SERVICE_ATTITUDE
+POSITIVE_FEEDBACK
+OTHER
+
+【意图判定要点】
+1. BILLING_DISPUTE：账单、扣费、套餐月费、收费项目、多扣/少扣、费用异常、账单解释、核对收费等。
+2. MOBILE_NETWORK：手机信号、无服务、5G/移动上网慢、手机上网断断续续、区域移动网络故障等。
+3. BROADBAND_FAULT：宽带已经交付使用后出现断网、卡顿、线路故障、光猫红灯、宽带账号断网、需要上门维修等。
+4. INSTALL_DELAY：宽带新装、预约安装、安装未联系、未上门、未交付、未验收、系统显示完工但未上门交付验收等。
+5. SERVICE_ATTITUDE：客服或服务人员态度问题、挂断电话、服务态度投诉等。
+6. POSITIVE_FEEDBACK：感谢、表扬、满意、明确表示没有投诉等正向反馈。
+7. OTHER：无法可靠归入以上类别的诉求。
+
+【识别原则】
+1. 只根据 complaint_text 的语义识别候选意图。不得根据 service_type 推断意图；不得根据任何历史工单、规则表、标签反推候选意图。
+2. 一条诉求涉及多个问题时，必须保留全部候选意图，去重后全部输出，不得只输出一个。
+3. 新装宽带尚未交付或验收的争议归 INSTALL_DELAY；已经交付使用、之后发生断网的诉求归 BROADBAND_FAULT。
+4. 感谢、表扬类诉求归 POSITIVE_FEEDBACK；无法可靠归类的归 OTHER。
+5. 如果 complaint_text 缺失、为空或完全无法判断，输出 candidate_intents=["OTHER"]。
+6. 本节点只识别候选意图，不选主意图，不排序，不查 precedence，不判断核验结果，不做分流和建单。
+
+【输出格式】
+必须输出且只输出一个 JSON 对象：
+{
+  "case_id": "原样回填输入的 case_id",
+  "candidate_intents": ["全部候选意图代码，去重，按在 complaint_text 中出现的先后顺序排列"],
+  "reason": "不超过40字的中文简要依据，只描述 complaint_text 中的问题点"
+}
+
+要求：
+- candidate_intents 只能从可识别意图代码中选择，至少包含一项。
+- 不要输出 Markdown 代码块，不要输出解释、前后缀或任何额外文字。
+
+USER框原文：
+请识别下面这条诉求的全部候选意图。
+根据【插入变量：N11 迭代 → item】中的 case_id，complaint_text
+
+要求：
+1. 只根据 complaint_text 识别候选意图，不得根据 service_type 或其他信息推断。
+2. 涉及多个问题时保留全部候选意图并去重。
+3. 本节点不选主意图、不排序、不查 precedence。
+4. 只输出系统提示词规定的 JSON，不要输出 Markdown 代码块或额外解释。
+输出：text（String）；下游引用本节点text。
+注意：发给DeepSeek网页版的是本手册的“代码节点提示词”；这里的SYSTEM/USER是填在Dify工作流的LLM节点里，两者位置不同。
+
+================================================================
+N14 代码执行 2
+原节点ID：1793587982159
+类型：代码节点 / Python3
+位置：放在 N11 迭代 内部。
+连入：N13 LLM
+连出：结束或由容器收集输出
+节点作用：迭代内逐条选择主副意图、核验业务、匹配规则并确定工单动作。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+text | N13 LLM → text | String
+item | N11 迭代 → item | Object
+data_json | N07 代码执行 → data_json | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+case_result | Object
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“代码执行 2”生成完整代码。
+本节点作用：迭代内逐条选择主副意图、核验业务、匹配规则并确定工单动作。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(text: str, item: dict, data_json: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+text | N13 LLM → text | String
+item | N11 迭代 → item | Object
+data_json | N07 代码执行 → data_json | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+case_result | Object
+
+处理顺序与口径（以本修订要求为准）：
+1. text 是 LLM 对单条诉求输出的 JSON，含 case_id、candidate_intents、reason；容忍 JSON 代码围栏。item 是当前迭代对象，data_json 是第一代码节点输出。
+2. 校验text可解为对象、case_id等于item.case_id，candidate_intents是合法七类的非空去重数组；无法解析或不匹配须标明模型输出异常并转人工，不伪装成正常OTHER。多意图按规则表的precedence升序选主意图，余下为副意图；无依据不可臆造排序。
+3. 合并规则候选与data_json.tables.rules并按rule_id去重，客户等级以主档为准；不识别的等级作为需核查问题，不能无提示默认normal。
+4. 先校验customer_id/service_id非空、客户存在、该service_id快照存在，快照customer_id/service_type/region一致；四类业务意图还必须account_status=ACTIVE。
+5. POSITIVE_FEEDBACK 优先处理为 NOT_REQUIRED、NO_TICKET，规则未匹配时队列 NONE，priority/sla_deadline/工单号为空；身份异常时 evidence_id 为空。其他身份归属异常直接 UNKNOWN、MANUAL_TRIAGE_QUEUE、P2、received_at+4小时、MANUAL_REVIEW，matched_rule_id/evidence_id/工单号为空。
+6. 身份通过后，BILLING_DISPUTE 用实收>约定判 CONFIRMED，否则 NOT_CONFIRMED，金额缺失或不可解析 UNKNOWN；MOBILE_NETWORK 的 OPEN/NONE 对应确认/未确认；BROADBAND_FAULT 的 DOWN/UP 对应确认/未确认；INSTALL_DELAY 的 DELAYED/COMPLETED 对应确认/未确认，其余 UNKNOWN。SERVICE_ATTITUDE 与 OTHER 用 NOT_CHECKED。
+7. 按 primary_intent、service_type（含 ANY）、verification_result 精确筛规则，多条取 precedence 最小。未匹配转人工 P2、4小时。匹配后依据 normal/vip/enterprise 取 priority 和 sla_hours，deadline 从 received_at 起算并输出 +08:00 的 ISO 秒级时间。
+8. NO_TICKET、MANUAL_REVIEW、CREATE_OR_MERGE严格按规则执行；CREATE_OR_MERGE仅合并同客户+业务+主意图且OPEN/IN_PROGRESS的工单。存在多个合法在途候选时保持参考的最近last_updated_at、再created_at选择，但用解析时间比较而非随意字符串；确定性平局用ticket_id升序并说明。CLOSED/不同意图不阻止新建；不真实派单。
+9. related_ticket_ids 只收集同客户同业务号的副意图在途工单，不重复，不含主意图合单目标。evidence_id 只取身份归属通过的快照。reason 解释核验依据、待查事项、规则、动作、关联工单。仅生成草稿结构，不调用外部派单。
+10. case_result 对象字段必须齐全：case_id、customer_id、service_id、primary_intent、secondary_intents（数组）、verification_result、matched_rule_id、evidence_id、queue_id、priority、sla_deadline、ticket_action、existing_ticket_id、draft_ticket_id、related_ticket_ids（数组）、reason。除两个数组外均为字符串。
+11. required_fields不作为第二次强制门槛：本题已明确由核验结果匹配UNKNOWN规则。两个月费须有限合法数值；NaN/Infinity不是有效金额。
+12. 给下游reason保留完整核验依据，并另组织能在60字明细中保留副意图和关联单的信息。CASE014主意图BROADBAND_FAULT、副意图BILLING_DISPUTE，副意图在途TCK-20261018-006不能拿来合并主意图。
+
+必须保持的字段清单与本题编码常量：
+INTENTS = [
+  "BILLING_DISPUTE",
+  "BROADBAND_FAULT",
+  "INSTALL_DELAY",
+  "MOBILE_NETWORK",
+  "OTHER",
+  "POSITIVE_FEEDBACK",
+  "SERVICE_ATTITUDE"
+]
+FOUR_ACTIVE_INTENTS = [
+  "BILLING_DISPUTE",
+  "BROADBAND_FAULT",
+  "INSTALL_DELAY",
+  "MOBILE_NETWORK"
+]
+LEVEL_MAP = {
+  "普通客户": "normal",
+  "VIP客户": "vip",
+  "企业客户": "enterprise",
+  "normal": "normal",
+  "vip": "vip",
+  "enterprise": "enterprise"
+}
+
+自检要求：当前20条文本的人工判读样例：CREATE12/MERGE3/MANUAL_REVIEW4/NO_TICKET1；这是给定意图样例条件下的计算校验值，不是硬编码答案，也不是实测DeepSeek输出。CASE017/020身份异常时规则号和证据号必须空。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+当前20条文本的人工判读样例：CREATE12/MERGE3/MANUAL_REVIEW4/NO_TICKET1；这是给定意图样例条件下的计算校验值，不是硬编码答案，也不是实测DeepSeek输出。CASE017/020身份异常时规则号和证据号必须空。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N15 代码执行 3
+原节点ID：1793600175442
+类型：代码节点 / Python3
+连入：N11 迭代
+连出：N16 代码执行 4
+节点作用：汇总迭代结果，做完整性与工单动作检查，生成分流报告。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+case_result | N11 迭代 → output | Array[Object]
+case_item | N07 代码执行 → case_item | Array[Object]
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+report_md | String
+summary_json | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“代码执行 3”生成完整代码。
+本节点作用：汇总迭代结果，做完整性与工单动作检查，生成分流报告。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(case_result: list, case_item: list):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+case_result | N11 迭代 → output | Array[Object]
+case_item | N07 代码执行 → case_item | Array[Object]
+
+必须返回：
+输出变量 | 类型
+--- | ---
+report_md | String
+summary_json | String
+
+处理顺序与口径（以本修订要求为准）：
+1. case_result和case_item为对象数组（兼容数组项JSON字符串）。按case_id集合核对：输入/结果不能重复，不能漏、多或空编号；结果恰好每诉求一条。无效结构抛ValueError，不能静默用空列表生成完整报告。
+2. 校验动作与编号：CREATE仅DRAFT-<case_id>；MERGE仅existing_ticket_id；MANUAL_REVIEW无工单编号；NO_TICKET还须priority和sla_deadline空。全部通过才summary_json.complete=true；有错误时明确输出不完整，图表代码必须检查complete并停止正式出图。
+3. report_md只排版，不重新判断业务。按case_id升序、序号1到N。标题# 分流与工单草稿报告；章节一完整性检查、二工单动作统计、三逐条分流明细、四转人工复核清单、五不建单清单（NO_TICKET）、附：说明，标题逐字照题面。没有转人工/不建单时可省对应节。
+4. 明细表严格13列：序号|case_id|客户|业务号码|主意图|核验|规则|队列|优先级|SLA截止|动作|工单编号|说明。所有空单值填-；说明中的半角竖线替换／、换行换空格，最多60字符，超出59字符后加…。先在说明前部写副意图及关联单，再放核验依据，防止截断丢失关联信息；完整reason留在case_result。
+5. 四个动作标签依次CREATE（新建草稿）、MERGE（合并至在途）、MANUAL_REVIEW（转人工）、NO_TICKET（不建单），计数动态求和并与明细一致。
+6. 保留附：说明三条原文：本报告仅汇总分流结果，不重新判定意图、业务状态或分流规则。／CREATE 为工单草稿，MERGE 为合并至已存在在途工单，MANUAL_REVIEW 为转人工复核，NO_TICKET 为非投诉不生成工单。／所有工单编号均为草稿或在途引用，本报告不实际创建或派发工单。
+7. summary_json字段total_cases,total_results,parsed_results,complete,issues,action_counts,missing_case_ids,duplicate_result_case_ids,extra_case_ids,duplicate_input_case_ids；此节点不插伪造图链接，图表由后面的原两图节点和模板追加。
+
+自检要求：20条明细、按case_id升序，13列；说明≤60字符；空单值为-；四动作之和20；人工4条、不建单1条（给定核验意图样例）。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+20条明细、按case_id升序，13列；说明≤60字符；空单值为-；四动作之和20；人工4条、不建单1条（给定核验意图样例）。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N16 代码执行 4
+原节点ID：1793602797713
+类型：代码节点 / Python3
+连入：N15 代码执行 3
+连出：N17 工单动作分布；N18 客户诉求主意图分布
+节点作用：为两个 AntV 柱状图生成动作分布和主意图分布数据。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+summary_json | N15 代码执行 3 → summary_json | String
+case_results | N11 迭代 → output | Array[Object]
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+action_chart_data_json | String
+intent_chart_data_json | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“代码执行 4”生成完整代码。
+本节点作用：为两个 AntV 柱状图生成动作分布和主意图分布数据。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(summary_json: str='', case_results=None, case_item=None, **kwargs):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+summary_json | N15 代码执行 3 → summary_json | String
+case_results | N11 迭代 → output | Array[Object]
+
+必须返回：
+输出变量 | 类型
+--- | ---
+action_chart_data_json | String
+intent_chart_data_json | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 先检查summary_json.complete为true，核对action_counts与case_results重新计数一致；不一致抛ValueError停止，不以回退掩盖统计错误。
+2. 动作按 CREATE、MERGE、MANUAL_REVIEW、NO_TICKET 固定顺序，未出现也输出0。只统计 primary_intent，不计副意图。
+3. 本题要求主意图图六类按INTENT_ORDER输出，OTHER仍保留在完整明细和动作统计中；若未来输入出现OTHER，说明六类图的统计范围，不把OTHER错误并入某类。本套OTHER=0。
+4. 两个返回值均为 JSON 数组字符串，每项严格是 {category:名称,value:整数}。原参考这里不输出 group 字段。兼容 main 可选参数 case_item 及 kwargs 的候选名称，正常绑定使用 case_results。
+
+必须保持的字段清单与本题编码常量：
+ACTION_ORDER = [
+  "CREATE",
+  "MERGE",
+  "MANUAL_REVIEW",
+  "NO_TICKET"
+]
+INTENT_ORDER = [
+  "BILLING_DISPUTE",
+  "MOBILE_NETWORK",
+  "BROADBAND_FAULT",
+  "INSTALL_DELAY",
+  "SERVICE_ATTITUDE",
+  "POSITIVE_FEEDBACK"
+]
+
+自检要求：动作4项12/3/4/1；主意图6项4/5/7/2/1/1，仅用于本套已核对意图样例。两图group=false；value整数；图链接须由AntV实际返回。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+动作4项12/3/4/1；主意图6项4/5/7/2/1/1，仅用于本套已核对意图样例。两图group=false；value整数；图链接须由AntV实际返回。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N17 工单动作分布
+原节点ID：1793603844999
+类型：工具节点
+连入：N16 代码执行 4
+连出：N19 模板转换 2
+插件：antv/visualization
+工具：生成柱状图 / generate_column_chart
+参数（保留参考，必要修正已列入）：
+- axisXTitle = 工单动作；配置类型 mixed
+- axisYTitle = 数量（条）；配置类型 mixed
+- data = 【插入变量：N16 代码执行 4 → action_chart_data_json】；配置类型 mixed
+- group = False；配置类型 constant
+- stack = False；配置类型 constant
+- title = 工单动作分布；配置类型 mixed
+- height = 500；工具固定配置
+- style = 留空（原值null）；工具固定配置
+- theme = default；工具固定配置
+- width = 800；工具固定配置
+图表结果由后续模板引用本工具text。运行后确认text实际能作为图片地址显示。
+
+================================================================
+N18 客户诉求主意图分布
+原节点ID：1793603851999
+类型：工具节点
+连入：N16 代码执行 4
+连出：N19 模板转换 2
+插件：antv/visualization
+工具：生成柱状图 / generate_column_chart
+参数（保留参考，必要修正已列入）：
+- axisXTitle = 主意图；配置类型 mixed
+- axisYTitle = 数量（条）；配置类型 mixed
+- data = 【插入变量：N16 代码执行 4 → intent_chart_data_json】；配置类型 mixed
+- group = False；配置类型 constant
+- stack = False；配置类型 constant
+- title = 客户诉求主意图分布；配置类型 mixed
+- height = 500；工具固定配置
+- style = 留空（原值null）；工具固定配置
+- theme = default；工具固定配置
+- width = 800；工具固定配置
+图表结果由后续模板引用本工具text。运行后确认text实际能作为图片地址显示。
+
+================================================================
+N19 模板转换 2
+原节点ID：1793604110603
+类型：模板转换
+连入：N17 工单动作分布；N18 客户诉求主意图分布
+连出：N20 Markdown ⮕ MD（result）
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+text | N18 客户诉求主意图分布 → text | String
+text_1 | N17 工单动作分布 → text | String
+report_md | N15 代码执行 3 → report_md | String
+模板原文（直接粘贴）：
+{{ report_md }}
+
+
+
+### 工单动作分布
+
+![工单动作分布]({{ text_1 }})
+
+
+
+### 客户诉求主意图分布
+
+![客户诉求主意图分布]({{ text }})
+输出：output（String）。
+
+================================================================
+N20 Markdown ⮕ MD（result）
+原节点ID：1793801896028
+类型：工具节点
+连入：N19 模板转换 2
+连出：N21 输出
+插件：bowenliang123/md_exporter
+工具：Markdown ⮕ MD / md_to_md
+参数（保留参考，必要修正已列入）：
+- md_text = 【插入变量：N19 模板转换 2 → output】；配置类型 mixed
+- output_filename = result；配置类型 mixed
+文件名不加后缀。文件输出选择工具files（Array[File]），不要只绑定工具text。
+
+================================================================
+N21 输出
+原节点ID：1793587255383
+类型：输出
+连入：N20 Markdown ⮕ MD（result）
+连出：结束或由容器收集输出
+在输出节点逐项添加下列输出：
+- output ← N19 模板转换 2 → output；String
+- files ← N20 Markdown ⮕ MD（result） → files；Array[File]
+
+四、原参考连线核对表
+N01 用户输入 --source--> N02 01_待处理新诉求
+N01 用户输入 --source--> N03 02_业务核验快照
+N01 用户输入 --source--> N04 03_分流与时限规则
+N01 用户输入 --source--> N05 04_在途与历史工单
+N01 用户输入 --source--> N06 customer_info
+N02 01_待处理新诉求 --source--> N07 代码执行
+N03 02_业务核验快照 --source--> N07 代码执行
+N04 03_分流与时限规则 --source--> N07 代码执行
+N05 04_在途与历史工单 --source--> N07 代码执行
+N06 customer_info --source--> N07 代码执行
+N07 代码执行 --source--> N08 条件分支
+N08 条件分支 --true--> N11 迭代
+N08 条件分支 --false--> N09 模板转换
+N09 模板转换 --source--> N10 输出 2
+N12 迭代内部开始 --source--> N13 LLM
+N13 LLM --source--> N14 代码执行 2
+N11 迭代 --source--> N15 代码执行 3
+N15 代码执行 3 --source--> N16 代码执行 4
+N16 代码执行 4 --source--> N17 工单动作分布
+N16 代码执行 4 --source--> N18 客户诉求主意图分布
+N17 工单动作分布 --source--> N19 模板转换 2
+N18 客户诉求主意图分布 --source--> N19 模板转换 2
+N19 模板转换 2 --source--> N20 Markdown ⮕ MD（result）
+N20 Markdown ⮕ MD（result） --source--> N21 输出
+
+五、本版修正与验证边界
+1. 保留原5提取器、4代码、1意图LLM、1迭代、2图、模板与MD导出；迭代输出纠正为Array[Object]、flatten=false，两柱状图group=false。
+2. 原始MOB-0015是UNKNOWN，原解析器可通过；但改成其他无法解析金额时原程序错误地整批停止，修订提示词将此类异常留给逐条核验。
+3. 不增加required_fields的第二次硬性校验；题目明确不要求。13列表格也是题目规定，不应擅自增加证据列；完整16项保留在case_result。
+4. 本次20条候选意图为助手逐条判读的验证样例，已对后续确定性规则另写独立核对程序；Jev实际调用因DNS失败未获得结果，未调用你平台DeepSeek。
+
+六、分阶段试跑方法
+1. 先运行提取器，看text表头与样例是否正确；输入绑定到text，不能绑定到上传文件对象。
+2. 每个代码节点检查“上次运行”的输入、输出和关键统计；节点显示成功只说明执行结束，业务判断仍要看parse、is_completed、risk_ok或报告内容。
+3. 上一步字段结构和下一步要求不一致时，把前一节点输出样例与当前节点接口一起发给DeepSeek，让它只修当前接口问题。
+4. 最后完整试跑，检查所有应经过的节点已运行。有files输出的题目再检查下载文件与正文；第四题原参考仅输出text，复制完整正文另存UTF-8的选手姓名.md，不要保存JSON或只保存下载链接。不能只单测最后一个输出节点。
+
+七、向DeepSeek反馈报错时可用的短句
+“这是【节点名称】的报错，下面是该节点完整代码、输入变量名与来源、输出变量名与类型，以及上一步输出的少量样例。请保持其他节点和接口不变，解释直接原因后给我完整替换代码。”
+
+整理核对范围
+已执行四题参考代码的本地数据链路，使用独立程序核对关键数值及异常边界；结果见后附验收表和总核验报告。第二题采用明确标注的人工判读意图fixture；第四题采用全手册fixture测试证据代码，不是实际知识库。DeepSeek生成的新代码、Dify平台、图表工具和真实知识库仍须现场验收。
+源文件SHA-256：9ca5e7b516abe371a886d2dce8c71f1bc0d6aaa277fcab77bb8ee477597f66dd
+
+
+八、本套20条诉求验收表（语义样例与确定性计算分开）
+意图样例由助手根据complaint_text逐条判读；不是实时DeepSeek或Jev答案。
+本次Jev API域名无法解析，没有真实Jev输出。以下数字是“给定这些意图后”的独立代码核对结果。
+原CSV行数20/19/15/6/2000。金额UNKNOWN留到逐条核验；未新增required_fields门槛。
+动作CREATE12，MERGE3，MANUAL_REVIEW4，NO_TICKET1。
+主意图计数BILLING_DISPUTE4、MOBILE_NETWORK5、BROADBAND_FAULT7、INSTALL_DELAY2、SERVICE_ATTITUDE1、POSITIVE_FEEDBACK1。
+case尾号 | 主意图 | 核验 | 规则 | 动作 | 优先级 | SLA截止 | 工单号
+--- | --- | --- | --- | --- | --- | --- | ---
+001 | BILLING_DISPUTE | CONFIRMED | R001 | CREATE | P2 | 2026-10-20T09:00:00+08:00 | DRAFT-CASE-20261019-001
+002 | BILLING_DISPUTE | NOT_CONFIRMED | R002 | CREATE | P2 | 2026-10-20T09:01:00+08:00 | DRAFT-CASE-20261019-002
+003 | BILLING_DISPUTE | CONFIRMED | R001 | MERGE | P1 | 2026-10-19T17:02:00+08:00 | TCK-20261018-001
+004 | MOBILE_NETWORK | CONFIRMED | R004 | CREATE | P1 | 2026-10-19T11:03:00+08:00 | DRAFT-CASE-20261019-004
+005 | MOBILE_NETWORK | NOT_CONFIRMED | R005 | CREATE | P1 | 2026-10-19T17:04:00+08:00 | DRAFT-CASE-20261019-005
+006 | MOBILE_NETWORK | CONFIRMED | R004 | MERGE | P1 | 2026-10-19T11:05:00+08:00 | TCK-20261019-002
+007 | BROADBAND_FAULT | CONFIRMED | R007 | CREATE | P1 | 2026-10-19T11:06:00+08:00 | DRAFT-CASE-20261019-007
+008 | BROADBAND_FAULT | NOT_CONFIRMED | R008 | CREATE | P2 | 2026-10-20T09:07:00+08:00 | DRAFT-CASE-20261019-008
+009 | BROADBAND_FAULT | CONFIRMED | R007 | MERGE | P1 | 2026-10-19T11:08:00+08:00 | TCK-20261018-003
+010 | INSTALL_DELAY | CONFIRMED | R010 | CREATE | P2 | 2026-10-20T09:09:00+08:00 | DRAFT-CASE-20261019-010
+011 | INSTALL_DELAY | NOT_CONFIRMED | R011 | CREATE | P2 | 2026-10-20T09:10:00+08:00 | DRAFT-CASE-20261019-011
+012 | SERVICE_ATTITUDE | NOT_CHECKED | R013 | CREATE | P1 | 2026-10-19T17:11:00+08:00 | DRAFT-CASE-20261019-012
+013 | POSITIVE_FEEDBACK | NOT_REQUIRED | R014 | NO_TICKET | - | - | -
+014 | BROADBAND_FAULT | CONFIRMED | R007 | CREATE | P1 | 2026-10-19T13:13:00+08:00 | DRAFT-CASE-20261019-014
+015 | BILLING_DISPUTE | UNKNOWN | R003 | MANUAL_REVIEW | P2 | 2026-10-19T13:14:00+08:00 | -
+016 | MOBILE_NETWORK | UNKNOWN | R006 | MANUAL_REVIEW | P2 | 2026-10-19T13:15:00+08:00 | -
+017 | BROADBAND_FAULT | UNKNOWN | - | MANUAL_REVIEW | P2 | 2026-10-19T13:16:00+08:00 | -
+018 | BROADBAND_FAULT | CONFIRMED | R007 | CREATE | P1 | 2026-10-19T13:17:00+08:00 | DRAFT-CASE-20261019-018
+019 | MOBILE_NETWORK | NOT_CONFIRMED | R005 | CREATE | P1 | 2026-10-19T17:18:00+08:00 | DRAFT-CASE-20261019-019
+020 | BROADBAND_FAULT | UNKNOWN | - | MANUAL_REVIEW | P2 | 2026-10-19T13:19:00+08:00 | -
+
+重点：011为安装未交付争议，INSTALL_DELAY；014主宽带故障、副账单争议，关联单TCK-20261018-006不能作为主意图合并目标；017是快照归属冲突，不是没有快照；020缺业务号。
+报告明细必须case_id升序、13列、空值-、说明最多60字符（截断后含…），保留副意图及关联单；原参考未做到60字和空值格式，已修正提示词。
+输出result.md含20条明细+两张真实AntV图片。两个图group=false，数据{category,value}。如果工具text不是直接图片URL，先查看返回字段，再提取真实URL，不把JSON整段当链接。
+交付：SUCCESS详情截图、result.md、workflow.yml。没有实际出图之前不能用本地假图链接充当完整通过。

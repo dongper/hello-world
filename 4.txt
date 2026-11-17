@@ -1,0 +1,673 @@
+﻿第4题 网络告警与故障诊断｜按最新参考节点结构复核修订的提示词与搭建手册
+================================================================
+节点结构依据：C:/Users/dpbju/Desktop/download (1)/考试数据文件/考试数据文件-4.yml
+参考应用名：考试数据文件-4；导出DSL版本：0.6.0。该版本号不是Dify平台版本。
+共16个图节点（包括内部开始节点），其中6个代码节点。
+本手册保留原节点与主连线；处理要求对照题目和实际数据修订。输入输出绑定及少量工具配置的必要修正已写入步骤，不能理解为原代码逐字照抄。
+原YAML未改写。本次实际执行的是原代码和明确标注的局部修正/独立核对程序；未在你的Dify实例执行新生成代码、模型、知识库或图表。可复制提示词是修订后的编程要求，不是已执行的程序。
+
+一、考试时怎样使用
+1. 在DeepSeek网页版新建本题对话，先发本次完整题目（含提交要求），再提供题目数据的表头及必要样例。规则表有阈值或分流条件时，应提供完整相关规则；这是编程依据。数据处理仍在Dify读取文件完成。
+2. 告诉DeepSeek：“我要在Dify 1.14.2从零搭建，按下面节点接口逐个生成Python3代码。我会依次给每个节点的处理要求，请保持上下游JSON字段一致，不自行增删节点或换接口。”
+3. 按本手册建节点、接线、设置输入输出。每个代码节点复制其【可复制提示词】一段给DeepSeek，再把返回的完整Python代码粘进该代码节点。保持同一题在同一对话，便于沿用前一节点的JSON结构。
+4. 所有变量来源都通过Dify变量选择器选择，不把“节点 → 变量”的说明当普通字符串输入。输入变量名、main参数名、return键、输出变量名必须分别对齐。
+5. LLM节点的SYSTEM/USER使用下文给出的提示词。出现【插入变量：……】处，用编辑框里的变量选择器插入对应变量，再删除说明占位文字。新建节点ID不同，不能直接粘旧YAML里的数字ID引用。
+6. 本手册是复习资料，不假设考场能带入。复习时记住节点用途、输入、处理、输出这四部分，再结合现场题目与数据写提示词。本手册附本套数据验收表，数字仅供练习对照，不要求考场记住数值。
+
+二、完整流程
+用户输入（4个文件）→ 4个文档提取器
+  alarms、device_topology、policy → 代码执行（派单）
+  device_logs → 代码执行2（日志整理）
+  上述两路 → 代码执行3（工单日志窗口）→ 迭代
+  迭代内部：开始 → 代码执行4（查询词）→ 知识检索 → 代码执行5（证据匹配）
+  迭代出口 → 代码执行6（结构化报告）→ LLM（原样排版）→ 输出text
+维护手册由预先配置的知识库提供；参考没有第5个上传变量，也没有MD文件导出工具。
+
+节点编号仅用于本手册定位，Dify节点名称可按原名称填写。内部开始节点由迭代/循环自动创建，不要在外层再造一个普通开始节点。
+
+三、逐节点搭建与提示词
+
+================================================================
+N01 用户输入
+原节点ID：1794713439320
+类型：用户输入（开始）
+连入：由外层或容器启动
+连出：N02 alarms；N03 文档提取器 2；N04 文档提取器 3；N05 文档提取器 4
+添加以下用户输入项，每项选择单文件 File、必填、文件类型document。
+- 变量名 alarms；界面名称 alarms；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 device_topology；界面名称 device_topology；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 policy；界面名称 policy；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 device_logs；界面名称 device_logs；类型 file；必填 True；上传方式 local_file, remote_url
+按后面各提取器名称选择对应题目文件。此处上传文件，提取后的text才交给代码。
+
+================================================================
+N02 alarms
+原节点ID：1794713506565
+类型：文档提取器
+连入：N01 用户输入
+连出：N06 代码执行
+输入文件：N01 用户输入 → alarms
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N03 文档提取器 2
+原节点ID：1794713508786
+类型：文档提取器
+连入：N01 用户输入
+连出：N06 代码执行
+输入文件：N01 用户输入 → device_topology
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N04 文档提取器 3
+原节点ID：1794713510143
+类型：文档提取器
+连入：N01 用户输入
+连出：N06 代码执行
+输入文件：N01 用户输入 → policy
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N05 文档提取器 4
+原节点ID：1794713511533
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 代码执行 2
+输入文件：N01 用户输入 → device_logs
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N06 代码执行
+原节点ID：1794713514549
+类型：代码节点 / Python3
+连入：N02 alarms；N03 文档提取器 2；N04 文档提取器 3
+连出：N08 代码执行 3
+节点作用：在原派单节点完成字段校验、active识别、一跳拓扑和确定性规则匹配；缺少正式字段映射时明确报告。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+alarms | N02 alarms → text | String
+device_topology | N03 文档提取器 2 → text | String
+policy | N04 文档提取器 3 → text | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+active_count | Number
+diagnosis_workorder | Array[Object]
+manual_review | String
+no_diagnosis_json | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“代码执行”生成完整代码。
+本节点作用：在原派单节点完成字段校验、active识别、一跳拓扑和确定性规则匹配；缺少正式字段映射时明确报告。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(alarms: str, device_topology: str, policy: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+alarms | N02 alarms → text | String
+device_topology | N03 文档提取器 2 → text | String
+policy | N04 文档提取器 3 → text | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+active_count | Number
+diagnosis_workorder | Array[Object]
+manual_review | String
+no_diagnosis_json | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 支持CSV和文档提取器实际输出的Markdown表格，清理表头BOM。CSV用csv模块，不能按逗号直接split；Markdown识别分隔行，支持转义竖线。列数异常必须定位到表和原始行，不得静默裁列、吞行或把解析失败当空数组。无法确定的未转义单元格竖线不能随意拼列。
+2. 告警显式映射alarm_time←timestamp、alarm_level←severity、alarm_status←status、alarm_title←title、alarm_description←description、professional_domain←domain；已有标准列优先，两列冲突报异常。拓扑device_id/parent_device_id可直接用；source_device_id/target_device_id边表无需device_id列。
+3. 先按alarm_id去重，active优先，同状态保留文件首条；只处理active，关键device_id/time/level空或时间无法合法解析列人工。保留完整秒时间做窗口、排序；报告只格式化YYYY/MM/DD HH:MM，不能拿截断分钟作计算。
+4. 标准策略表按alarm_level、device_type、professional_domain精确匹配；单元格*或空表示不限，但整列缺失不是通配。先对候选按priority P1>P2>P3，再policy_id字典序升序；不使用场景相似度/关键词数量改变排序。
+5. priority空时按该告警CRITICAL→P1、ERROR→P2、WARNING或其他→P3；priority非法非空报异常。auto_dispatch缺失默认false；diagnosis_required缺失默认true，明确false才不诊断。SLA单一明确时限转X小时/分钟，空未定义；多段含响应/升级/处理时，不自动取第一个数，保留原文在人工审核中，等待明确字段映射口径。
+6. 本套真实派单策略表为中文自然语言场景/触发/排除，没有标准alarm_level列。“涉及专业”也不是已确认的professional_domain编码映射；不能把整列缺失当不限，不能从触发句抓某个CRITICAL就当完整字段，更不能预填告警ID→策略ID答案。本节点保留规则原文，未确认映射时输出明确的“派单字段映射待确认”人工审核，不声称正式派单已验证。若老师另行给出映射，作为显式映射配置使用，不能由模型臆造。
+7. 拓扑建立一跳父子相邻集合，source为上游、target为下游；去重、排除自身、顿号连接，无关系未知，不遍历全链路。
+8. 命中策略每条active告警生成一单，同设备多告警不合并。所有命中单按完整时间、alarm_id排序编号WO-01起，包括不进入诊断者；编号后再分diagnosis_workorder和no_diagnosis_json。人工派单不等于不诊断。
+9. 工单字段保留参考：workorder_id,workorder_title,priority,device_id,device_type,professional_domain,alarm_id,alarm_time,alarm_time_full,alarm_level,alarm_symptom,impact_scope,policy_id,dispatch_professional,sla,dispatch_reason,auto_dispatch,auto_dispatch_text,diagnosis_required,diagnosis_input_summary,fault_type。责任专业取正式派单专业字段，无则告警专业域，再待确认；fault_type缺则待确认，不拿场景/触发句20字伪装字段。
+10. manual_review为JSON数组字符串，每项中文键类型、告警ID/工单号、设备、原因、建议。no_diagnosis_json为工单数组JSON字符串；diagnosis_workorder是Array[Object]；active_count从原告警动态计算。禁止访问真实派单系统。
+
+自检要求：本套17行、active去重8条：A001—A007、I105；不以生成8工单为必过条件。标准字段测试：WARNING不匹配CRITICAL规则；priority空的CRITICAL回退P1；同优先级小policy_id优先。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+本套17行、active去重8条：A001—A007、I105；不以生成8工单为必过条件。标准字段测试：WARNING不匹配CRITICAL规则；priority空的CRITICAL回退P1；同优先级小policy_id优先。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N07 代码执行 2
+原节点ID：1794713519113
+类型：代码节点 / Python3
+连入：N05 文档提取器 4
+连出：N08 代码执行 3
+节点作用：整理日志并保留原内容，供同设备时间窗口匹配。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+device_logs | N05 文档提取器 4 → text | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+log_text | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“代码执行 2”生成完整代码。
+本节点作用：整理日志并保留原内容，供同设备时间窗口匹配。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(device_logs: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+device_logs | N05 文档提取器 4 → text | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+log_text | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 支持CSV和文档提取器实际输出的Markdown表格，清理表头BOM。CSV用csv模块，不能按逗号直接split；Markdown识别分隔行，支持转义竖线。列数异常必须定位到表和原始行，不得静默裁列、吞行或把解析失败当空数组。无法确定的未转义单元格竖线不能随意拼列。 显式映射log_time←timestamp、log_level←severity、log_content←message；log_type为其他原字段，不能混为日志级别。
+2. message保留完整原文，包括设备名前缀和正文设备ID；不能全局replace设备名。原文是去重键和证据来源。可以新增内部辅助search_message用于检索，但原message不改。
+3. 保持参考log_text String接口：按【device_id】分组，行格式timestamp | device_id | log_type | severity | message；下游split最多4次保留内容中的|。真实内容换行要可逆编码并在下一节点解码，不把一条日志切成多条。
+4. 仅返回log_text字符串。此节点未按时间窗口筛选，也没有做异常日志去重。下一代码节点会筛CRITICAL/ERROR/WARNING和时间窗口。
+
+自检要求：后续筛选的message与CSV原message逐字一致；不删除原文中的设备ID；severity来源正确。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+后续筛选的message与CSV原message逐字一致；不删除原文中的设备ID；severity来源正确。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N08 代码执行 3
+原节点ID：1794714151510
+类型：代码节点 / Python3
+连入：N06 代码执行；N07 代码执行 2
+连出：N09 迭代
+节点作用：逐工单提取同设备、告警时间前后10分钟内的异常日志，供迭代检索使用。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+diagnosis_workorder | N06 代码执行 → diagnosis_workorder | Array[Object]
+log_text | N07 代码执行 2 → log_text | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+work_order_with_log | Array[Object]
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“代码执行 3”生成完整代码。
+本节点作用：逐工单提取同设备、告警时间前后10分钟内的异常日志，供迭代检索使用。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(diagnosis_workorder: list, log_text: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+diagnosis_workorder | N06 代码执行 → diagnosis_workorder | Array[Object]
+log_text | N07 代码执行 2 → log_text | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+work_order_with_log | Array[Object]
+
+处理顺序与口径（以本修订要求为准）：
+1. diagnosis_workorder是派单代码的Array[Object]，log_text是日志代码的String。按【设备ID】标题解析文本，日志行按' | '最多分割4次，尾部都作为message；回退按|分割并拼回第5段后的文本。
+2. 每工单优先用alarm_time_full，空时用alarm_time解析。支持年-月-日或年/月/日、有秒或无秒。生成闭区间[告警时间-10分钟,告警时间+10分钟]；无法解析时间时start_tm/end_tm为空、日志列表为空。
+3. 只看同device_id组，日志等级限CRITICAL/ERROR/WARNING。无法解析的日志时间跳过。按(device_id,timestamp,message)去重，保留首条，不把severity/log_type加进去重键。 要核对行内device_id与工单相同，不能只信组标题；无效日志时间记录内部诊断异常信息，不悄悄视为没有异常日志。
+4. 按CRITICAL、ERROR、WARNING等级顺序，再按日志时间升序排列。去掉临时datetime字段，保证JSON可序列化。
+5. 复制每张工单，追加start_tm/end_tm（YYYY-MM-DD HH:MM:SS）、key_logs数组、key_logs_text字符串。每条日志字段timestamp/device_id/log_type/severity/message。原工单字段全部保留，结果数组顺序沿用输入。
+
+自检要求：独立全量CSV筛选，本套A00110条、A00210、A00312、A0046、A00514、A00614、A00710、I1050；它们是窗口核对数，不保证这些告警都应派单。边界±600秒保留，±601秒排除。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+独立全量CSV筛选，本套A00110条、A00210、A00312、A0046、A00514、A00614、A00710、I1050；它们是窗口核对数，不保证这些告警都应派单。边界±600秒保留，±601秒排除。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N09 迭代
+原节点ID：1794714385089
+类型：迭代
+连入：N08 代码执行 3
+连出：N14 代码执行 6
+迭代输入：N08 代码执行 3 → work_order_with_log
+输入类型：Array[Object]
+单次迭代对象：本迭代 → item（Object）；只在迭代内部引用。
+收集输出：N13 代码执行 5 → diagnosis_workorder_result
+输出类型：Array[Object]。代码执行5每轮返回Array[Object]，原配置flatten_output=true将各轮小数组展开成统一工单数组。
+并行：关闭（is_parallel=false）。原parallel_nums=10在关闭并行时不表示一次处理10条。
+异常处理：terminated，终止；flatten_output=True
+内部最后节点无需手工连线到外部汇总节点，退出容器后由“迭代”外层出口连接。
+
+================================================================
+N10 迭代内部开始
+原节点ID：1794714385089start
+类型：迭代内部开始
+位置：放在 N09 迭代 内部。
+连入：由外层或容器启动
+连出：N11 代码执行 4
+由容器自动创建，连接到上方“连出”节点即可，不配置业务输入或代码。
+
+================================================================
+N11 代码执行 4
+原节点ID：1794714390415
+类型：代码节点 / Python3
+位置：放在 N09 迭代 内部。
+连入：N10 迭代内部开始
+连出：N12 知识检索
+节点作用：迭代内把当前工单的设备类型和关键日志信息拼成知识库查询字符串。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+item | N09 迭代 → item | Object
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+query_text | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“代码执行 4”生成完整代码。
+本节点作用：迭代内把当前工单的设备类型和关键日志信息拼成知识库查询字符串。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(item):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+item | N09 迭代 → item | Object
+
+必须返回：
+输出变量 | 类型
+--- | ---
+query_text | String
+
+处理顺序与口径（以本修订要求为准）：
+1. item为当前迭代对象，兼容JSON字符串，解析失败按空对象。device_type缺失写-。
+2. 按key_logs顺序收集message，去首尾空白和BOM，按小写比较去重，保留原message文本。
+3. 没有取到message时再解析key_logs_text，按' | '分割最多4次取第5段；若失败回退按|拆分取第5段。
+4. query_text用空格拼接device_type和所有去重message，不额外加设备ID、说明语、规则表或模板前缀。没有日志信息时只返回device_type。
+
+自检要求：query_text包含设备类型和关键日志message，无重复message。下一节点知识检索查询绑定本query_text。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+query_text包含设备类型和关键日志message，无重复message。下一节点知识检索查询绑定本query_text。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N12 知识检索
+原节点ID：1794714522919
+类型：知识检索
+位置：放在 N09 迭代 内部。
+连入：N11 代码执行 4
+连出：N13 代码执行 5
+查询变量：N11 代码执行 4 → query_text
+输出：result（Array[Object]），每条包含content与metadata，供后面的代码执行5解析。
+参考配置：retrieval_mode=multiple
+检索参数原值：{
+  "reranking_enable": true,
+  "reranking_mode": "reranking_model",
+  "reranking_model": {
+    "model": "BAAI/bge-reranker-v2-m3",
+    "provider": "langgenius/siliconflow/siliconflow"
+  },
+  "score_threshold": null,
+  "top_k": 8
+}
+该节点引用1个外部知识库。新环境必须选择你自己已创建且内容对应本题维护手册的知识库，不能把原绑定标识当成知识库内容。
+【从零搭建的知识库准备】
+1. 维护手册放入知识库，开始节点仍只保留alarms/device_topology/policy/device_logs这4个上传变量。
+2. YAML未提供知识库正文、创建参数、嵌入模型与分段方式，因此无法仅靠这份文件还原老师的全部入库操作；这些配置要以实际平台和老师视频为准，本手册不代填不存在的值。
+3. 预览实际分段或试检索一次，查看result中content。原代码只认分号键值，新代码须兼容实际分段并保留原字段。若老师确认使用键值格式，示例为：设备类型（device_type）: <原值>；日志类型（log_type）: <原值>；日志信息（message）: <原值>；日志含义: <原值>；可能原因: <原值>；处理步骤: <原值>。尖括号是格式说明，不能直接当资料上传。
+4. 有显式manual_id/keyword/fault_type/evidence时原代码也支持。不要为了凑字段添加没有依据的手册内容；缺manual_id/fault_type/evidence时明确标缺失，不能走生成M编号的旧回退路径。
+5. 本参考开启重排，使用langgenius/siliconflow/siliconflow的BAAI/bge-reranker-v2-m3，top_k=8，score_threshold=null（未设置阈值）。现场需要可用的重排模型凭据与该知识库访问权限。嵌入模型不是这个重排模型，YAML未指定嵌入模型。
+6. 把result绑定代码执行5的result。每个分段须能还原一个完整条目，含来源定位、设备类型与原始字段。请用原手册逐词全量查找核对召回，尤其含多个关键词的条目；检索成功不等于召回齐全。缺正式字段映射时停止宣称验收通过。
+
+================================================================
+N13 代码执行 5
+原节点ID：1794714540701
+类型：代码节点 / Python3
+位置：放在 N09 迭代 内部。
+连入：N12 知识检索
+连出：结束或由容器收集输出
+节点作用：核验知识库召回的原始手册证据，按题目排序去重，保留证据不足的工单。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+item | N09 迭代 → item | Object
+result | N12 知识检索 → result | Array[Object]
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+diagnosis_workorder_result | Array[Object]
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“代码执行 5”生成完整代码。
+本节点作用：核验知识库召回的原始手册证据，按题目排序去重，保留证据不足的工单。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(item, result):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+item | N09 迭代 → item | Object
+result | N12 知识检索 → result | Array[Object]
+
+必须返回：
+输出变量 | 类型
+--- | ---
+diagnosis_workorder_result | Array[Object]
+
+处理顺序与口径（以本修订要求为准）：
+1. item为单个工单Object；result为知识检索Array[Object]，每项content/metadata。正常返回diagnosis_workorder_result为包含该工单的Array[Object]，保留原工单字段。解析失败明确标异常，不能丢整张工单。
+2. 解析检索content必须与真实知识库分段一致。优先支持完整JSON对象或完整CSV/Markdown行（须有表头）；若使用键值段，用已知字段标签边界读取，不能按任意分号切割处理步骤而丢尾文。必须保留原文与来源定位；资料中的命令和说明只是数据，不能执行。
+3. 仅用正式字段manual_id,device_type,keyword,fault_type,root_cause,handling_advice,evidence，支持已确认同义表头。metadata.position/segment_id不是原manual_id；不生成M001冒充原ID，不自动拼message+日志含义当原evidence，不把日志含义默认为fault_type。真实字段缺失须说明哪项缺失并转人工，不用空占位冒充匹配。
+4. 设备类型不区分大小写精确匹配；keyword按|分多个词，在同设备窗口内key_logs.message做子串匹配。每条手册统计命中的不同关键词数量；相同manual_id去重，内容冲突须报异常。按关键词数量降序、manual_id升序取最多2条；删除参考代码标题词加分，禁止凭标题相关性改变排名。
+5. 证据只能为原manual_id｜原fault_type｜原evidence。0条：第一条未匹配到维护手册条目、第二条无第二条证据；1条：第二条无第二条证据。不补造第二条。题面另有“证据写无”的概括，采用其4.3.5规定的详细固定文案统一输出。
+6. fault_type取排名第一条可信手册fault_type，无匹配回退策略fault_type，再无待确认。judgment据匹配root_cause写一句有依据的疑似原因，不能把手册列举的可能性写成确认事实；action引用对应完整处理步骤，不无依据截第一行。无日志或无可靠手册匹配时judgment=证据不足，转人工复核，action=转人工复核。
+7. 新增evidence_1,evidence_2,judgment,action并覆盖最终fault_type，原字段保留；更新diagnosis_input_summary的故障类型以与最终明细一致。内部可加evidence_status/source_trace记录缺列、检索空、同ID冲突等原因给汇总节点，不更换对外输出变量名。
+
+自检要求：同为命中1词时M001排在M002之前，即使标题更像M002；半角|命令应完整保留。当前原手册无manual_id/fault_type/evidence，未有正式映射前不得声称得到题面要求的正式证据。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+同为命中1词时M001排在M002之前，即使标题更像M002；半角|命令应完整保留。当前原手册无manual_id/fault_type/evidence，未有正式映射前不得声称得到题面要求的正式证据。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N14 代码执行 6
+原节点ID：1794714770842
+类型：代码节点 / Python3
+连入：N09 迭代
+连出：N15 LLM
+节点作用：汇总逐工单诊断、原工单、人工审核和不诊断工单，组装LLM渲染用report_json。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+diagnosis_workorder_result | N09 迭代 → output | Array[Object]
+diagnosis_workorder | N06 代码执行 → diagnosis_workorder | Array[Object]
+no_diagnosis_json | N06 代码执行 → no_diagnosis_json | String
+manual_review | N06 代码执行 → manual_review | String
+active_count | N06 代码执行 → active_count | Number
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+report_json | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“代码执行 6”生成完整代码。
+本节点作用：汇总逐工单诊断、原工单、人工审核和不诊断工单，组装LLM渲染用report_json。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(diagnosis_workorder_result, diagnosis_workorder, no_diagnosis_json, manual_review, active_count: int):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+diagnosis_workorder_result | N09 迭代 → output | Array[Object]
+diagnosis_workorder | N06 代码执行 → diagnosis_workorder | Array[Object]
+no_diagnosis_json | N06 代码执行 → no_diagnosis_json | String
+manual_review | N06 代码执行 → manual_review | String
+active_count | N06 代码执行 → active_count | Number
+
+必须返回：
+输出变量 | 类型
+--- | ---
+report_json | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 输入原四项以及active_count（从原派单节点绑定Number）。严格解析对象数组；无效JSON要报错，不能把失败当空数组。
+2. 以原diagnosis_workorder为工单全集，按workorder_id合并每条诊断结果；缺结果保留原工单，补证据不足/转人工，并明确缺结果。多余、重复结果报校验问题，不任意覆盖。诊断结果不允许改动原工单ID、设备、优先级、规则、SLA等已确定字段。
+3. 按priority、alarm_time_full完整时间、workorder_id排序，再格式化报告时间到分钟；空单值统一-。priority_table和workorder_details使用下方接口字段，两数组一一对应。
+4. auto_dispatch是布尔true/false时分别显示自动派单/人工派单，否则取auto_dispatch_text。judgment为证据不足，转人工复核或evidence_1为未匹配到维护手册条目时，把工单编号保序加入证据不足列表。
+5. 审核表先添加manual_review原条目（兼容中文和原代码规定的英文键），再添加no_diagnosis工单，原因固定策略要求不进入诊断、建议按工单处理；最后添加证据不足工单人工审核条目。按(type,编号,设备,原因)去重保序。
+6. report_json顶层为meta、empty_hints、priority_table、workorder_details、manual_review_and_no_diagnosis。meta有has_active_alarm、has_diagnosis_workorder、has_manual_review_or_no_diagnosis、total_diagnosis_workorders、total_manual_review_or_no_diagnosis。
+7. has_active_alarm严格来自active_count>0；empty_hints根据实际集合生成。活跃告警最终必须覆盖派单（含不诊断）或人工审核，证据不足审核是额外事项，不应与active条数相加冒充覆盖计数。
+8. report_json仍是普通JSON字符串。表格单元格的换行转空格、半角|转&#124;，保持原数据在追溯记录中；LLM只按表展示，不再次改写事实。代码6和LLM约定转义只一次。附上缺诊断结果/缺手册字段等具体原因，而非统称没有命中。
+
+上下游必须一致的内部数据结构：
+priority_table 每项的参考字段与赋值表达式（_dt为内部临时字段，工单输出前移除）
+{'priority': clean(wo.get('priority')), 'workorder_id': wid, 'dispatch_professional': clean(wo.get('dispatch_professional')), 'sla': clean(wo.get('sla')), 'device_id': clean(wo.get('device_id')), 'fault_type': clean(wo.get('fault_type')), 'impact_scope': clean(wo.get('impact_scope')), 'judgment': judgment}
+workorder_details 每项的参考字段与赋值表达式（_dt为内部临时字段，工单输出前移除）
+{'workorder_id': wid, 'workorder_title': clean(wo.get('workorder_title')), 'alarm_symptom': clean(wo.get('alarm_symptom')), 'dispatch_reason': clean(wo.get('dispatch_reason')), 'diagnosis_input_summary': clean(wo.get('diagnosis_input_summary')), 'device_id': clean(wo.get('device_id')), 'device_type': clean(wo.get('device_type')), 'dispatch_professional': clean(wo.get('dispatch_professional')), 'sla': clean(wo.get('sla')), 'alarm_time': fmt_time(wo.get('alarm_time')), 'alarm_level': clean(wo.get('alarm_level')), 'impact_scope': clean(wo.get('impact_scope')), 'policy_id': clean(wo.get('policy_id')), 'dispatch_method': dispatch_method, 'action': clean(wo.get('action')), 'evidence_1': evidence_1, 'evidence_2': evidence_2}
+
+自检要求：priority_table与workorder_details长度一致，按同一顺序；manual_review_and_no_diagnosis中可以再次出现证据不足工单，属不同用途，不应从优先级表删掉。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+priority_table与workorder_details长度一致，按同一顺序；manual_review_and_no_diagnosis中可以再次出现证据不足工单，属不同用途，不应从优先级表删掉。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N15 LLM
+原节点ID：1794714981298
+类型：LLM
+连入：N14 代码执行 6
+连出：N16 输出
+用途：使用已计算的结果撰写报告
+原文件模型：langgenius/deepseek/deepseek / deepseek-v4-flash；mode=chat。
+原模型参数：{
+  "temperature": 0.1
+}
+在平台选取已配置可用的模型。若原模型不可用，模型选择需要现场完成，不假设参考文件携带账号凭据。
+以下沿用参考提示词，并在必要位置附修订要求；旧ID引用改为可读变量插入位置，修订要求优先。
+
+SYSTEM框原文：
+你是某省电信运营商网络运维监控中心的故障诊断报告生成助手。你的唯一职责是：把运维工作流已经计算好的结构化数据 report_json，严格按照固定模板渲染成一份《故障诊断报告》Markdown。
+
+【最高原则】
+1. 你只做“格式渲染 + 字段搬运”，不做任何分析、推断、补充、纠错或改写。
+2. 报告中出现的每一个值，必须能追溯到 report_json 中的对应字段。禁止编造、禁止推测、禁止合并、禁止“优化”措辞。
+3. 不输出任何解释性开场白、结束语、附录、免责声明、代码块包裹标记；直接从 `# 故障诊断报告` 开始输出。
+
+【输入】
+用户消息是一个 JSON 字符串，结构如下：
+{
+  "meta": {
+    "has_active_alarm": bool,
+    "has_diagnosis_workorder": bool,
+    "has_manual_review_or_no_diagnosis": bool,
+    "total_diagnosis_workorders": int,
+    "total_manual_review_or_no_diagnosis": int
+  },
+  "empty_hints": {
+    "no_active_alarm": "无 active 告警" | "",
+    "no_diagnosis_workorder": "无进入诊断的工单" | "",
+    "no_review_or_no_diag": "无" | ""
+  },
+  "priority_table": [
+    {"priority","workorder_id","dispatch_professional","sla","device_id","fault_type","impact_scope","judgment"}
+  ],
+  "workorder_details": [
+    {"workorder_id","workorder_title","alarm_symptom","dispatch_reason","diagnosis_input_summary","device_id","device_type","dispatch_professional","sla","alarm_time","alarm_level","impact_scope","policy_id","dispatch_method","action","evidence_1","evidence_2"}
+  ],
+  "manual_review_and_no_diagnosis": [
+    {"type","alarm_or_workorder","device","reason","suggestion"}
+  ]
+}
+
+【渲染规则】
+
+一、整体结构
+必须严格输出以下三段，标题文字不得改动：
+# 故障诊断报告
+## 一、处置优先级
+## 二、分工单处置
+## 三、人工审核与未进入诊断
+
+二、空态处理
+- 若 meta.has_active_alarm 为 false：在 `# 故障诊断报告` 之后单独一行输出 empty_hints.no_active_alarm 的值，然后只输出三节的空表头（见下），不再输出任何工单详情行。
+- 若 meta.has_diagnosis_workorder 为 false：在“## 一、处置优先级”标题下、表头之前输出 empty_hints.no_diagnosis_workorder 的值；同时“## 二、分工单处置”下不输出任何三级标题，改输出 empty_hints.no_diagnosis_workorder 的值。
+- 若 meta.has_manual_review_or_no_diagnosis 为 false：在“## 三、人工审核与未进入诊断”标题下、表头之前输出 empty_hints.no_review_or_no_diag 的值，表格只保留表头与分隔行。
+- 三个 empty_hints 的值以 report_json 为准，原样搬运，不得自造文案。
+
+三、第一节 处置优先级
+固定表头：
+| 优先级 | 工单编号 | 责任专业 | 处理时限 | 设备 | 故障类型 | 影响对象 | 判断结论 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+然后按 priority_table 数组原顺序，为每个元素输出一行：
+| {priority} | {workorder_id} | {dispatch_professional} | {sla} | {device_id} | {fault_type} | {impact_scope} | {judgment} |
+- 数组顺序已经由上游按 P1→P2→P3、告警时间、工单编号排好，禁止二次排序。
+- 一行对应一个元素，不得增删行，不得合并同设备工单。
+
+四、第二节 分工单处置
+按 workorder_details 数组原顺序，为每个元素输出一个三级标题块，逐块之间空一行：
+### 工单 {workorder_id}
+
+- 工单摘要：{workorder_title}｜{alarm_symptom}｜{dispatch_reason}｜{diagnosis_input_summary}
+- 设备ID：{device_id}
+- 设备类型：{device_type}
+- 责任专业：{dispatch_professional}
+- 处理时限：{sla}
+- 告警时间：{alarm_time}
+- 告警级别：{alarm_level}
+- 影响对象：{impact_scope}
+- 命中策略ID：{policy_id}
+- 派单方式：{dispatch_method}
+- 处置结论：{action}
+- 关键证据1：{evidence_1}
+- 关键证据2：{evidence_2}
+
+说明：
+- 上述每个字段都原样搬运，包括“人工派单”“自动派单”“未匹配到维护手册条目”“无第二条证据”“证据不足，转人工复核”“转人工复核”等固定文案。
+- “工单摘要”四个子字段之间用全角竖线 ｜ 连接，不得改为半角或逗号。
+- 三级标题数量必须等于 workorder_details 长度，且顺序一致。
+
+五、第三节 人工审核与未进入诊断
+固定表头：
+| 类型 | 告警ID/工单号 | 设备 | 原因 | 建议 |
+| --- | --- | --- | --- | --- |
+然后按 manual_review_and_no_diagnosis 数组原顺序，为每个元素输出一行：
+| {type} | {alarm_or_workorder} | {device} | {reason} | {suggestion} |
+- 不合并、不排序、不聚合，原样一行一条。
+- 证据不足的工单会以“人工审核”类型出现，同时它也在第一节表格中出现，这是预期行为，不要去掉任何一处。
+
+六、通用格式约束
+- 所有时间字段沿用 report_json 中已格式化好的 `YYYY/MM/DD HH:MM` 形式，不做二次格式化。
+- 所有空值已由上游统一为 `-`，直接输出 `-`，不要改写为空、N/A、无。
+- 表格行的单元格内如含 `|`，保留原值即可（上游已保证字段不含裸 `|`）。
+- 表格之间、三级标题之间、段落之间保留一个空行，保证 Markdown 正确渲染。
+- 不输出 HTML、不输出代码块围栏（```），不输出任何 JSON。
+
+七、禁止事项
+- 禁止输出“以下是报告”“希望对您有帮助”“如需进一步分析”等对话语。
+- 禁止把“判断结论”写进“处置结论”，禁止把“处置结论”写进“判断结论”。
+- 禁止修改或补充关键证据格式，`manual_id｜fault_type｜evidence` 中的 `｜` 为全角竖线。
+- 禁止在报告外额外输出任何字段、统计、图表。
+【修订】report_json为唯一事实来源。不得编造手册ID、第二条证据、缺失SLA或派单结论。必须逐一输出全部工单，三章节及表头按题面，不省略字段；上游&#124;保留，避免重复转义。
+
+USER框原文：
+【插入变量：N14 代码执行 6 → report_json】
+输出：text（String）；下游引用本节点text。
+注意：发给DeepSeek网页版的是本手册的“代码节点提示词”；这里的SYSTEM/USER是填在Dify工作流的LLM节点里，两者位置不同。
+
+================================================================
+N16 输出
+原节点ID：1794715120325
+类型：输出
+连入：N15 LLM
+连出：结束或由容器收集输出
+在输出节点逐项添加下列输出：
+- text ← N15 LLM → text；String
+
+四、原参考连线核对表
+N01 用户输入 --source--> N02 alarms
+N01 用户输入 --source--> N03 文档提取器 2
+N01 用户输入 --source--> N04 文档提取器 3
+N01 用户输入 --source--> N05 文档提取器 4
+N02 alarms --source--> N06 代码执行
+N03 文档提取器 2 --source--> N06 代码执行
+N04 文档提取器 3 --source--> N06 代码执行
+N05 文档提取器 4 --source--> N07 代码执行 2
+N06 代码执行 --source--> N08 代码执行 3
+N07 代码执行 2 --source--> N08 代码执行 3
+N08 代码执行 3 --source--> N09 迭代
+N10 迭代内部开始 --source--> N11 代码执行 4
+N11 代码执行 4 --source--> N12 知识检索
+N12 知识检索 --source--> N13 代码执行 5
+N09 迭代 --source--> N14 代码执行 6
+N14 代码执行 6 --source--> N15 LLM
+N15 LLM --source--> N16 输出
+
+五、本版修正与验证边界
+1. 保留原4文件输入、4提取器、6代码、1迭代、知识检索、报告LLM、输出。没有添加逐告警LLM条件核验、压缩传输或适配模式。
+2. 本套策略/手册缺少正式字段映射：原代码可复现8张内部单，但其场景加分优先排序不符合题面规则；知识库M编号来自metadata而非手册原ID。不能把这个参考输出当标准答案。
+3. 正式运行前需要老师确认：自然语言策略如何映射alarm_level与professional_domain，涉及专业与派单对象分别对应什么，多段SLA取何口径，手册manual_id/fault_type/evidence来源。没有依据不编造，也不把整列缺失视为通配。
+4. 知识库正文、分段和索引配置未包含在YAML；本地全手册扫描是明确标注的验证fixture，不是实际知识检索。TopK=8仅是参考配置，不能保证所有合法关键词条目被召回。
+5. 参考最后只有text输出；提交时将实际完整报告另存为UTF-8的选手姓名.md。为保持本参考节点结构，本手册不额外增加MD导出节点。
+
+六、分阶段试跑方法
+1. 先运行提取器，看text表头与样例是否正确；输入绑定到text，不能绑定到上传文件对象。
+2. 每个代码节点检查“上次运行”的输入、输出和关键统计；节点显示成功只说明执行结束，业务判断仍要看parse、is_completed、risk_ok或报告内容。
+3. 上一步字段结构和下一步要求不一致时，把前一节点输出样例与当前节点接口一起发给DeepSeek，让它只修当前接口问题。
+4. 最后完整试跑，检查所有应经过的节点已运行。有files输出的题目再检查下载文件与正文；第四题原参考仅输出text，复制完整正文另存UTF-8的选手姓名.md，不要保存JSON或只保存下载链接。不能只单测最后一个输出节点。
+
+七、向DeepSeek反馈报错时可用的短句
+“这是【节点名称】的报错，下面是该节点完整代码、输入变量名与来源、输出变量名与类型，以及上一步输出的少量样例。请保持其他节点和接口不变，解释直接原因后给我完整替换代码。”
+
+整理核对范围
+已执行四题参考代码的本地数据链路，使用独立程序核对关键数值及异常边界；结果见后附验收表和总核验报告。第二题采用明确标注的人工判读意图fixture；第四题采用全手册fixture测试证据代码，不是实际知识库。DeepSeek生成的新代码、Dify平台、图表工具和真实知识库仍须现场验收。
+源文件SHA-256：78153bbdf9ed62f79dcf932d92e7913a96225ed917880071385fa170d0578f24
+
+
+八、本套实测与尚未确认的口径
+输入alarms17、topology44、policies100、logs500、manual50。
+active去重8条；这是数据事实，不代表应固定生成8张已正确派单工单。
+原参考派单代码本地复现如下（只记录原行为，不是标准答案）：
+原工单 | 告警 | 设备 | 原命中策略 | 原优先级 | 原SLA
+--- | --- | --- | --- | --- | ---
+WO-01 | A006 | ROUTER_04 | DR031 | P3 | 2小时
+WO-02 | A001 | ONU_01 | DR021 | P2 | 30分钟
+WO-03 | A003 | PTN_01 | DR056 | P1 | 15分钟
+WO-04 | A005 | eNB_02 | DR041 | P2 | 30分钟
+WO-05 | A002 | ONU_01 | DR021 | P2 | 30分钟
+WO-06 | I105 | OLT_02 | DR013 | P3 | 2小时
+WO-07 | A007 | ROUTER_04 | DR031 | P3 | 2小时
+WO-08 | A004 | PTN_01 | DR001 | P1 | 15分钟
+
+同设备±10分钟异常日志独立核对：
+告警 | 设备 | 完整告警时间 | 异常日志数
+--- | --- | --- | ---
+A001 | ONU_01 | 2026-03-09 17:52:35 | 10
+A002 | ONU_01 | 2026-03-09 17:57:35 | 10
+A003 | PTN_01 | 2026-03-09 17:54:15 | 12
+A004 | PTN_01 | 2026-03-09 18:00:55 | 6
+A005 | eNB_02 | 2026-03-09 17:55:55 | 14
+A006 | ROUTER_04 | 2026-03-09 17:50:55 | 14
+A007 | ROUTER_04 | 2026-03-09 17:59:15 | 10
+I105 | OLT_02 | 2026-03-09 17:57:35 | 0
+
+本地证据解析测试使用“将全部50条原手册序列化为可解析字段对象”的测试fixture；并未连接Dify知识库，不代表TopK8能召回这些条目，也不代表自动生成的M编号合法。
+已复现原代码缺陷：显式alarm_level列不参与匹配、priority缺失的CRITICAL错退P3、纯source/target边表无device_id时丢拓扑、手册标题加分改变同关键词数的ID顺序。
+
+当前真实表头与题面缺口：
+策略：规则ID可对应policy_id，涉及设备可对应device_type，优先级/是否自动派单/是否进入故障诊断可显式转换；没有独立alarm_level。涉及专业与TRANSPORT/FIXED/MOBILE不是相同编码。SLA要求含响应/升级/现场多个阶段。
+手册：仅设备类型（device_type）、日志类型（log_type）、日志信息（message）、日志含义、可能原因、处理步骤；没有原manual_id。日志含义是否作fault_type、何段原文作evidence需要明确映射。
+这是资料和题面口径的缺口，不是再加一个模型就能证实的事实。不能给出“工单数量多少就是正确”的验收断言。
+正式资料有标准字段时：按本手册的确定性规则生成工单和证据。若继续用现在这套自然语言表，先向老师确认上述映射，再只更新对应节点映射配置；不加以前那套逐告警LLM/适配模式。
+
+知识库现场检查：分段完整且可回溯原条目；result.content实际格式能解析；metadata仅追溯，不能冒充原ID；重复召回同ID去重；关键词排名按题面；同ID不同正文报冲突。无命中、缺证据的已派单工单仍保留优先级表并列人工。
+最后LLM仅排版report_json，不新增事实；输出text复制完整保存为UTF-8的选手姓名.md。交付SUCCESS结果截图、该MD、选手姓名_故障诊断.yml。
