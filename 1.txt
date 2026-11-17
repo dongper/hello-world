@@ -1,0 +1,607 @@
+﻿第1题 数据清洗｜按最新参考节点结构复核修订的提示词与搭建手册
+================================================================
+节点结构依据：C:/Users/dpbju/Desktop/download (1)/考试数据文件/考试数据文件-1.yml
+参考应用名：考试数据文件-1；导出DSL版本：0.6.0。该版本号不是Dify平台版本。
+共16个图节点（包括内部开始节点），其中4个代码节点。
+本手册保留原节点与主连线；处理要求对照题目和实际数据修订。输入输出绑定及少量工具配置的必要修正已写入步骤，不能理解为原代码逐字照抄。
+原YAML未改写。本次实际执行的是原代码和明确标注的局部修正/独立核对程序；未在你的Dify实例执行新生成代码、模型、知识库或图表。可复制提示词是修订后的编程要求，不是已执行的程序。
+
+一、考试时怎样使用
+1. 在DeepSeek网页版新建本题对话，先发本次完整题目（含提交要求），再提供题目数据的表头及必要样例。规则表有阈值或分流条件时，应提供完整相关规则；这是编程依据。数据处理仍在Dify读取文件完成。
+2. 告诉DeepSeek：“我要在Dify 1.14.2从零搭建，按下面节点接口逐个生成Python3代码。我会依次给每个节点的处理要求，请保持上下游JSON字段一致，不自行增删节点或换接口。”
+3. 按本手册建节点、接线、设置输入输出。每个代码节点复制其【可复制提示词】一段给DeepSeek，再把返回的完整Python代码粘进该代码节点。保持同一题在同一对话，便于沿用前一节点的JSON结构。
+4. 所有变量来源都通过Dify变量选择器选择，不把“节点 → 变量”的说明当普通字符串输入。输入变量名、main参数名、return键、输出变量名必须分别对齐。
+5. LLM节点的SYSTEM/USER使用下文给出的提示词。出现【插入变量：……】处，用编辑框里的变量选择器插入对应变量，再删除说明占位文字。新建节点ID不同，不能直接粘旧YAML里的数字ID引用。
+6. 本手册是复习资料，不假设考场能带入。复习时记住节点用途、输入、处理、输出这四部分，再结合现场题目与数据写提示词。本手册附本套数据验收表，数字仅供练习对照，不要求考场记住数值。
+
+二、完整流程
+用户输入 → 5个文档提取器 → 1表结构统一与source_row_index → 2时间格式统一 → 3ID格式还原 → 4缺失数据还原与删除 → 5个MD导出工具 → 输出
+
+节点编号仅用于本手册定位，Dify节点名称可按原名称填写。内部开始节点由迭代/循环自动创建，不要在外层再造一个普通开始节点。
+
+三、逐节点搭建与提示词
+
+================================================================
+N01 用户输入
+原节点ID：1793441983465
+类型：用户输入（开始）
+连入：由外层或容器启动
+连出：N02 complaint_record；N03 complaint_handling；N04 customer_info；N05 employee_info；N06 hall_info
+添加以下用户输入项，每项选择单文件 File、必填、文件类型document。
+- 变量名 complaint_record；界面名称 complaint_record；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 complaint_handling；界面名称 complaint_handling；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 customer_info；界面名称 customer_info；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 employee_info；界面名称 employee_info；类型 file；必填 True；上传方式 local_file, remote_url
+- 变量名 hall_info；界面名称 hall_info；类型 file；必填 True；上传方式 local_file, remote_url
+按后面各提取器名称选择对应题目文件。此处上传文件，提取后的text才交给代码。
+
+================================================================
+N02 complaint_record
+原节点ID：1793442076264
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 1表结构统一与 source_row_index
+输入文件：N01 用户输入 → complaint_record
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N03 complaint_handling
+原节点ID：1793442078643
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 1表结构统一与 source_row_index
+输入文件：N01 用户输入 → complaint_handling
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N04 customer_info
+原节点ID：1793442080687
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 1表结构统一与 source_row_index
+输入文件：N01 用户输入 → customer_info
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N05 employee_info
+原节点ID：1793442082541
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 1表结构统一与 source_row_index
+输入文件：N01 用户输入 → employee_info
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N06 hall_info
+原节点ID：1793442084292
+类型：文档提取器
+连入：N01 用户输入
+连出：N07 1表结构统一与 source_row_index
+输入文件：N01 用户输入 → hall_info
+单文件模式；输出 text（String）。先试跑查看text是否为表格正文，不要把文件对象JSON作为表格正文传入代码。
+
+================================================================
+N07 1表结构统一与 source_row_index
+原节点ID：1793442153201
+类型：代码节点 / Python3
+连入：N02 complaint_record；N03 complaint_handling；N04 customer_info；N05 employee_info；N06 hall_info
+连出：N08 2时间格式统一
+节点作用：统一五张表的字段名称和列顺序，给每条原始记录添加 source_row_index。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+record_text | N02 complaint_record → text | String
+handling_text | N03 complaint_handling → text | String
+customer_text | N04 customer_info → text | String
+employee_text | N05 employee_info → text | String
+hall_text | N06 hall_info → text | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+complaint_handling | String
+complaint_record | String
+customer_info | String
+employee_info | String
+hall_info | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“1表结构统一与 source_row_index”生成完整代码。
+本节点作用：统一五张表的字段名称和列顺序，给每条原始记录添加 source_row_index。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(record_text: str, handling_text: str, customer_text: str, employee_text: str, hall_text: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+record_text | N02 complaint_record → text | String
+handling_text | N03 complaint_handling → text | String
+customer_text | N04 customer_info → text | String
+employee_text | N05 employee_info → text | String
+hall_text | N06 hall_info → text | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+complaint_handling | String
+complaint_record | String
+customer_info | String
+employee_info | String
+hall_info | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 支持CSV和文档提取器实际输出的Markdown表格，清理表头BOM。CSV用csv模块，不能按逗号直接split；Markdown识别分隔行，支持转义竖线。列数异常必须定位到表和原始行，不得静默裁列、吞行或把解析失败当空数组。无法确定的未转义单元格竖线不能随意拼列。
+2. 按下面原参考常量中的 HEADER_MAP 映射表头，其余表头转小写、空格或连字符改下划线。重名列加 _2、_3 后缀，超出表头的列保存为 extra_col_N，不丢弃额外字段。
+3. 每张表按对应 STANDARD 列表输出字段，再保留额外字段，最后写 source_row_index。缺少的标准字段填空字符串，source_row_index 从原始数据第一行的 0 开始。
+4. 每张表保留原始单元格、空值、原始顺序。此步不修时间或ID、不补业务字段、不删除有效数据行。Markdown仅去分隔符的排版空格；提取器已丢失的原始空白不能宣称恢复，需以原CSV逐格核验。必要列缺失、重复标准列或行无法可靠解析时明确抛出ValueError并指出位置，不产生貌似成功的五张空表。
+5. 五个输出均为 JSON 数组字符串，数组每项是行对象，使用 ensure_ascii=False 和紧凑分隔符。此处没有压缩、切片或 Markdown 输出，也没有额外校验报告输出变量。
+
+必须保持的字段清单与本题编码常量：
+RECORD_STANDARD = [
+  "complaint_id",
+  "accept_time",
+  "customer_id",
+  "handler_name",
+  "package_type",
+  "complaint_description",
+  "complaint_type",
+  "complaint_subtype"
+]
+HANDLING_STANDARD = [
+  "complaint_id",
+  "handler_id",
+  "hall_id",
+  "accept_time",
+  "customer_feedback",
+  "customer_name"
+]
+CUSTOMER_STANDARD = [
+  "customer_id",
+  "customer_name",
+  "customer_level"
+]
+EMPLOYEE_STANDARD = [
+  "handler_id",
+  "handler_name",
+  "hall_id"
+]
+HALL_STANDARD = [
+  "hall_id",
+  "hall_name",
+  "region"
+]
+HEADER_MAP = {
+  "complaint_id": "complaint_id",
+  "投诉id": "complaint_id",
+  "accept_time": "accept_time",
+  "customer_id": "customer_id",
+  "客户编号": "customer_id",
+  "客户id": "customer_id",
+  "handler_name": "handler_name",
+  "员工姓名": "handler_name",
+  "package_type": "package_type",
+  "complaint_description": "complaint_description",
+  "complaint_type": "complaint_type",
+  "complaint_subtype": "complaint_subtype",
+  "handler_id": "handler_id",
+  "员工id": "handler_id",
+  "hall_id": "hall_id",
+  "营业厅id": "hall_id",
+  "customer_feedback": "customer_feedback",
+  "customer_name": "customer_name",
+  "customer_level": "customer_level",
+  "hall_name": "hall_name",
+  "营业厅名称": "hall_name",
+  "region": "region"
+}
+
+自检要求：本套五表行数1998/1998/2000/200/50；列数9/7/4/4/4；逐格保持原值，index从0连续到行数减1。若有原有额外列，放在source_row_index之前，不写死行数。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+本套五表行数1998/1998/2000/200/50；列数9/7/4/4/4；逐格保持原值，index从0连续到行数减1。若有原有额外列，放在source_row_index之前，不写死行数。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N08 2时间格式统一
+原节点ID：1793444370271
+类型：代码节点 / Python3
+连入：N07 1表结构统一与 source_row_index
+连出：N09 3ID 格式还原
+节点作用：只统一两张投诉表的 accept_time，并输出时间修复统计。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+complaint_record | N07 1表结构统一与 source_row_index → complaint_record | String
+complaint_handling | N07 1表结构统一与 source_row_index → complaint_handling | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+complaint_handling | String
+complaint_record | String
+time_fix_report | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“2时间格式统一”生成完整代码。
+本节点作用：只统一两张投诉表的 accept_time，并输出时间修复统计。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(complaint_record: str, complaint_handling: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+complaint_record | N07 1表结构统一与 source_row_index → complaint_record | String
+complaint_handling | N07 1表结构统一与 source_row_index → complaint_handling | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+complaint_handling | String
+complaint_record | String
+time_fix_report | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 两个输入均是上一步的 JSON 数组字符串，解码后只改 accept_time，保留其他字段、原行序和 source_row_index。
+2. 统一为 YYYY/MM/DD HH:MM。支持 14 位数字日期时间、8 位数字日期、可带星期的英文月份及 AM/PM、中文年月日、年.月.日、时间在前的日-月-年、日-月-年、月/日/年、年/月/日和年-月-日。日期存在而时间缺失时补 00:00。
+3. 对于末尾是四位年份的斜杠日期，原代码优先月/日/年，只有第一个数>12且第二个数<=12时才按日/月/年；这只是该参考的解析口径。
+4. 必须单独实现月/日/年+12小时制AM/PM，不能只给英文月份格式处理AM/PM。包括 MM/DD/YYYY hh:mm AM、MM/DD/YYYY hh:mm PM，兼容可选秒和大小写。先完整匹配含AM/PM的格式，再尝试普通日期格式，不得因前面的宽泛匹配失败而提前返回无法识别。12:xx AM转00:xx，12:xx PM仍为12:xx，1到11 PM加12。月份/日期仍按原参考的月优先规则。
+5. 日期及24小时制的小时/分钟/秒须合法；12小时制有AM/PM时小时必须1—12。丢弃合法秒，不四舍五入。遇非法日期、非法秒或不明格式置空并记录原值，不用当前日期补齐。
+6. 原本为年/月/日且含时间的格式，仅补零或去秒不计修复；只有日期需要补时间计修复；其他可识别格式转换计修复。空白和无法识别值置空，不计修复，并记 issues。
+7. time_fix_report 是 JSON 对象字符串，结构为 complaint_record:{fix_count}, complaint_handling:{fix_count}, issue_count, issues。每个 issue 包含 table、source_row_index、complaint_id、original、reason。
+8. 生成代码后必须逐条自检这些输入的输出与fix_flag：07/13/2025 11:07 PM→2025/07/13 23:07，true；06/12/2025 12:00 AM→2025/06/12 00:00，true；07/06/2025 12:31 PM→2025/07/06 12:31，true；03/07/2025 03:57 AM→2025/03/07 03:57，true；2025/6/23 7:46→2025/06/23 07:46，false。前四种不得出现在unrecognized format中。自检代码放代码块之外说明，不增加Dify输出变量。
+9. 只按格式分类计数，不按输出字符串是否不同计数；baseline斜杠年月日时间补零不是修复。两表原始AM/PM斜杠格式分别28、27条；漏掉它们会得到392/388和647个问题，这是本次错误的定位证据，不是生产常量。
+
+必须保持的字段清单与本题编码常量：
+MONTH_MAP = {
+  "jan": 1,
+  "january": 1,
+  "feb": 2,
+  "february": 2,
+  "mar": 3,
+  "march": 3,
+  "apr": 4,
+  "april": 4,
+  "may": 5,
+  "jun": 6,
+  "june": 6,
+  "jul": 7,
+  "july": 7,
+  "aug": 8,
+  "august": 8,
+  "sep": 9,
+  "sept": 9,
+  "september": 9,
+  "oct": 10,
+  "october": 10,
+  "nov": 11,
+  "november": 11,
+  "dec": 12,
+  "december": 12
+}
+
+自检要求：行数不变；时间是规定格式或空串。查 time_fix_report 的两表 fix_count 和 issues，不用固定样本数字作为代码输出。 特别检查月/日/年带AM/PM的分支。用本地原练习数据和参考代码复算为两表420/415、issues共592；该组数字只用于此数据集核对，不写死，也不作为变更数据的强制结果。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+行数不变；时间是规定格式或空串。查 time_fix_report 的两表 fix_count 和 issues，不用固定样本数字作为代码输出。 特别检查月/日/年带AM/PM的分支。用本地原练习数据和参考代码复算为两表420/415、issues共592；该组数字只用于此数据集核对，不写死，也不作为变更数据的强制结果。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N09 3ID 格式还原
+原节点ID：1793444902407
+类型：代码节点 / Python3
+连入：N08 2时间格式统一
+连出：N10 4缺失数据还原与删除
+节点作用：按参考编码规则规范五张表的 ID，保留空值给下一任务。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+complaint_record | N08 2时间格式统一 → complaint_record | String
+complaint_handling | N08 2时间格式统一 → complaint_handling | String
+customer_info | N07 1表结构统一与 source_row_index → customer_info | String
+employee_info | N07 1表结构统一与 source_row_index → employee_info | String
+hall_info | N07 1表结构统一与 source_row_index → hall_info | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+complaint_handling | String
+complaint_record | String
+customer_info | String
+employee_info | String
+hall_info | String
+is_completed | Boolean
+processing_summary | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“3ID 格式还原”生成完整代码。
+本节点作用：按参考编码规则规范五张表的 ID，保留空值给下一任务。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(complaint_record: str, complaint_handling: str, customer_info: str, employee_info: str, hall_info: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+complaint_record | N08 2时间格式统一 → complaint_record | String
+complaint_handling | N08 2时间格式统一 → complaint_handling | String
+customer_info | N07 1表结构统一与 source_row_index → customer_info | String
+employee_info | N07 1表结构统一与 source_row_index → employee_info | String
+hall_info | N07 1表结构统一与 source_row_index → hall_info | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+complaint_handling | String
+complaint_record | String
+customer_info | String
+employee_info | String
+hall_info | String
+is_completed | Boolean
+processing_summary | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 读取五张 JSON 行数组，只处理配置的 ID 列。记录表处理 complaint_id/customer_id，处理表处理 complaint_id/handler_id/hall_id，客户表处理 customer_id，员工表处理 handler_id/hall_id，营业厅表处理 hall_id。
+2. 去除 ID 内全部空白，英文前缀统一大写。投诉号为 TS+10位数字，短序号用 TS_YEAR_MONTH+4位补零；客户为 CUST+4位，员工为 EMP+4位，营业厅为 HALL+3位。
+3. 参考使用 TS_YEAR_MONTH=202507。投诉单N、客户N、员工N、营业厅N 都先做 N-1，再补零；纯数字短编号不减1。例如 投诉单63→TS2025070062，纯数字63→TS2025070063，客户921→CUST0920。仅在题目沿用此规则时照用。
+4. 已经带前缀的合法编号仅标准化，纯数字10位投诉号补 TS。长度越界或无法唯一识别的非空值置空，记原值与原因，不猜测。原来就是空的 ID 保持空。
+5. 统计各表 rows、fields、non_empty_id_cells、fixed_cells、fixed_valid_cells、invalid_cleared_cells、empty_id_cells。processing_summary 为 JSON 字符串，含 status/message、总计、tables、errors、issues_count、issues。
+6. is_completed 表示 JSON 解析是否完成。单表解析失败则保留该表输入字符串、记录错误、总状态为 false；ID 无法识别而置空并不等于 JSON 解析失败。五张表输出依旧是 JSON 数组字符串。
+7. 不修改任何非ID单元格或行数、列名、source_row_index。遇解析失败必须终止，不能将未处理原字符串交给下一节点当作成功数据。所有补零位数、中文序号减1依据本题编码规则，不从行号猜ID。
+
+必须保持的字段清单与本题编码常量：
+TS_YEAR_MONTH = "202507"
+
+自检要求：本套修复单元格依次856/1272/0/0/0，总2128，无法唯一识别非空ID为0；数字来自输入动态统计。投诉单63和纯数字63须分别为TS2025070062和TS2025070063。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+本套修复单元格依次856/1272/0/0/0，总2128，无法唯一识别非空ID为0；数字来自输入动态统计。投诉单63和纯数字63须分别为TS2025070062和TS2025070063。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N10 4缺失数据还原与删除
+原节点ID：1793445519970
+类型：代码节点 / Python3
+连入：N09 3ID 格式还原
+连出：N11 Markdown ⮕ MD（complaint_record）；N12 Markdown ⮕ MD（complaint_handling）；N13 Markdown ⮕ MD（customer_info）；N14 Markdown ⮕ MD（employee_info）；N15 Markdown ⮕ MD（hall_info）
+节点作用：按原始行号成对删除无描述投诉，跨表与主档补全，再写缺失标记。
+
+【输入设置】
+输入变量 | 来源 | 类型
+--- | --- | ---
+complaint_record | N09 3ID 格式还原 → complaint_record | String
+complaint_handling | N09 3ID 格式还原 → complaint_handling | String
+customer_info | N09 3ID 格式还原 → customer_info | String
+employee_info | N09 3ID 格式还原 → employee_info | String
+hall_info | N09 3ID 格式还原 → hall_info | String
+time_fix_report | N08 2时间格式统一 → time_fix_report | String
+id_fix_report | N09 3ID 格式还原 → processing_summary | String
+
+【输出设置】
+输出变量 | 类型
+--- | ---
+complaint_handling | String
+complaint_record | String
+customer_info | String
+employee_info | String
+hall_info | String
+is_completed | Boolean
+processing_summary | String
+
+【可复制提示词开始】
+请为Dify 1.14.2工作流的Python3代码节点“4缺失数据还原与删除”生成完整代码。
+本节点作用：按原始行号成对删除无描述投诉，跨表与主档补全，再写缺失标记。
+请按下列参考流程实现，仅使用Python标准库。main接收已绑定的变量，不读取本地路径、不input、不访问网络；成功时返回dict并保留声明的输出键与类型；异常按下方约定报错或返回错误分支，不用空结果冒充成功。请给可直接粘贴的完整代码，不省略辅助函数。
+函数签名：def main(complaint_record: str, complaint_handling: str, customer_info: str, employee_info: str, hall_info: str, time_fix_report: str, id_fix_report: str):
+
+输入约定：
+输入变量 | 来源 | 类型
+--- | --- | ---
+complaint_record | N09 3ID 格式还原 → complaint_record | String
+complaint_handling | N09 3ID 格式还原 → complaint_handling | String
+customer_info | N09 3ID 格式还原 → customer_info | String
+employee_info | N09 3ID 格式还原 → employee_info | String
+hall_info | N09 3ID 格式还原 → hall_info | String
+time_fix_report | N08 2时间格式统一 → time_fix_report | String
+id_fix_report | N09 3ID 格式还原 → processing_summary | String
+
+必须返回：
+输出变量 | 类型
+--- | ---
+complaint_handling | String
+complaint_record | String
+customer_info | String
+employee_info | String
+hall_info | String
+is_completed | Boolean
+processing_summary | String
+
+处理顺序与口径（以本修订要求为准）：
+1. 输入五张JSON行数组，以及time_fix_report（节点2输出）和id_fix_report（节点3 processing_summary）。先校验五表均为对象数组；两张投诉表source_row_index非空、唯一、集合一致。异常抛ValueError，不取交集删行，不删除重复索引来掩盖错误。主档解析失败同样停止。
+2. 按source_row_index对齐，只有complaint_description为空或纯空白的记录可以删除；同步删除处理表对应记录。保留行按原index排序，不重新编号。删除投诉组数只算一次。
+3. 记录表只使用原有列：complaint_id,accept_time,customer_id,handler_name,package_type,complaint_description,complaint_type,complaint_subtype,source_row_index；处理表：complaint_id,handler_id,hall_id,accept_time,customer_feedback,customer_name,source_row_index。已有额外列原样保留，绝不新增记录表customer_name/handler_id或处理表customer_id/handler_name。
+4. 仅补空白。投诉号和时间优先从同原始行另一张表互补；两边非空冲突记录原值而不覆盖。两表都缺投诉号时，只用前后已知且两表无冲突的编号作为锚点；编号差须等于原index差且同编码范围，按前编号+原index差还原，记录两个锚点与推定结果。没有双向证据就保留缺失，不能source_row_index直接生成ID。推定59组等于补118格，行数与格数分开计。
+5. 用三张主档建立多值映射。处理表customer_name唯一对应customer_id时补记录表customer_id；反向用记录表customer_id唯一对应姓名补处理表customer_name。员工姓名唯一对应handler_id时补处理表handler_id；反向补记录表handler_name。重复姓名或同ID多个姓名不猜，记录候选。不能把员工所属hall_id当实际受理厅。
+6. 无法补齐的原有业务字段填写对应MARK常量。原有非空值包括“无”“0”不覆盖；缺失标记不是可用于关联的真实ID。三张主档不删行、不补缺失，保留节点3处理后的值。
+7. 分别计算两投诉表空白→真实值的实际补全单元格数；只计最终保留行，排除占位、删除行和本来非空的格式修复。另统计删除组、保留行、跨表ID/时间补全、行序推定组/格、主档补全、按表按字段占位数、冲突及证据。用操作日志或前后比对实现，不用预期数直接赋值。
+8. 末尾把五张最终行数组序列化成真正的Markdown表格字符串，仍用complaint_record、complaint_handling、customer_info、employee_info、hall_info这五个String输出名，供原五个Markdown→MD节点直接导出。之前节点1—3仍传JSON字符串；不要提前改协议。全量输出，不只输出预览，不把JSON改扩展名冒充Markdown。source_row_index最后一列；对单元格竖线与换行做可追溯的Markdown转义，验证导出行列数量。
+9. processing_summary改为可查看的“# 数据清洗变更报告”Markdown字符串，包含五表原始/删除/保留数、从输入报告读取的时间及ID修复数、两表实际补全数、占位统计及冲突说明。is_completed=true仅用于全部处理和核验完成。最终输出节点追加check_report绑定本processing_summary；原五个文件绑定保持。
+
+必须保持的字段清单与本题编码常量：
+MARK_COMPLAINT_ID = "该条投诉号记录丢失"
+MARK_ACCEPT_TIME = "该条时间记录丢失"
+MARK_CUSTOMER = "该条客户记录丢失"
+MARK_HANDLER = "该条员工记录丢失"
+MARK_HALL = "该条营业厅记录丢失"
+MARK_PACKAGE = "该条套餐记录丢失"
+MARK_COMPLAINT_TYPE = "该条投诉类型记录丢失"
+MARK_COMPLAINT_SUBTYPE = "该条投诉子类记录丢失"
+MARK_FEEDBACK = "该条反馈记录丢失"
+
+自检要求：本套删除279组、保留1719/1719；列数9/7/4/4/4。跨表ID448格、时间421格；行序59组118格；主档补全833格；实际空白补全记录912格、处理908格。time420/415；ID856/1272。全部动态统计，下载后重数Markdown行列。
+先逐项核对接口，再给完整代码；统计从输入动态计算，不写死验收数字。代码后列出覆盖本节点验收条件的输入/期望输出示例，不声称没有运行过的测试已经通过。禁止只给局部片段；遇缺少字段映射必须明确指出，不编造。
+【可复制提示词结束】
+
+【运行后检查】
+本套删除279组、保留1719/1719；列数9/7/4/4/4。跨表ID448格、时间421格；行序59组118格；主档补全833格；实际空白补全记录912格、处理908格。time420/415；ID856/1272。全部动态统计，下载后重数Markdown行列。
+请用本节点验收要求测试DeepSeek新生成代码；不要直接复用旧参考中已指出有错的实现。
+
+================================================================
+N11 Markdown ⮕ MD（complaint_record）
+原节点ID：1793446249055
+类型：工具节点
+连入：N10 4缺失数据还原与删除
+连出：N16 输出
+插件：bowenliang123/md_exporter
+工具：Markdown ⮕ MD / md_to_md
+参数（保留参考，必要修正已列入）：
+- md_text = 【插入变量：N10 4缺失数据还原与删除 → complaint_record】；配置类型 mixed
+- output_filename = complaint_record；配置类型 mixed
+文件名不加后缀。文件输出选择工具files（Array[File]），不要只绑定工具text。
+
+================================================================
+N12 Markdown ⮕ MD（complaint_handling）
+原节点ID：1793446257285
+类型：工具节点
+连入：N10 4缺失数据还原与删除
+连出：N16 输出
+插件：bowenliang123/md_exporter
+工具：Markdown ⮕ MD / md_to_md
+参数（保留参考，必要修正已列入）：
+- md_text = 【插入变量：N10 4缺失数据还原与删除 → complaint_handling】；配置类型 mixed
+- output_filename = complaint_handling；配置类型 mixed
+文件名不加后缀。文件输出选择工具files（Array[File]），不要只绑定工具text。
+
+================================================================
+N13 Markdown ⮕ MD（customer_info）
+原节点ID：1793446262736
+类型：工具节点
+连入：N10 4缺失数据还原与删除
+连出：N16 输出
+插件：bowenliang123/md_exporter
+工具：Markdown ⮕ MD / md_to_md
+参数（保留参考，必要修正已列入）：
+- md_text = 【插入变量：N10 4缺失数据还原与删除 → customer_info】；配置类型 mixed
+- output_filename = customer_info；配置类型 mixed
+文件名不加后缀。文件输出选择工具files（Array[File]），不要只绑定工具text。
+
+================================================================
+N14 Markdown ⮕ MD（employee_info）
+原节点ID：1793446269205
+类型：工具节点
+连入：N10 4缺失数据还原与删除
+连出：N16 输出
+插件：bowenliang123/md_exporter
+工具：Markdown ⮕ MD / md_to_md
+参数（保留参考，必要修正已列入）：
+- md_text = 【插入变量：N10 4缺失数据还原与删除 → employee_info】；配置类型 mixed
+- output_filename = employee_info；配置类型 mixed
+文件名不加后缀。文件输出选择工具files（Array[File]），不要只绑定工具text。
+
+================================================================
+N15 Markdown ⮕ MD（hall_info）
+原节点ID：1793446274791
+类型：工具节点
+连入：N10 4缺失数据还原与删除
+连出：N16 输出
+插件：bowenliang123/md_exporter
+工具：Markdown ⮕ MD / md_to_md
+参数（保留参考，必要修正已列入）：
+- md_text = 【插入变量：N10 4缺失数据还原与删除 → hall_info】；配置类型 mixed
+- output_filename = hall_info；配置类型 mixed
+文件名不加后缀。文件输出选择工具files（Array[File]），不要只绑定工具text。
+
+================================================================
+N16 输出
+原节点ID：1793443849936
+类型：输出
+连入：N11 Markdown ⮕ MD（complaint_record）；N12 Markdown ⮕ MD（complaint_handling）；N13 Markdown ⮕ MD（customer_info）；N14 Markdown ⮕ MD（employee_info）；N15 Markdown ⮕ MD（hall_info）
+连出：结束或由容器收集输出
+在输出节点逐项添加下列输出：
+- files ← N15 Markdown ⮕ MD（hall_info） → files；Array[File]
+- files_1 ← N14 Markdown ⮕ MD（employee_info） → files；Array[File]
+- files_2 ← N13 Markdown ⮕ MD（customer_info） → files；Array[File]
+- files_3 ← N12 Markdown ⮕ MD（complaint_handling） → files；Array[File]
+- files_4 ← N11 Markdown ⮕ MD（complaint_record） → files；Array[File]
+- check_report ← N10 4缺失数据还原与删除 → processing_summary；String
+
+四、原参考连线核对表
+N01 用户输入 --source--> N02 complaint_record
+N01 用户输入 --source--> N03 complaint_handling
+N01 用户输入 --source--> N04 customer_info
+N01 用户输入 --source--> N05 employee_info
+N01 用户输入 --source--> N06 hall_info
+N02 complaint_record --source--> N07 1表结构统一与 source_row_index
+N03 complaint_handling --source--> N07 1表结构统一与 source_row_index
+N04 customer_info --source--> N07 1表结构统一与 source_row_index
+N05 employee_info --source--> N07 1表结构统一与 source_row_index
+N06 hall_info --source--> N07 1表结构统一与 source_row_index
+N07 1表结构统一与 source_row_index --source--> N08 2时间格式统一
+N08 2时间格式统一 --source--> N09 3ID 格式还原
+N09 3ID 格式还原 --source--> N10 4缺失数据还原与删除
+N10 4缺失数据还原与删除 --source--> N11 Markdown ⮕ MD（complaint_record）
+N10 4缺失数据还原与删除 --source--> N12 Markdown ⮕ MD（complaint_handling）
+N10 4缺失数据还原与删除 --source--> N13 Markdown ⮕ MD（customer_info）
+N10 4缺失数据还原与删除 --source--> N14 Markdown ⮕ MD（employee_info）
+N10 4缺失数据还原与删除 --source--> N15 Markdown ⮕ MD（hall_info）
+N11 Markdown ⮕ MD（complaint_record） --source--> N16 输出
+N12 Markdown ⮕ MD（complaint_handling） --source--> N16 输出
+N13 Markdown ⮕ MD（customer_info） --source--> N16 输出
+N14 Markdown ⮕ MD（employee_info） --source--> N16 输出
+N15 Markdown ⮕ MD（hall_info） --source--> N16 输出
+
+五、本版修正与验证边界
+1. 节点、连线沿用考试数据文件-1.yml；节点4新增两个报告输入绑定，最终输出新增check_report；节点4五表String在最后一步改为Markdown，节点1—3仍用JSON。
+2. 参考原代码有多加字段、JSON冒充Markdown、推定单元格计数少一倍等问题，新提示词已明确修正，不能再复制旧附录代码覆盖。
+3. 本地实测第一至第三节点；第四节点做了限字段与推定计数的定点修正实验并逐格核对。提示词交给DeepSeek生成的新代码仍要按验收表复跑。
+4. 全量JSON/Markdown字符串可能触及平台长度限制；本地统计不代表平台能接受同样长度。若出现长度报错，先记录变量名、实际长度和平台限制，再协调接口，不能截断数据或擅自分片。
+
+六、分阶段试跑方法
+1. 先运行提取器，看text表头与样例是否正确；输入绑定到text，不能绑定到上传文件对象。
+2. 每个代码节点检查“上次运行”的输入、输出和关键统计；节点显示成功只说明执行结束，业务判断仍要看parse、is_completed、risk_ok或报告内容。
+3. 上一步字段结构和下一步要求不一致时，把前一节点输出样例与当前节点接口一起发给DeepSeek，让它只修当前接口问题。
+4. 最后完整试跑，检查所有应经过的节点已运行。有files输出的题目再检查下载文件与正文；第四题原参考仅输出text，复制完整正文另存UTF-8的选手姓名.md，不要保存JSON或只保存下载链接。不能只单测最后一个输出节点。
+
+七、向DeepSeek反馈报错时可用的短句
+“这是【节点名称】的报错，下面是该节点完整代码、输入变量名与来源、输出变量名与类型，以及上一步输出的少量样例。请保持其他节点和接口不变，解释直接原因后给我完整替换代码。”
+
+整理核对范围
+已执行四题参考代码的本地数据链路，使用独立程序核对关键数值及异常边界；结果见后附验收表和总核验报告。第二题采用明确标注的人工判读意图fixture；第四题采用全手册fixture测试证据代码，不是实际知识库。DeepSeek生成的新代码、Dify平台、图表工具和真实知识库仍须现场验收。
+源文件SHA-256：02fbaf98b7cd6dc0d220ddc4cf4a65fcfa1f03266b5c96732308a3c47f078210
+
+
+八、本套数据已实测的验收表
+本地输入：work1/考试数据文件内五张CSV，原文件未改。
+步骤1：行数1998、1998、2000、200、50；标准列数9、7、4、4、4；每格原始值和原始行号已比对。
+步骤2：时间修复420、415；问题592全部为空白，没有残留未识别的非空时间。漏AM/PM会少28、27条。
+步骤3：两投诉表ID修复856、1272，三主表0，非空ID无法解释0。
+步骤4：279组同步删除；保留1719/1719/2000/200/50。原参考错误新增4个占位列，修订后不可保留。
+跨表补ID448格、补时间421格；推定59组应算118格；主档补833格。
+两投诉表空白→真实值补全数分别912、908（合计1820）；占位不计、删除行不计。
+占位数量：
+表 | 字段 | 数量
+--- | --- | ---
+complaint_record | package_type | 274
+complaint_record | complaint_subtype | 254
+complaint_record | handler_name | 33
+complaint_record | customer_id | 82
+complaint_record | accept_time | 45
+complaint_record | complaint_type | 234
+complaint_handling | customer_feedback | 257
+complaint_handling | hall_id | 261
+complaint_handling | handler_id | 37
+complaint_handling | customer_name | 33
+complaint_handling | accept_time | 45
+
+必须实际打开下载的五个.md：首行是表头、次行为---分隔；完整行数正确；不含压缩串、JSON数组、仅前两行预览或省略号。
+MD导出工具文件名分别complaint_record、complaint_handling、customer_info、employee_info、hall_info；检查实际下载后缀为.md。
+交付：数据清洗变更报告截图、五个完整MD、选手姓名_数据清洗step1.yml。
+节点4新增输入time_fix_report绑定节点2同名输出；id_fix_report绑定节点3 processing_summary。不要把id_fix_report绑定节点4自己的报告。
+最终输出新增check_report绑定节点4 processing_summary；原五个files输出来源仍为各自MD工具。
